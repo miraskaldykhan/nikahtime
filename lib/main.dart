@@ -134,11 +134,9 @@ void main() async {
         path:
             'assets/translations',
         fallbackLocale: const Locale('en'),
-        child: MaterialApp(
-          home: const StoryPage(),
-        ),
+        child: MyApp(token, response),
         
-        //MyApp(token, response)
+        
         
         
         ),

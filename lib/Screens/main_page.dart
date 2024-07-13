@@ -18,6 +18,8 @@ import 'package:untitled/Providers/NotSeenMessagesProvider.dart';
 import 'package:untitled/main_page_custom_icon_icons.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
 
+import 'Friends/friends_page.dart';
+
 /// This is the stateful widget that the main application instantiates.
 class MainPage extends StatefulWidget {
   const MainPage(this.userProfileData, {super.key});
@@ -40,10 +42,12 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
       case 1:
         return FavoriteMainPageScreen(widget.userProfileData);
       case 2:
-        return AnketesFeedScreen(widget.userProfileData);
+        return FriendsPage(widget.userProfileData);
       case 3:
-        return ChatMainPage(widget.userProfileData);
+        return AnketesFeedScreen(widget.userProfileData);
       case 4:
+        return ChatMainPage(widget.userProfileData);
+      case 5:
         return ProfileMainPageScreen(widget.userProfileData);
     }
 
@@ -163,70 +167,203 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
         provider = Provider.of<NotSeenMessagesProvider>(context);
         provider.GetNumberNotSeenMessagesFromServer(
             widget.userProfileData.accessToken.toString());
-        return BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          //enableFeedback: false,
-          iconSize: 24,
-          items: <BottomNavigationBarItem>[
-            const BottomNavigationBarItem(
-              icon: Icon(MainPageCustomIcon.news),
-              label: "News",
-            ),
-            BottomNavigationBarItem(
-              icon: const Padding(
-                padding: EdgeInsets.only(right: 8.0),
-                child: Icon(MainPageCustomIcon.heart),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              height: 1,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 7,
+                    offset: const Offset(-1, -1), // changes position of shadow
+                  ),
+                ],
               ),
-              label: LocaleKeys.usersScreen_favorites.tr(),
             ),
-            BottomNavigationBarItem(
-              icon: const Icon(MainPageCustomIcon.feed),
-              label: LocaleKeys.usersScreen_tittle.tr(),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width / 42),
+              color: Color(0xfffef8ff),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    height: 4,
+                    color: _selectedIndex == 0
+                        ? Color(0xff00CF90)
+                        : Color(0xfffef8ff),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    height: 4,
+                    color: _selectedIndex == 1
+                        ? Color(0xff00CF90)
+                        : Color(0xfffef8ff),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    height: 4,
+                    color: _selectedIndex == 2
+                        ? Color(0xff00CF90)
+                        : Color(0xfffef8ff),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    height: 4,
+                    color: _selectedIndex == 3
+                        ? Color(0xff00CF90)
+                        : Color(0xfffef8ff),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    height: 4,
+                    color: _selectedIndex == 4
+                        ? Color(0xff00CF90)
+                        : Color(0xfffef8ff),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    height: 4,
+                    color: _selectedIndex == 5
+                        ? Color(0xff00CF90)
+                        : Color(0xfffef8ff),
+                  ),
+                ],
+              ),
             ),
-            BottomNavigationBarItem(
-              icon: provider.numberNotSeenMessages != null &&
-                      provider.numberNotSeenMessages != '0'
-                  ? Stack(
-                      alignment: Alignment.topRight,
-                      clipBehavior: Clip.none,
-                      children: [
-                        const Icon(MainPageCustomIcon.message),
-                        Positioned(
-                          top: -3,
-                          right: -3,
-                          child: SizedBox(
-                            width: 15,
-                            height: 15,
-                            child: CircleAvatar(
-                              backgroundColor:
-                                  const Color.fromRGBO(0, 0xcf, 0x91, 1),
-                              child: Text(
-                                int.parse(provider.numberNotSeenMessages) > 9
-                                    ? '9+'
-                                    : '${provider.numberNotSeenMessages}',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 9),
+            BottomNavigationBar(
+              elevation: 0,
+              type: BottomNavigationBarType.fixed,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              //enableFeedback: false,
+              iconSize: 24,
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    child: Image.asset(
+                      _selectedIndex == 0
+                          ? 'assets/icons/barGreen1.png'
+                          : 'assets/icons/bar1.png',
+                      width: 26,
+                    ),
+                  ),
+                  label: LocaleKeys.usersScreen_tittle.tr(),
+                ),
+                BottomNavigationBarItem(
+                  icon: Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    child: Center(
+                      child: Image.asset(
+                        _selectedIndex == 1
+                            ? 'assets/icons/barGreen2.png'
+                            : 'assets/icons/bar2.png',
+                        width: 30,
+                      ),
+                    ),
+                  ),
+                  label: LocaleKeys.usersScreen_tittle.tr(),
+                ),
+                BottomNavigationBarItem(
+                  icon: Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      _selectedIndex == 2
+                          ? 'assets/icons/barGreen3.png'
+                          : 'assets/icons/bar3.png',
+                      width: 30,
+                    ),
+                  ),
+                  label: LocaleKeys.usersScreen_tittle.tr(),
+                ),
+                BottomNavigationBarItem(
+                  icon: Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      _selectedIndex == 3
+                          ? 'assets/icons/barGreen4.png'
+                          : 'assets/icons/bar4.png',
+                      width: 22,
+                    ),
+                  ),
+                  label: LocaleKeys.usersScreen_tittle.tr(),
+                ),
+                BottomNavigationBarItem(
+                  icon: provider.numberNotSeenMessages != null &&
+                          provider.numberNotSeenMessages != '0'
+                      ? Stack(
+                          alignment: Alignment.topRight,
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              color: Colors.amber,
+                              width: MediaQuery.of(context).size.width / 8.3,
+                              alignment: Alignment.center,
+                              child: Image.asset(
+                                _selectedIndex == 4
+                                    ? 'assets/icons/barGreen5.png'
+                                    : 'assets/icons/bar5.png',
+                                width: 30,
+                                color: _selectedIndex == 4
+                                    ? const Color(0xff00CF90)
+                                    : null,
                               ),
                             ),
-                          ),
+                            Positioned(
+                              top: -3,
+                              right: -3,
+                              child: SizedBox(
+                                width: 15,
+                                height: 15,
+                                child: CircleAvatar(
+                                  backgroundColor:
+                                      const Color.fromRGBO(0, 0xcf, 0x91, 1),
+                                  child: Text(
+                                    int.parse(provider.numberNotSeenMessages) >
+                                            9
+                                        ? '9+'
+                                        : '${provider.numberNotSeenMessages}',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 9),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         )
-                      ],
-                    )
-                  : const Icon(MainPageCustomIcon.message),
-              label: LocaleKeys.chat_main_header.tr(),
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(MainPageCustomIcon.profile),
-              label: LocaleKeys.profileScreen_title.tr(),
+                      : const Icon(MainPageCustomIcon.message),
+                  label: LocaleKeys.chat_main_header.tr(),
+                ),
+                BottomNavigationBarItem(
+                  icon: Container(
+                    width: MediaQuery.of(context).size.width / 8.3,
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      _selectedIndex == 5
+                          ? 'assets/icons/barGreen6.png'
+                          : 'assets/icons/bar6.png',
+                      width: 28,
+                    ),
+                  ),
+                  label: LocaleKeys.usersScreen_tittle.tr(),
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              unselectedItemColor: const Color.fromRGBO(0, 0, 0, 0.38),
+              selectedItemColor: const Color.fromRGBO(0, 0xcf, 0x91, 1),
+              onTap: _onItemTapped,
             ),
           ],
-          currentIndex: _selectedIndex,
-          unselectedItemColor: const Color.fromRGBO(0, 0, 0, 0.38),
-          selectedItemColor: const Color.fromRGBO(0, 0xcf, 0x91, 1),
-          onTap: _onItemTapped,
         );
       }),
     );
