@@ -56,7 +56,7 @@ class _PhotoPlaceState extends State<PhotoPlace> {
                 borderRadius: BorderRadius.circular(12.0),
                 child: displayPhotoOrVideo(
                     this.context,
-                    widget.userProfileData.images![0].preview.toString(),
+                    widget.userProfileData.images![0].main.toString(),
                     items: widget.userProfileData.images!.map((e) => e.main).toList().cast<String>(),
                     initPage: 0,
                     photoOwnerId: widget.userProfileData.id

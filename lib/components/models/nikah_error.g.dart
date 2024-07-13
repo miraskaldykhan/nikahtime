@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../../components/models/nikah_error.dart';
+part of 'nikah_error.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

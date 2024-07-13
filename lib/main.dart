@@ -6,18 +6,13 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Profile/bloc/profile_bloc.dart';
-
-
-
 import 'package:untitled/Screens/welcome.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
 import 'package:untitled/components/widgets/nikah_app_updater.dart';
@@ -26,13 +21,16 @@ import 'package:untitled/Screens/Registration/registration_create_profile.dart';
 import 'package:untitled/Screens/main_page.dart';
 import 'package:untitled/my_tracker_params.dart';
 
+import 'Screens/Chat/story_page.dart';
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -46,12 +44,11 @@ void main() async {
   String token = prefs.getString("token") ?? "";
   debugPrint(token);
   var response;
-  if(token!="empty"){
+  if (token != "empty") {
     response = await NetworkService().GetUserInfo(token);
   }
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_messageHandler);
-
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationSettings settings = await messaging.requestPermission(
@@ -84,47 +81,41 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   if (Platform.isIOS) {
-    StreamSubscription? _subscription;
-      final Stream purchaseUpdated =
-          InAppPurchase.instance.purchaseStream;
-      _subscription = purchaseUpdated.listen(
-        (purchaseDetailsList) {
-          if (purchaseDetailsList.isEmpty) {
-            _subscription?.cancel();
-            return;
-          }
-          purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-            if (purchaseDetails.status == PurchaseStatus.pending) {
-
-            } else {
-              if (purchaseDetails.status == PurchaseStatus.error) {
-
-              } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-                        purchaseDetails.status == PurchaseStatus.restored) {
-                try {
-                  String receiptData = purchaseDetails.verificationData.localVerificationData;
-                  await NetworkService().verifyPaymentByApplePay(receiptData: receiptData);
-                } on DioError catch (error) {
-                  debugPrint(error.toString());
-                  return;
-                }
-              } else if (purchaseDetails.status == PurchaseStatus.canceled) {
-              }
-              if (purchaseDetails.pendingCompletePurchase) {
-                await InAppPurchase.instance
-                    .completePurchase(purchaseDetails);
-              }
-            }
-          });
-          _subscription?.cancel();
-        },
-        onDone: () {
-          _subscription?.cancel();
-        },
-        onError: (error) {
-        debugPrint(error);
+    StreamSubscription? subscription;
+    final Stream purchaseUpdated = InAppPurchase.instance.purchaseStream;
+    subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      if (purchaseDetailsList.isEmpty) {
+        subscription?.cancel();
+        return;
       }
-    );
+      purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+        if (purchaseDetails.status == PurchaseStatus.pending) {
+        } else {
+          if (purchaseDetails.status == PurchaseStatus.error) {
+          } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+              purchaseDetails.status == PurchaseStatus.restored) {
+            try {
+              String receiptData =
+                  purchaseDetails.verificationData.localVerificationData;
+              await NetworkService()
+                  .verifyPaymentByApplePay(receiptData: receiptData);
+            // ignore: deprecated_member_use
+            } on DioError catch (error) {
+              debugPrint(error.toString());
+              return;
+            }
+          } else if (purchaseDetails.status == PurchaseStatus.canceled) {}
+          if (purchaseDetails.pendingCompletePurchase) {
+            await InAppPurchase.instance.completePurchase(purchaseDetails);
+          }
+        }
+      });
+      subscription?.cancel();
+    }, onDone: () {
+      subscription?.cancel();
+    }, onError: (error) {
+      debugPrint(error);
+    });
   }
 
   MyTrackerConfig trackerConfig = MyTracker.trackerConfig;
@@ -133,7 +124,6 @@ void main() async {
   trackerConfig.setRegion(MyTrackerRegion.RU);
   trackerConfig.setTrackingLocationEnabled(false);
 
-
   //MyTracker.setDebugMode(true);
   await MyTracker.init(MyTrackerSDK.getKeySDK());
 
@@ -141,17 +131,23 @@ void main() async {
   runApp(
     EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ru')],
-        path: 'assets/translations', // <-- change the path of the translation files
+        path:
+            'assets/translations',
         fallbackLocale: const Locale('en'),
-        child: MyApp(token, response)
-    ),
+        child: MaterialApp(
+          home: const StoryPage(),
+        ),
+        
+        //MyApp(token, response)
+        
+        
+        ),
   );
 }
 
 Future<void> _messageHandler(RemoteMessage message) async {
   print('background message ${message.notification!.body}');
 }
-
 
 class MyApp extends StatelessWidget {
   MyApp(this.token, this.response, {super.key});
@@ -171,10 +167,10 @@ class MyApp extends StatelessWidget {
   };
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider (
+        BlocProvider(
           create: (BuildContext context) => ProfileBloc(),
         ),
       ],
@@ -187,8 +183,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             primarySwatch: MaterialColor(0xFF00CF91, colorCodes),
             primaryColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
-            fontFamily: 'Rubik'
-        ),
+            fontFamily: 'Rubik'),
         home: buildAppBody(context),
         navigatorKey: navigatorKey,
         routes: {
@@ -199,49 +194,41 @@ class MyApp extends StatelessWidget {
   }
 
   Widget buildAppBody(BuildContext context) {
-
-    if(token == "empty")
-    {
+    if (token == "empty") {
       return const AppBody(
         initialScreen: AppBodyScreen.welcome,
       );
     }
 
-    if(response.statusCode != 200){
-      return const AppBody(
-          initialScreen: AppBodyScreen.welcome
-      );
+    if (response.statusCode != 200) {
+      return const AppBody(initialScreen: AppBodyScreen.welcome);
     }
+    print(response.body);
     UserProfileData userProfileData = UserProfileData();
     userProfileData.accessToken = token;
     userProfileData.jsonToData(jsonDecode(response.body)[0]);
 
-    return Builder(
-      builder: (context) {
-        context.read<ProfileBloc>().add(UpdateProfileDataEvent(userProfileData: userProfileData));
-        return AppBody(
-          initialScreen: (userProfileData.isValid()) ? AppBodyScreen.main : AppBodyScreen.registrationCreateProfile,
-          userProfileData: userProfileData,
-        );
-      }
-    );
+    return Builder(builder: (context) {
+      context
+          .read<ProfileBloc>()
+          .add(UpdateProfileDataEvent(userProfileData: userProfileData));
+      return AppBody(
+        initialScreen: (userProfileData.isValid())
+            ? AppBodyScreen.main
+            : AppBodyScreen.registrationCreateProfile,
+        userProfileData: userProfileData,
+      );
+    });
   }
 }
 
-enum AppBodyScreen {
-  welcome,
-  main,
-  registrationCreateProfile
-}
+enum AppBodyScreen { welcome, main, registrationCreateProfile }
 
 class AppBody extends StatelessWidget {
   final AppBodyScreen initialScreen;
   final UserProfileData? userProfileData;
 
-  const AppBody({super.key,
-    required this.initialScreen,
-    this.userProfileData
-  });
+  const AppBody({super.key, required this.initialScreen, this.userProfileData});
 
   String getCountryIsoCode() {
     final WidgetsBinding instance = WidgetsBinding.instance;
@@ -275,18 +262,19 @@ class AppBody extends StatelessWidget {
         MyTrackerParams trackerParams = MyTracker.trackerParams;
 
         trackerParams.setCustomUserIds([userProfileData!.id!.toString()]);
-        trackerParams.setAge(
-            DateTime.now().difference(DateFormat("dd.MM.yyyy").parse(userProfileData!.birthDate!)).abs().inDays ~/ 365
-        );
-        trackerParams.setGender(userProfileData!.gender == null ? MyTrackerGender.UNKNOWN
-          : (
-            (userProfileData!.gender == "male")
+        trackerParams.setAge(DateTime.now()
+                .difference(
+                    DateFormat("dd.MM.yyyy").parse(userProfileData!.birthDate!))
+                .abs()
+                .inDays ~/
+            365);
+        trackerParams.setGender(userProfileData!.gender == null
+            ? MyTrackerGender.UNKNOWN
+            : ((userProfileData!.gender == "male")
                 ? MyTrackerGender.MALE
-                : MyTrackerGender.FEMALE
-          )
-        );
+                : MyTrackerGender.FEMALE));
 
-        MyTracker.trackLoginEvent(userProfileData!.id!.toString(),{});
+        MyTracker.trackLoginEvent(userProfileData!.id!.toString(), {});
         //MyTracker.trackRegistrationEvent(widget.userProfileData.id!.toString(),{});
         return MainPage(userProfileData!);
       case AppBodyScreen.registrationCreateProfile:

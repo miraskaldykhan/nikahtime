@@ -587,7 +587,9 @@ class _RegistrationCreateProfileScreenState
                             SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
+                                  
                                     style: ElevatedButton.styleFrom(
+                                      backgroundColor:const Color.fromARGB(255, 00, 0xcf, 0x91), 
                                       fixedSize: const Size(double.infinity, 56),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12.0),

@@ -12,33 +12,59 @@ import 'package:untitled/ServiceItems/network_service.dart';
 part 'chat_with_user_event.dart';
 part 'chat_with_user_state.dart';
 
-
-
 class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
-  ChatWithUserBloc({required ChatWithLastMessage chatData}) : super(ChatWithUserInitial(
-    chatData: chatData
-  ))
-  {
+  ChatWithUserBloc({required ChatWithLastMessage chatData})
+      : super(ChatWithUserInitial(chatData: chatData)) {
     on<LoadChatData>(_loadChatData);
     on<NewMessage>(_newMessage);
     on<ReadMessage>(_readMessage);
     on<BlockChat>(_blockChat);
     on<SendTextMessage>(_sendMessage);
     on<SendFile>(_sendFile);
+    on<AsnwerChat>(answerChat);
+    on<RemoveAnswerChat>(removeAnswerChat);
+    on<EditChat>(editChat);
   }
+  Future<void> answerChat(
+      AsnwerChat answerChat, Emitter<ChatWithUserState> emit) async {
+    emit((state as ChatWithUserInitial).copyThis(
+      answerBoxVisible: true,
+      answerText: answerChat.answerText,
+      pageState: PageState.newMessage,
+    ));
+  }
+
+  Future<void> editChat(
+      EditChat editChat, Emitter<ChatWithUserState> emit) async {
+    emit((state as ChatWithUserInitial).copyThis(
+      editBoxVisible: true,
+      editText: editChat.editText,
+      pageState: PageState.newMessage,
+    ));
+  }
+
+  Future<void> removeAnswerChat(
+      RemoveAnswerChat answerChat, Emitter<ChatWithUserState> emit) async {
+    emit((state as ChatWithUserInitial).copyThis(
+      answerBoxVisible: false,
+      editBoxVisible: false,
+      answerText: '',
+      pageState: PageState.hold,
+    ));
+  }
+
+
 
   String? accessToken;
 
-  Future<void> getAccessToken() async
-  {
+  Future<void> getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accessToken = prefs.getString("token") ?? "";
   }
 
-  void _loadChatData(LoadChatData event, Emitter<ChatWithUserState> emit) async
-  {
-    if(accessToken == null)
-    {
+  void _loadChatData(
+      LoadChatData event, Emitter<ChatWithUserState> emit) async {
+    if (accessToken == null) {
       await getAccessToken();
     }
 
@@ -46,10 +72,8 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
     int userId = 0;
 
     try {
-
-      var response = await NetworkService().ChatsGetChatID(
-          accessToken!, event.chatId
-      );
+      var response =
+          await NetworkService().ChatsGetChatID(accessToken!, event.chatId);
 
       userId = jsonDecode(response.body)["chat"]["userId"];
 
@@ -63,43 +87,39 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
       for (int i = 0; i < receivedMessages.length; i++) {
         ChatMessage message = ChatMessage();
         message.GetDataFromJson(receivedMessages[i]);
-        if (message.isMessageSeen! == false && message.isAuthUsermessage! == false) {
+        if (message.isMessageSeen! == false &&
+            message.isAuthUsermessage! == false) {
           NetworkService().ChatsSeenMessageID(accessToken!, message.messageId!);
         }
         messages.add(message);
       }
 
       MyTracker.trackEvent("Return to chat", {});
-
     } catch (err) {
       emit((state as ChatWithUserInitial).copyThis(
         pageState: PageState.error,
       ));
     }
 
-
     emit((state as ChatWithUserInitial).copyThis(
-      chatData: (state as ChatWithUserInitial).chatData!.copyThis(userID: userId),
-      pageState: PageState.ready,
-      messages: messages.reversed.toList()
-    ));
+        chatData:
+            (state as ChatWithUserInitial).chatData!.copyThis(userID: userId),
+        pageState: PageState.ready,
+        messages: messages.reversed.toList()));
   }
 
-  void _newMessage(NewMessage event, Emitter<ChatWithUserState> emit) async
-  {
-    if(accessToken == null)
-    {
+  void _newMessage(NewMessage event, Emitter<ChatWithUserState> emit) async {
+    if (accessToken == null) {
       await getAccessToken();
     }
 
-    List<ChatMessage> messages = (state as ChatWithUserInitial).messages.reversed.toList();
+    List<ChatMessage> messages =
+        (state as ChatWithUserInitial).messages.reversed.toList();
     ChatMessage message = ChatMessage();
 
     try {
-      var response = await NetworkService().ChatsGetMessageByID(
-          accessToken!,
-          event.messageId
-      );
+      var response = await NetworkService()
+          .ChatsGetMessageByID(accessToken!, event.messageId);
 
       if (response.statusCode != 200) {
         throw Exception("Error on send");
@@ -107,12 +127,12 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
 
       message.GetDataFromJson(jsonDecode(response.body));
       if (message.isAuthUsermessage == false) {
-        response = await NetworkService().ChatsSeenMessageID(accessToken!, event.messageId);
+        response = await NetworkService()
+            .ChatsSeenMessageID(accessToken!, event.messageId);
       }
-
     } catch (err) {
       emit((state as ChatWithUserInitial).copyThis(
-          pageState: PageState.error,
+        pageState: PageState.error,
       ));
       return;
     }
@@ -120,42 +140,33 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
     messages.add(message);
 
     emit((state as ChatWithUserInitial).copyThis(
-        pageState: PageState.ready,
-        messages: messages.reversed.toList()
-    ));
+        pageState: PageState.ready, messages: messages.reversed.toList()));
   }
 
-  void _readMessage(ReadMessage event, Emitter<ChatWithUserState> emit) async
-  {
-    if(accessToken == null)
-    {
+  void _readMessage(ReadMessage event, Emitter<ChatWithUserState> emit) async {
+    if (accessToken == null) {
       await getAccessToken();
     }
 
-    List<ChatMessage> messages = (state as ChatWithUserInitial).messages.reversed.toList();
+    List<ChatMessage> messages =
+        (state as ChatWithUserInitial).messages.reversed.toList();
 
-    for(int i = messages.length - 1; i > 0; i--)
-      {
-        if(messages[i].isMessageSeen != true)
-          {
-            messages[i].isMessageSeen = true;
-          }else{
-          break;
-        }
+    for (int i = messages.length - 1; i > 0; i--) {
+      if (messages[i].isMessageSeen != true) {
+        messages[i].isMessageSeen = true;
+      } else {
+        break;
       }
+    }
     emit((state as ChatWithUserInitial).copyThis(
-        pageState: PageState.loading,
+      pageState: PageState.loading,
     ));
     emit((state as ChatWithUserInitial).copyThis(
-        pageState: PageState.ready,
-        messages: messages.reversed.toList()
-    ));
+        pageState: PageState.ready, messages: messages.reversed.toList()));
   }
 
-  void _blockChat(BlockChat event, Emitter<ChatWithUserState> emit) async
-  {
-    if(accessToken == null)
-    {
+  void _blockChat(BlockChat event, Emitter<ChatWithUserState> emit) async {
+    if (accessToken == null) {
       await getAccessToken();
     }
 
@@ -170,12 +181,10 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
       // }
       if ((state as ChatWithUserInitial).chatData!.isChatBlocked) {
         await NetworkService().unblockUser(
-            userId: (state as ChatWithUserInitial).chatData!.userID!
-        );
+            userId: (state as ChatWithUserInitial).chatData!.userID!);
       } else {
         await NetworkService().blockUser(
-            userId: (state as ChatWithUserInitial).chatData!.userID!
-        );
+            userId: (state as ChatWithUserInitial).chatData!.userID!);
       }
     } catch (err) {
       emit((state as ChatWithUserInitial).copyThis(
@@ -186,25 +195,22 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
 
     emit((state as ChatWithUserInitial).copyThis(
       chatData: (state as ChatWithUserInitial).chatData!.copyThis(
-        isChatBlocked: (state as ChatWithUserInitial)
-            .chatData!.isChatBlocked == false
-      ),
+          isChatBlocked:
+              (state as ChatWithUserInitial).chatData!.isChatBlocked == false),
       pageState: PageState.ready,
     ));
   }
 
-  ChatMessage createMsg({
-    required String str,
-    required String type,
-    bool isMessageSend = false,
-    bool sendedError = false
-  })
-  {
+  ChatMessage createMsg(
+      {required String str,
+      required String type,
+      bool isMessageSend = false,
+      bool sendedError = false}) {
     ChatMessage message = ChatMessage();
 
     message.message = str;
     DateTime dt = DateTime.now();
-    dt = dt.add(Duration(hours: 3) - DateTime.now().timeZoneOffset);
+    dt = dt.add(const Duration(hours: 3) - DateTime.now().timeZoneOffset);
     message.messageTime = ''
         '${dt.day}.'
         '${dt.month}.'
@@ -220,9 +226,8 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
     return message;
   }
 
-
-  void _sendMessage(SendTextMessage event, Emitter<ChatWithUserState> emit) async
-  {
+  void _sendMessage(
+      SendTextMessage event, Emitter<ChatWithUserState> emit) async {
     var text = event.text.trim();
 
     if (text.isEmpty) {
@@ -231,34 +236,28 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
 
     text = text.replaceAll(RegExp(r'((?<=\n)\s+)|((?<=\s)\s+)'), "");
 
-    if(accessToken == null) {
+    if (accessToken == null) {
       await getAccessToken();
     }
 
-    List<ChatMessage> messages = (state as ChatWithUserInitial).messages.reversed.toList();
+    List<ChatMessage> messages =
+        (state as ChatWithUserInitial).messages.reversed.toList();
     messages.add(createMsg(str: text, type: "text"));
 
-    emit((state as ChatWithUserInitial).copyThis(
-        messages: messages.reversed.toList()
-    ));
+    emit((state as ChatWithUserInitial)
+        .copyThis(messages: messages.reversed.toList()));
 
     try {
-      var response = await NetworkService().ChatsSendMessage(
-        accessToken!,
-        text,
-        (state as ChatWithUserInitial).chatData!.chatId!,
-        "text"
-      );
+      var response = await NetworkService().ChatsSendMessage(accessToken!, text,
+          (state as ChatWithUserInitial).chatData!.chatId!, "text");
       if (response.statusCode != 200) {
         throw Exception("Error on send");
       }
     } catch (err) {
       messages.removeLast();
       messages.add(createMsg(str: text, type: "text", sendedError: true));
-      emit((state as ChatWithUserInitial).copyThis(
-          pageState: PageState.error,
-          messages: messages
-      ));
+      emit((state as ChatWithUserInitial)
+          .copyThis(pageState: PageState.error, messages: messages));
       return;
     }
 
@@ -266,31 +265,23 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
     messages.add(createMsg(str: text, type: "text", isMessageSend: true));
 
     emit((state as ChatWithUserInitial).copyThis(
-        pageState: PageState.ready,
-        messages: messages.reversed.toList()
-    ));
+        pageState: PageState.ready, messages: messages.reversed.toList()));
   }
 
-  void _sendFile(SendFile event, Emitter<ChatWithUserState> emit) async
-  {
-    if(accessToken == null)
-    {
+  void _sendFile(SendFile event, Emitter<ChatWithUserState> emit) async {
+    if (accessToken == null) {
       await getAccessToken();
     }
 
-    List<ChatMessage> messages = (state as ChatWithUserInitial).messages.reversed.toList();
+    List<ChatMessage> messages =
+        (state as ChatWithUserInitial).messages.reversed.toList();
     messages.add(createMsg(str: event.file.path, type: event.fileType));
 
     emit((state as ChatWithUserInitial).copyThis(
-      pageState: PageState.loading,
-      messages: messages.reversed.toList()
-    ));
+        pageState: PageState.loading, messages: messages.reversed.toList()));
 
-    var response = await NetworkService().UploadFileRequest(
-        accessToken!,
-        event.file.path,
-        event.fileType
-    );
+    var response = await NetworkService()
+        .UploadFileRequest(accessToken!, event.file.path, event.fileType);
 
     String url = "";
     try {
@@ -305,12 +296,8 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
       return;
     }
 //
-    await NetworkService().ChatsSendMessage(
-        accessToken!,
-        url.toString(),
-        (state as ChatWithUserInitial).chatData!.chatId!,
-        event.fileType
-    );
+    await NetworkService().ChatsSendMessage(accessToken!, url.toString(),
+        (state as ChatWithUserInitial).chatData!.chatId!, event.fileType);
     //messages.removeLast();
     //messages.add(
     //  createMsg(
@@ -325,5 +312,4 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
     //    messages: messages.reversed.toList()
     //));
   }
-
 }

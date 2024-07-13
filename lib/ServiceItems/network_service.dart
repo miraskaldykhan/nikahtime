@@ -24,10 +24,9 @@ class NetworkService {
     _dio.interceptors.addAll([
       LogInterceptor(),
       InterceptorsWrapper(
-        onResponse:(response,handler) {
+        onResponse: (response, handler) {
           // Do something with response data
-          if(response.statusCode == 406)
-          {
+          if (response.statusCode == 406) {
             navigatorKey.currentState?.pushReplacementNamed('/entering');
           }
           return handler.next(response); // continue
@@ -57,13 +56,12 @@ class NetworkService {
   final String account_user_logout = "/account/logout/";
 
   //-------V1-------
-  Future<PaginatedUserList> searchUsers({
-    required String accessToken,
-    required UserFilter filter,
-    required int page,
-    List<int> exceptIds = const [],
-    bool isExpandedFilter = false
-  }) async {
+  Future<PaginatedUserList> searchUsers(
+      {required String accessToken,
+      required UserFilter filter,
+      required int page,
+      List<int> exceptIds = const [],
+      bool isExpandedFilter = false}) async {
     Map<String, dynamic> request;
     if (isExpandedFilter) {
       request = {
@@ -74,7 +72,8 @@ class NetworkService {
         "country": (filter.country != "") ? filter.country : null,
         "city": (filter.city != "") ? filter.city : null,
         "education": (filter.education != "") ? filter.education : null,
-        "maritalStatus": (filter.maritalStatus != "") ? filter.maritalStatus : null,
+        "maritalStatus":
+            (filter.maritalStatus != "") ? filter.maritalStatus : null,
         "haveChildren": filter.haveChildren,
         "haveBadHabits": filter.haveBadHabbits ?? false,
         "badHabits": filter.badHabits,
@@ -94,11 +93,10 @@ class NetworkService {
     }
     debugPrint(request.toString());
 
-    var response = await _dio.put(
-        "$baseUrl/search/v1/users",
+    var response = await _dio.put("$baseUrl/search/v1/users",
         data: request,
         queryParameters: {
-          "page" : page,
+          "page": page,
         },
         options: Options(
           headers: {
@@ -106,8 +104,7 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return PaginatedUserList.fromJson(response.data);
   }
@@ -117,10 +114,9 @@ class NetworkService {
     required String name,
     required int page,
   }) async {
-    var response = await _dio.get(
-        "$baseUrl/search/users/$name",
+    var response = await _dio.get("$baseUrl/search/users/$name",
         queryParameters: {
-          "page" : page,
+          "page": page,
         },
         options: Options(
           headers: {
@@ -128,20 +124,16 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return PaginatedUserList.fromJson(response.data);
   }
 
-  Future<PaginatedUserList> getFavoriteUsers({
-    required String accessToken,
-    required int page
-  }) async {
-    var response = await _dio.get(
-        "$baseUrl/favourites/v1/get",
+  Future<PaginatedUserList> getFavoriteUsers(
+      {required String accessToken, required int page}) async {
+    var response = await _dio.get("$baseUrl/favourites/v1/get",
         queryParameters: {
-          "page" : page,
+          "page": page,
         },
         options: Options(
           headers: {
@@ -149,20 +141,16 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return PaginatedUserList.fromJson(response.data);
   }
 
-  Future<PaginatedUserList> getUsersWhoFavoriteMe({
-    required String accessToken,
-    required int page
-  }) async {
-    var response = await _dio.get(
-        "$baseUrl/favourites/v1/get/likes",
+  Future<PaginatedUserList> getUsersWhoFavoriteMe(
+      {required String accessToken, required int page}) async {
+    var response = await _dio.get("$baseUrl/favourites/v1/get/likes",
         queryParameters: {
-          "page" : page,
+          "page": page,
         },
         options: Options(
           headers: {
@@ -170,20 +158,16 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return PaginatedUserList.fromJson(response.data);
   }
 
-  Future<PaginatedUserList> getGuests({
-    required String accessToken,
-    required int page
-  }) async {
-    var response = await _dio.get(
-        "$baseUrl/guests/v1/get",
+  Future<PaginatedUserList> getGuests(
+      {required String accessToken, required int page}) async {
+    var response = await _dio.get("$baseUrl/guests/v1/get",
         queryParameters: {
-          "page" : page,
+          // "page" : page,
         },
         options: Options(
           headers: {
@@ -191,20 +175,16 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return PaginatedUserList.fromJson(response.data);
   }
 
-  Future<PaginatedChatList> getChats({
-    required String accessToken,
-    required int page
-  }) async {
-    var response = await _dio.get(
-        "$baseUrl/chats/v1/user",
+  Future<PaginatedChatList> getChats(
+      {required String accessToken, required int page}) async {
+    var response = await _dio.get("$baseUrl/chats/v1/user",
         queryParameters: {
-          "page" : page,
+          "page": page,
         },
         options: Options(
           headers: {
@@ -212,21 +192,18 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return PaginatedChatList.fromJson(response.data);
   }
 
-  Future<GetChatResponse> getChat({
-    required String accessToken,
-    required int chatId,
-    required int page
-  }) async {
-    var response = await _dio.get(
-        "$baseUrl/chats/v1/get/$chatId",
+  Future<GetChatResponse> getChat(
+      {required String accessToken,
+      required int chatId,
+      required int page}) async {
+    var response = await _dio.get("$baseUrl/chats/v1/get/$chatId",
         queryParameters: {
-          "page" : page,
+          "page": page,
         },
         options: Options(
           headers: {
@@ -234,26 +211,21 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return GetChatResponse.fromJson(response.data);
   }
 
   //-------V0-------
-  Future<void> deleteAccount({
-    required String accessToken
-  }) async {
-    await _dio.delete(
-        "$baseUrl/account/delete",
+  Future<void> deleteAccount({required String accessToken}) async {
+    await _dio.delete("$baseUrl/account/delete",
         options: Options(
           headers: {
             'Accept': 'application/json',
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
   }
 
   SendLoginByEmailRequest(
@@ -313,7 +285,8 @@ class NetworkService {
     return response;
   }
 
-  sendRegistrationRequestByAppleId(String idToken, String? notificationId) async {
+  sendRegistrationRequestByAppleId(
+      String idToken, String? notificationId) async {
     var response = await http.post(Uri.parse(baseUrl + registration), body: {
       "grantType": "appleIdToken",
       "idToken": idToken,
@@ -324,7 +297,8 @@ class NetworkService {
     return response;
   }
 
-  sendRegistrationRequestByGoogle(String idToken, String? notificationId) async {
+  sendRegistrationRequestByGoogle(
+      String idToken, String? notificationId) async {
     var response = await http.post(Uri.parse(baseUrl + registration), body: {
       "grantType": "googleIdToken",
       "idToken": idToken,
@@ -354,7 +328,7 @@ class NetworkService {
   }
 
   SendLogoutGet(String accessToken) async {
-    FirebaseMessaging messaging = await FirebaseMessaging.instance;
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
     String token = (await messaging.getToken())!;
     var response = await http.get(
       Uri.parse(baseUrl + account_user_logout + token),
@@ -363,7 +337,8 @@ class NetworkService {
     return response;
   }
 
-  GetUserInfoByID(String accessToken, int userID) async {   ///TODO: swap to DIO
+  GetUserInfoByID(String accessToken, int userID) async {
+    ///TODO: swap to DIO
     //debugPrint("LoadUserByID");
     var response = await http.get(
       Uri.parse("$baseUrl/account/user/$userID"),
@@ -376,7 +351,8 @@ class NetworkService {
     return response;
   }
 
-  GetUserInfo(String accessToken) async { ///TODO: swap to DIO
+  GetUserInfo(String accessToken) async {
+    ///TODO: swap to DIO
     var response = await http.get(
       Uri.parse(baseUrl + accout_user_get_info),
       headers: {'authorization': 'Bearer $accessToken'},
@@ -384,7 +360,10 @@ class NetworkService {
     return response;
   }
 
-  UpdateuserInfo(String accessToken, Object? body) async {  ///TODO: swap to DIO
+  UpdateuserInfo(String accessToken, Object? body) async {
+    print(body);
+
+    ///TODO: swap to DIO
     var response = await http.put(
       Uri.parse("https://www.nikahtime.ru/api/account/user/update"),
       headers: {
@@ -394,6 +373,7 @@ class NetworkService {
       },
       body: body,
     );
+
     return response;
   }
 
@@ -401,14 +381,14 @@ class NetworkService {
       String accessToken, String imagePath, String fileType) async {
     Map<String, String> headers = {
       "Accept": "application/json",
-      "Authorization": "Bearer " + accessToken,
+      "Authorization": "Bearer $accessToken",
       "Content-Type": "multipart/form-data"
     };
     var request = http.MultipartRequest(
-        "POST", Uri.parse(NetworkService().baseUrl + "/store/file"));
+        "POST", Uri.parse("${NetworkService().baseUrl}/store/file"));
     request.files.add(await http.MultipartFile.fromPath('file', imagePath));
-    request.fields['file'] = '$imagePath';
-    request.fields['fileType'] = '$fileType';
+    request.fields['file'] = imagePath;
+    request.fields['fileType'] = fileType;
     request.headers.addAll(headers);
     print(request.fields);
     var response = await request.send();
@@ -418,27 +398,23 @@ class NetworkService {
   Future<void> blockUser({required int userId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await _dio.put(
-        "$baseUrl/block/user/$userId",
+    await _dio.put("$baseUrl/block/user/$userId",
         options: Options(
           headers: {
             'authorization': 'Bearer ${prefs.getString("token") ?? ""}',
           },
-        )
-    );
+        ));
   }
 
   Future<void> unblockUser({required int userId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await _dio.delete(
-        "$baseUrl/block/user/delete/$userId",
+    await _dio.delete("$baseUrl/block/user/delete/$userId",
         options: Options(
           headers: {
             'authorization': 'Bearer ${prefs.getString("token") ?? ""}',
           },
-        )
-    );
+        ));
   }
 
 //SEARCH
@@ -518,7 +494,8 @@ class NetworkService {
 
 //GUESTS
 
-  GuestAddUserID(String accessToken, int userID) async {    ///TODO: swap to DIO
+  GuestAddUserID(String accessToken, int userID) async {
+    ///TODO: swap to DIO
     //debugPrint("GuestAddUserID");
     var response = await http.put(
       Uri.parse("$baseUrl/guests/add/$userID"),
@@ -565,7 +542,8 @@ class NetworkService {
     return response;
   }*/
 
-  FavoritesAddUserID(String accessToken, int userID) async {    ///TODO: swap to DIO
+  FavoritesAddUserID(String accessToken, int userID) async {
+    ///TODO: swap to DIO
     var response = await http.put(
       Uri.parse("$baseUrl/favourites/add/$userID"),
       headers: {
@@ -578,7 +556,8 @@ class NetworkService {
     return response;
   }
 
-  FavoritesDeleteUserID(String accessToken, int userID) async {    ///TODO: swap to DIO
+  FavoritesDeleteUserID(String accessToken, int userID) async {
+    ///TODO: swap to DIO
     var response = await http.delete(
       Uri.parse("$baseUrl/favourites/delete/$userID"),
       headers: {
@@ -592,7 +571,8 @@ class NetworkService {
 
 //CHATS
 
-  ChatsUser(String accessToken) async {    ///TODO: swap to DIO
+  ChatsUser(String accessToken) async {
+    ///TODO: swap to DIO
     var response = await http.get(
       Uri.parse("$baseUrl/chats/user"),
       headers: {
@@ -606,7 +586,8 @@ class NetworkService {
     return response;
   }
 
-  ChatsAddUserID(String accessToken, int userID) async {    ///TODO: swap to DIO
+  ChatsAddUserID(String accessToken, int userID) async {
+    ///TODO: swap to DIO
     var response = await http.post(Uri.parse('$baseUrl/chats/add/$userID'),
         body: json.encode({"userId": userID}),
         headers: {
@@ -620,7 +601,8 @@ class NetworkService {
     return response;
   }
 
-  ChatsGetChatID(String accessToken, int chatID) async {      ///TODO: swap to DIO
+  ChatsGetChatID(String accessToken, int chatID) async {
+    ///TODO: swap to DIO
     var response = await http.get(
       Uri.parse("$baseUrl/chats/get/$chatID"),
       headers: {
@@ -633,7 +615,8 @@ class NetworkService {
     return response;
   }
 
-  ChatsBlockChatID(String accessToken, int chatID) async {    ///TODO: swap to DIO
+  ChatsBlockChatID(String accessToken, int chatID) async {
+    ///TODO: swap to DIO
     var response = await http.put(
       Uri.parse("$baseUrl/chats/block/$chatID"),
       headers: {
@@ -647,7 +630,8 @@ class NetworkService {
   }
 
   ChatsSendMessage(String accessToken, String message, int chatID,
-      String messageType) async {    ///TODO: swap to DIO
+      String messageType) async {
+    ///TODO: swap to DIO
     var response = await http.post(Uri.parse('$baseUrl/chats/send/message'),
         body: json.encode(
             {"message": message, "chatId": chatID, "messageType": messageType}),
@@ -665,17 +649,16 @@ class NetworkService {
   Future<void> chatsDeleteChatID({required int chatID}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await _dio.delete(
-      "$baseUrl/chats/delete/$chatID",
-      options: Options(
-        headers: {
-          'authorization': 'Bearer ${prefs.getString("token") ?? ""}',
-        },
-      )
-    );
+    await _dio.delete("$baseUrl/chats/delete/$chatID",
+        options: Options(
+          headers: {
+            'authorization': 'Bearer ${prefs.getString("token") ?? ""}',
+          },
+        ));
   }
 
-  ChatsGetMessageByID(String accessToken, int messageID) async {    ///TODO: swap to DIO
+  ChatsGetMessageByID(String accessToken, int messageID) async {
+    ///TODO: swap to DIO
     var response = await http.get(
       Uri.parse("$baseUrl/chats/get/message/$messageID"),
       headers: {
@@ -688,7 +671,8 @@ class NetworkService {
     return response;
   }
 
-  ChatsSeenMessageID(String accessToken, int messageID) async {    ///TODO: swap to DIO
+  ChatsSeenMessageID(String accessToken, int messageID) async {
+    ///TODO: swap to DIO
     var response = await http.put(
       Uri.parse("$baseUrl/chats/seen/message/$messageID"),
       headers: {
@@ -753,8 +737,9 @@ class NetworkService {
             'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address'),
         headers: headers,
         body: data);
-    if (res.statusCode != 200)
+    if (res.statusCode != 200) {
       throw Exception('http.post error: statusCode= ${res.statusCode}');
+    }
     List<dynamic> result = jsonDecode(res.body)["suggestions"];
     List<Map<String, dynamic>> retVal = [];
     for (int i = 0; i < result.length; i++) {
@@ -763,7 +748,6 @@ class NetworkService {
         String name = result[i]["data"]['city_with_type'] ??
             result[i]["data"]['settlement_with_type'];
         String region = result[i]["data"]["region_with_type"];
-        if (name == null || region == null) continue;
         Map<String, dynamic> item = {"name": name, "region": region};
         print(item);
         //retVal.add("${item["city_with_type"]}, ${item["region_with_type"]}");
@@ -776,13 +760,17 @@ class NetworkService {
       } catch (err) {
         continue;
       }
-      ;
     }
     return retVal;
   }
 
-  SendComplain(    ///TODO: swap to DIO
-      String accessToken, int userId, String title, String message) async {
+  SendComplain(
+
+      ///TODO: swap to DIO
+      String accessToken,
+      int userId,
+      String title,
+      String message) async {
     var response = await http.post(Uri.parse('$baseUrl/complain'),
         body:
             json.encode({"title": title, "userId": userId, "message": message}),
@@ -797,11 +785,16 @@ class NetworkService {
     return response;
   }
 
-  SendComplainComment(    ///TODO: swap to DIO
-      String accessToken, int commentId, String title, String message) async {
+  SendComplainComment(
+
+      ///TODO: swap to DIO
+      String accessToken,
+      int commentId,
+      String title,
+      String message) async {
     var response = await http.post(Uri.parse('$baseUrl/complain/comment'),
-        body:
-        json.encode({"commentId": commentId, "title": title, "message": message}),
+        body: json.encode(
+            {"commentId": commentId, "title": title, "message": message}),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $accessToken',
@@ -813,23 +806,21 @@ class NetworkService {
     return response;
   }
 
-  SendDonate(int sum, String language) async {    ///TODO: swap to DIO
+  SendDonate(int sum, String language) async {
+    ///TODO: swap to DIO
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token") ?? "";
 
     var response = await http.post(Uri.parse('$baseUrl/payment'),
-      body: json.encode(
-        {
+        body: json.encode({
           "sum": sum,
           "language": language,
-        }
-      ),
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      }
-    );
+        }),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        });
     if (response.statusCode != 200) {
       debugPrint("Donate Error ${response.body}");
     }
@@ -845,8 +836,7 @@ class NetworkService {
     String accessToken = prefs.getString("token") ?? "";
 
     try {
-      var response = await _dio.post(
-          "$baseUrl/payment",
+      var response = await _dio.post("$baseUrl/payment",
           data: {
             "tariffId": tariffId,
             "language": language,
@@ -858,8 +848,7 @@ class NetworkService {
               'Authorization': 'Bearer $accessToken',
               'Content-Type': 'application/json',
             },
-          )
-      );
+          ));
 
       return response.data["redirectUrl"];
     } on DioError catch (e) {
@@ -881,10 +870,9 @@ class NetworkService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String accessToken = prefs.getString("token") ?? "";
 
-    await _dio.post(
-        "$baseUrl/payment/validate/apple/transaction",
+    await _dio.post("$baseUrl/payment/validate/apple/transaction",
         data: {
-            "receiptData": receiptData,
+          "receiptData": receiptData,
         },
         options: Options(
           headers: {
@@ -892,12 +880,11 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
   }
 
-  GetTariffs({ required String accessToken}) async
-  {    ///TODO: swap to DIO
+  GetTariffs({required String accessToken}) async {
+    ///TODO: swap to DIO
     var response = await http.get(
       Uri.parse("$baseUrl/tariffs"),
       headers: {
@@ -907,8 +894,9 @@ class NetworkService {
     return response;
   }
 
-  GetStaffInfo({required String accessToken, required EmployerType type}) async
-  {    ///TODO: swap to DIO
+  GetStaffInfo(
+      {required String accessToken, required EmployerType type}) async {
+    ///TODO: swap to DIO
     if (kDebugMode) {
       print(type.toString());
     }
@@ -923,20 +911,19 @@ class NetworkService {
 
   GetStaffInfo_v1({
     required String accessToken,
-  }) async
-  {
+  }) async {
     var response = await http.get(
       Uri.parse("$baseUrl/staff/v1"),
       headers: {
         'authorization': 'Bearer $accessToken',
-        "Content-Language" : LocaleKeys.app_locale.tr()
+        "Content-Language": LocaleKeys.app_locale.tr()
       },
     );
     return response;
   }
 
-  GetStaffProfileInfo({required String accessToken, required int id}) async
-  {    ///TODO: swap to DIO
+  GetStaffProfileInfo({required String accessToken, required int id}) async {
+    ///TODO: swap to DIO
     var response = await http.get(
       Uri.parse("$baseUrl/staff/profile/$id"),
       headers: {
@@ -946,75 +933,59 @@ class NetworkService {
     return response;
   }
 
-  Future<PaginatedNewsList> getNews({
-    required String accessToken,
-    required String searchString,
-    required int page
-  }) async {
-    var response = await _dio.get(
-      "$baseUrl/news",
-      queryParameters: {
-        "page" : page,
-        "searchString" : searchString
-      },
-      options: Options(
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $accessToken',
-          'Content-Type': 'application/json',
-        },
-      )
-    );
+  Future<PaginatedNewsList> getNews(
+      {required String accessToken,
+      required String searchString,
+      required int page}) async {
+    var response = await _dio.get("$baseUrl/news",
+        queryParameters: {"page": page, "searchString": searchString},
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
+          },
+        ));
 
     return PaginatedNewsList.fromJson(response.data);
   }
 
-  Future<NewsItem> getNewsItem({
-    required String accessToken,
-    required int id
-  }) async {
-    var response = await _dio.get(
-        "$baseUrl/news/get/$id",
+  Future<NewsItem> getNewsItem(
+      {required String accessToken, required int id}) async {
+    var response = await _dio.get("$baseUrl/news/get/$id",
         options: Options(
           headers: {
             'Accept': 'application/json',
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return NewsItem.fromJson(response.data);
   }
 
-  Future<bool> newsToggleLike({
-    required String accessToken,
-    required int id
-  }) async {
-    try{
+  Future<bool> newsToggleLike(
+      {required String accessToken, required int id}) async {
+    try {
       var response = await _dio.put("$baseUrl/news/toggle-like/$id",
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $accessToken',
-            'Content-Type': 'application/json',
-          },
-        )
-      );
-      if(response.statusCode != 200) return false;
-    }catch(err)
-    {
+          options: Options(
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          ));
+      if (response.statusCode != 200) return false;
+    } catch (err) {
       return false;
     }
 
     return true;
   }
 
-  Future<bool> newsMakeSeen({
-    required String accessToken,
-    required int id
-  }) async {
-    try{
+  Future<bool> newsMakeSeen(
+      {required String accessToken, required int id}) async {
+    try {
       var response = await _dio.put("$baseUrl/news/make/seen/$id",
           options: Options(
             headers: {
@@ -1022,26 +993,20 @@ class NetworkService {
               'Authorization': 'Bearer $accessToken',
               'Content-Type': 'application/json',
             },
-          )
-      );
-      if(response.statusCode != 200) return false;
-    }catch(err)
-    {
+          ));
+      if (response.statusCode != 200) return false;
+    } catch (err) {
       return false;
     }
 
     return true;
   }
 
-  Future<PaginatedCommentariesList> getComments({
-    required String accessToken,
-    required int id,
-    required int page
-  }) async {
-    var response = await _dio.get(
-        "$baseUrl/news/comments/$id",
+  Future<PaginatedCommentariesList> getComments(
+      {required String accessToken, required int id, required int page}) async {
+    var response = await _dio.get("$baseUrl/news/comments/$id",
         queryParameters: {
-          "page" : page,
+          "page": page,
         },
         options: Options(
           headers: {
@@ -1049,21 +1014,16 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return PaginatedCommentariesList.fromJson(response.data);
   }
 
-  Future<List<CommentaryItem>> getCommentAnswers({
-    required String accessToken,
-    required int id,
-    required int page
-  }) async {
-    var response = await _dio.get(
-        "$baseUrl/news/comments/answers/$id",
+  Future<List<CommentaryItem>> getCommentAnswers(
+      {required String accessToken, required int id, required int page}) async {
+    var response = await _dio.get("$baseUrl/news/comments/answers/$id",
         queryParameters: {
-          "page" : page,
+          "page": page,
         },
         options: Options(
           headers: {
@@ -1071,42 +1031,33 @@ class NetworkService {
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return (response.data["data"] as List)
         .map((x) => CommentaryItem.fromJson(x))
         .toList();
   }
 
-  Future<CommentaryItem> addCommentaryToNews({
-    required String accessToken,
-    required int newsId,
-    int? commentId,
-    required String text
-  }) async {
-
-    var response = await _dio.post(
-        "$baseUrl/news/comments/add",
-        data: (commentId == null) ? {
-          "newsId": newsId,
-          "text" : text,
-        } : {
-          "newsId": newsId,
-          "text" : text,
-          "commentId" : commentId
-        },
+  Future<CommentaryItem> addCommentaryToNews(
+      {required String accessToken,
+      required int newsId,
+      int? commentId,
+      required String text}) async {
+    var response = await _dio.post("$baseUrl/news/comments/add",
+        data: (commentId == null)
+            ? {
+                "newsId": newsId,
+                "text": text,
+              }
+            : {"newsId": newsId, "text": text, "commentId": commentId},
         options: Options(
           headers: {
             'Accept': 'application/json',
             'Authorization': 'Bearer $accessToken',
             'Content-Type': 'application/json',
           },
-        )
-    );
+        ));
 
     return CommentaryItem.fromJson(response.data);
   }
-
-
 }

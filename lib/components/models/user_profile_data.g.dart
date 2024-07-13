@@ -26,7 +26,8 @@ UserFilter _$UserFilterFromJson(Map<String, dynamic> json) => UserFilter()
   ..interests =
       (json['interests'] as List<dynamic>?)?.map((e) => e as String).toList()
   ..nationality = json['nationality'] as String?
-  ..observeIslamCanons = json['observeIslamCanons'] as String?;
+  ..observeIslamCanons = json['observeIslamCanons'] as String?
+  ..religionId = json['religionId'] as int?;
 
 Map<String, dynamic> _$UserFilterToJson(UserFilter instance) =>
     <String, dynamic>{
@@ -48,6 +49,7 @@ Map<String, dynamic> _$UserFilterToJson(UserFilter instance) =>
       'interests': instance.interests,
       'nationality': instance.nationality,
       'observeIslamCanons': instance.observeIslamCanons,
+      'religionId': instance.religionId,
     };
 
 UserProfileImage _$UserProfileImageFromJson(Map<String, dynamic> json) =>
@@ -103,13 +105,16 @@ UserProfileData _$UserProfileDataFromJson(Map<String, dynamic> json) =>
           ? null
           : Tariff.fromJson(json['userTariff'] as Map<String, dynamic>),
       isBlocked: json['isBlocked'] as bool? ?? false,
+      emailNotification: json['emailNotification'] == null
+          ? const EmailNotification()
+          : EmailNotification.fromJson(
+              json['emailNotification'] as Map<String, dynamic>),
+      religionId: json['religionId'] as int?,
     )
       ..age = json['age'] as int?
       ..filter = UserFilter.fromJson(json['filter'] as Map<String, dynamic>)
       ..isVisible = json['isVisible'] as bool
-      ..inFavourite = json['inFavourite'] as bool
-      ..emailNotification = EmailNotification.fromJson(
-          json['emailNotification'] as Map<String, dynamic>);
+      ..inFavourite = json['inFavourite'] as bool;
 
 Map<String, dynamic> _$UserProfileDataToJson(UserProfileData instance) =>
     <String, dynamic>{
@@ -143,6 +148,7 @@ Map<String, dynamic> _$UserProfileDataToJson(UserProfileData instance) =>
       'accessToken': instance.accessToken,
       'refreshToken': instance.refreshToken,
       'userTariff': instance.userTariff,
+      'religionId': instance.religionId,
       'filter': instance.filter,
       'isVisible': instance.isVisible,
       'inFavourite': instance.inFavourite,

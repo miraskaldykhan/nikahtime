@@ -50,6 +50,7 @@ class _RegistrationSelectTypeScreenState
                     width: double.infinity,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 00, 0xcf, 0x91)  ,
                           elevation: 0,
                           fixedSize: Size(double.infinity, 56),
                           shape: RoundedRectangleBorder(

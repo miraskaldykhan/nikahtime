@@ -54,7 +54,9 @@ class _EnteringScreenState extends State<EnteringScreen> {
                           width: double.infinity,
                           child:
                           ElevatedButton(
+                            
                               style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
                                 fixedSize: Size(double.infinity, 56),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12.0),

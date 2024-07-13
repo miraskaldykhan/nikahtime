@@ -242,14 +242,13 @@ FutureBuilder displayImageMiniature(String url) {
 
 Future<Widget> getImageFromUrl(String url) async {
   try {
-    // Для отображения локальных файлов устройства
-    // image_picker сохраняет файлы не в TemporaryDirectory
+
     if ((url.contains("http://") || url.contains("https://")) == false) {
       final File imageFile = File(url);
       return Image.file(
         imageFile,
-        cacheHeight: 512,
-        fit: BoxFit.cover
+        cacheHeight: 300,
+        
       );
     }
 
@@ -261,9 +260,10 @@ Future<Widget> getImageFromUrl(String url) async {
 
     if (imageFile.existsSync() && (imageFile.lengthSync() != 0)) {
       return Image.file(imageFile,
-          cacheHeight: 512,
+          cacheHeight: 700,
           //cacheWidth: 256,
-          fit: BoxFit.cover);
+          fit: BoxFit.cover,
+         );
     } else {
       // Image doesn't exist in cache
       imageFile.create(recursive: true).then((value) => http
@@ -273,7 +273,8 @@ Future<Widget> getImageFromUrl(String url) async {
 
       return Image.network(
         url,
-        cacheHeight: 512,
+        
+        cacheHeight: 300,
         //cacheWidth: 256,
         fit: BoxFit.cover,
         loadingBuilder: (BuildContext context, Widget child,

@@ -436,93 +436,92 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
 
   void showFilters(BuildContext contextBloc) {
     showModalBottomSheet(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40), topRight: Radius.circular(40))),
-        context: context,
-        builder: (context) {
-          return Material(
-            child: SafeArea(
-              child: Scaffold(
-                resizeToAvoidBottomInset: true,
-                body: Container(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
+      isScrollControlled: true,
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        verticalDirection: VerticalDirection.up,
+                        children: [
+                          Text(
+                            LocaleKeys.filters_tittle.tr(),
+                            textDirection: TextDirection.ltr,
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.rubik(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 24,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Row(
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                verticalDirection: VerticalDirection.up,
-                                children: [
-                                  Text(
-                                    LocaleKeys.filters_tittle.tr(),
-                                    textDirection: TextDirection.ltr,
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.rubik(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 24,
-                                        color: Colors.black),
-                                  ),
-                                  Row(
+                              InkWell(
+                                onTap: () {
+                                  userFilter = UserFilter();
+                                  contextBloc
+                                      .read<AnketesBloc>()
+                                      .add(const ResetAnketas());
+                                  Navigator.pop(context);
+                                },
+                                child: RichText(
+                                  textAlign: TextAlign.end,
+                                  text: TextSpan(
                                     children: [
-                                      InkWell(
-                                        onTap: () {
-                                          //print("click");
-                                          userFilter = UserFilter();
-                                          contextBloc
-                                              .read<AnketesBloc>()
-                                              .add(const ResetAnketas());
-                                          Navigator.pop(this.context);
-                                        },
-                                        child: RichText(
-                                          textAlign: TextAlign.end,
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: LocaleKeys.filters_reset
-                                                    .tr(),
-                                                style: GoogleFonts.rubik(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 18,
-                                                  color: const Color.fromARGB(
-                                                      255, 00, 207, 145),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                      TextSpan(
+                                        text: LocaleKeys.filters_reset.tr(),
+                                        style: GoogleFonts.rubik(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 18,
+                                          color: const Color.fromARGB(
+                                              255, 0, 207, 145),
                                         ),
                                       ),
-                                      const SizedBox(
-                                        width: 16,
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text(
-                                          LocaleKeys.filters_close,
-                                          textDirection: TextDirection.ltr,
-                                          textAlign: TextAlign.left,
-                                          style: GoogleFonts.rubik(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 18,
-                                            color: const Color.fromARGB(
-                                                255, 00, 207, 145),
-                                          ),
-                                        ).tr(),
-                                      ),
                                     ],
-                                  )
-                                ],
+                                  ),
+                                ),
                               ),
-                              const SizedBox(height: 8),
-                              const _AgeSlide(),
-                              const SizedBox(height: 16),
-                              /*Row(
+                              const SizedBox(width: 16),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  LocaleKeys.filters_close,
+                                  textDirection: TextDirection.ltr,
+                                  textAlign: TextAlign.left,
+                                  style: GoogleFonts.rubik(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18,
+                                    color:
+                                        const Color.fromARGB(255, 0, 207, 145),
+                                  ),
+                                ).tr(),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      const _AgeSlide(),
+                      // const SizedBox(height: 16),
+                      /*Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
@@ -544,94 +543,93 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
                                 ),
                               ],
                             ),*/
-                            ],
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.only(top: 18),
-                              width: double.infinity,
-                              child: MaterialButton(
-                                  height: 56,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    side: const BorderSide(
-                                        width: 1,
-                                        color:
-                                            Color.fromARGB(255, 0, 207, 145)),
-                                  ),
-                                  child: const Text(
-                                    LocaleKeys.filters_complicatedFilter,
-                                    textDirection: TextDirection.ltr,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Color.fromARGB(255, 0, 207, 145),
-                                    ),
-                                  ).tr(),
-                                  onPressed: () {
-                                    widget._userProfileData.filter = userFilter;
-                                    Navigator.push(
-                                      this.context,
-                                      PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) =>
-                                            ExpandedFilter(
-                                                userFilter,
-                                                widget._userProfileData
-                                                        .gender ??
-                                                    "male"),
-                                        transitionDuration:
-                                            const Duration(seconds: 0),
-                                      ),
-                                    ).then((value) {
-                                      Navigator.pop(context);
-                                      contextBloc
-                                          .read<AnketesBloc>()
-                                          .add(LoadFilter(filter: value));
-                                    });
-                                  }),
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(top: 18),
+                        width: double.infinity,
+                        child: MaterialButton(
+                          height: 56,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            side: const BorderSide(
+                              width: 1,
+                              color: Color.fromARGB(255, 0, 207, 145),
                             ),
-                            const SizedBox(height: 8),
-                            SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      fixedSize:
-                                          const Size(double.infinity, 56),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      LocaleKeys.filters_find,
-                                      textDirection: TextDirection.ltr,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color:
-                                            Color.fromARGB(255, 255, 255, 255),
-                                      ),
-                                    ).tr(),
-                                    onPressed: () {
-                                      ///TODO: ENABLE FILTER
-                                      contextBloc
-                                          .read<AnketesBloc>()
-                                          .add(LoadFilter(filter: userFilter));
-                                      Navigator.pop(this.context);
-                                    })),
-                          ],
+                          ),
+                          child: const Text(
+                            LocaleKeys.filters_complicatedFilter,
+                            textDirection: TextDirection.ltr,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Color.fromARGB(255, 0, 207, 145),
+                            ),
+                          ).tr(),
+                          onPressed: () {
+                            widget._userProfileData.filter = userFilter;
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) => ExpandedFilter(
+                                  userFilter,
+                                  widget._userProfileData.gender ?? "male",
+                                ),
+                                transitionDuration: const Duration(seconds: 0),
+                              ),
+                            ).then((value) {
+                              Navigator.pop(context);
+                              contextBloc
+                                  .read<AnketesBloc>()
+                                  .add(LoadFilter(filter: value));
+                            });
+                          },
                         ),
-                      ]),
-                ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 0, 207, 145),
+                            elevation: 0,
+                            fixedSize: const Size(double.infinity, 56),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                          child: const Text(
+                            LocaleKeys.filters_find,
+                            textDirection: TextDirection.ltr,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                          ).tr(),
+                          onPressed: () {
+                            contextBloc
+                                .read<AnketesBloc>()
+                                .add(LoadFilter(filter: userFilter));
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   BoxDecoration iconDecoration() {

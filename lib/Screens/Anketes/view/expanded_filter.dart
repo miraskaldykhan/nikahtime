@@ -1,7 +1,7 @@
 part of '../anketes.dart';
 
 class ExpandedFilter extends StatefulWidget {
-  ExpandedFilter(this._userFilter, this.gender);
+  ExpandedFilter(this._userFilter, this.gender, {super.key});
 
   UserFilter _userFilter;
   String gender;
@@ -42,6 +42,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
         child: Column(
           children: <Widget>[
             //SizedBox(height: 16),
+
             Expanded(
                 child: SingleChildScrollView(
                     child: Column(
@@ -53,21 +54,71 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                   CustomInputDecoration()
                       .subtitleText(LocaleKeys.user_age.tr()),
                   _FilterAgeSlide(18, 99, widget._userFilter),
+                  // religion
+                CustomInputDecoration().subtitleText('religionSubtitle'.tr()),
+         InputDecorator(
+  decoration: CustomInputDecoration().GetDecoration(),
+  child: DropdownButtonHideUnderline(
+    child: DropdownButton<String>(
+  value: userFilter.religionId != null
+      ? userFilter.religionId == 1
+          ? 'Islam'
+          : userFilter.religionId == 2
+              ? 'Christianity'
+              : userFilter.religionId == 3
+                  ? 'Judaism'
+                  : 'Islam'
+      : 'Islam',
+  isDense: true,
+  onChanged: (val) {
+    setState(() {
+      switch (val) {
+        case 'Islam':
+          userFilter.religionId = 1;
+          break;
+        case 'Christianity':
+          userFilter.religionId = 2;
+          break;
+        case 'Judaism':
+          userFilter.religionId = 3;
+          break;
+      }
+    });
+  },
+  items: [
+    DropdownMenuItem<String>(
+      value: 'Islam',
+      child: Text('Islam'.tr()),
+    ),
+    DropdownMenuItem<String>(
+      value: 'Christianity',
+      child: Text('Christianity'.tr()),
+    ),
+    DropdownMenuItem<String>(
+      value: 'Judaism',
+      child: Text('Judaism'.tr()),
+    ),
+  ],
+),
+
+  ),
+),
+
                   CustomInputDecoration()
                       .subtitleText(LocaleKeys.user_country.tr()),
                   DropdownFormField<String>(
                     decoration: CustomInputDecoration().GetDecoration(),
                     onSaved: (dynamic str) {
-                      userFilter.country = "${str}";
+                      userFilter.country = "$str";
                       setState(() {});
                     },
                     onChanged: (dynamic item) {
-                      userFilter.country = "${item}";
+                      userFilter.country = "$item";
                       setState(() {});
                     },
                     displayItemFn: (dynamic str) => Text(
                       translateCountryName(userFilter.country ?? ""),
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                     findFn: (dynamic str) async => getCountry(str),
                     dropdownItemFn: (dynamic item, int position, bool focused,
@@ -75,11 +126,12 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                         ListTile(
                       title: Text(translateCountryName(item)),
                       tileColor: focused
-                          ? Color.fromARGB(20, 0, 0, 0)
+                          ? const Color.fromARGB(20, 0, 0, 0)
                           : Colors.transparent,
                       onTap: onTap,
                     ),
                   ),
+
                   CustomInputDecoration()
                       .subtitleText(LocaleKeys.user_city.tr()),
                   Visibility(
@@ -94,8 +146,8 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                       displayItemFn: (dynamic item) =>
                           //Text("${item["name"]!}, ${item["region"]!}",
                           Text(
-                        "${userFilter.city ??= ""}",
-                        style: TextStyle(fontSize: 16),
+                        userFilter.city ??= "",
+                        style: const TextStyle(fontSize: 16),
                       ),
                       findFn: (dynamic str) async =>
                           NetworkService().DadataRequest(str),
@@ -107,7 +159,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                           item['region'] ?? '',
                         ),
                         tileColor: focused
-                            ? Color.fromARGB(20, 0, 0, 0)
+                            ? const Color.fromARGB(20, 0, 0, 0)
                             : Colors.transparent,
                         onTap: onTap,
                       ),
@@ -136,7 +188,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                     displayItemFn: (dynamic item) => Text(
                       translateNationName(userFilter.nationality ??
                           LocaleKeys.nationalityState_notSelected.tr()),
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                     findFn: (dynamic str) async => getNationalityList(str),
                     dropdownItemFn: (dynamic item, int position, bool focused,
@@ -144,7 +196,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                         ListTile(
                       title: Text(translateNationName(item)),
                       tileColor: focused
-                          ? Color.fromARGB(20, 0, 0, 0)
+                          ? const Color.fromARGB(20, 0, 0, 0)
                           : Colors.transparent,
                       onTap: onTap,
                     ),
@@ -327,7 +379,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                       customizableMultiselectWidgetOptions:
                           CustomizableMultiselectWidgetOptions(
                         chipShape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.red, width: 1),
+                          side: const BorderSide(color: Colors.red, width: 1),
                           borderRadius: BorderRadius.circular(16.0),
                         ),
                         hintText: Text(LocaleKeys.common_selectOptions.tr()),
@@ -340,8 +392,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                       dataSourceList: [
                         DataSource<String>(
                           dataList: GlobalStrings.getBadHabits(),
-                          valueList:
-                              widget._userFilter.badHabits ?? [],
+                          valueList: widget._userFilter.badHabits ?? [],
                           options: DataSourceOptions(
                             valueKey: 'value',
                             labelKey: 'label',
@@ -382,8 +433,10 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                 width: double.infinity,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          const Color.fromARGB(255, 00, 0xcf, 0x91),
                       elevation: 0,
-                      fixedSize: Size(double.infinity, 56),
+                      fixedSize: const Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
@@ -392,7 +445,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                       LocaleKeys.filters_find.tr(),
                       textDirection: TextDirection.ltr,
                       textAlign: TextAlign.left,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
                         color: Color.fromARGB(255, 255, 255, 255),
@@ -409,10 +462,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                         }
                       }
 
-                      Navigator.pop(
-                        context,
-                        widget._userFilter
-                      );
+                      Navigator.pop(context, widget._userFilter);
                     })),
           ],
         ),
@@ -483,13 +533,14 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
 }
 
 class _FilterAgeSlide extends StatefulWidget {
-  late final double minValue;
-  late final double maxValue;
+  final double minValue;
+  final double maxValue;
 
-  _FilterAgeSlide(this.minValue, this.maxValue, this._userFilter);
-  UserFilter _userFilter;
+  const _FilterAgeSlide(this.minValue, this.maxValue, this._userFilter);
+  final UserFilter _userFilter;
   @override
-  State<_FilterAgeSlide> createState() => _FilterAgeSlideState(minValue, maxValue);
+  State<_FilterAgeSlide> createState() =>
+      _FilterAgeSlideState(minValue, maxValue);
 }
 
 class _FilterAgeSlideState extends State<_FilterAgeSlide> {
@@ -638,7 +689,7 @@ class _FilterAgeSlideState extends State<_FilterAgeSlide> {
                         borderRadius: BorderRadius.all(Radius.circular(4)),
                       ),
                     ),
-                    onChanged: (value){
+                    onChanged: (value) {
                       userFilter.minAge = double.parse(value);
                     },
                     controller: startController,
@@ -674,7 +725,7 @@ class _FilterAgeSlideState extends State<_FilterAgeSlide> {
                     controller: endController,
                     keyboardType: const TextInputType.numberWithOptions(
                         signed: false, decimal: false),
-                    onChanged: (value){
+                    onChanged: (value) {
                       userFilter.maxAge = double.parse(value);
                     },
                     onSubmitted: (text) {
@@ -719,7 +770,7 @@ class _FilterAgeSlideState extends State<_FilterAgeSlide> {
 
   Widget AgeSlider() {
     return RangeSlider(
-      activeColor: Color.fromARGB(255, 00, 0xcf, 0x91),
+      activeColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
       values: RangeValues(_startValue, _endValue),
       min: minValue,
       max: maxValue,

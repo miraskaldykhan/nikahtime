@@ -281,7 +281,7 @@ class _SingleUserState extends State<SingleUser> {
                       borderRadius:
                       BorderRadius.circular(12.0),
                       child: displayPhotoOrVideo(context,
-                          item.images![0].preview.toString(),
+                          item.images![0].main.toString(),
                           items: item.images!.map((e) => e.main).toList().cast<String>(),
                           initPage: 0,
                           photoOwnerId: item.id),

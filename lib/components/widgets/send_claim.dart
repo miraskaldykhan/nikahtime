@@ -115,7 +115,7 @@ class SendClaim{
               Visibility(
                   visible: needFillField,
                   child: Padding(
-                    padding: EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       LocaleKeys.common_errorHintText.tr(),
                       style: GoogleFonts.rubik(

@@ -28,7 +28,8 @@ class UserFilter {
   List<String>? interests;
   String? nationality = "";
   String? observeIslamCanons = "";
-
+  String? religiousAffiliation = "";
+  int? religionId;
   UserFilter();
 
   bool isEmpty() {
@@ -44,29 +45,29 @@ class UserFilter {
         observeIslamCanons == "" &&
         haveChildren == null &&
         badHabits == null &&
-        interests == null) return true;
+        interests == null &&
+        religionId == null) return true;
 
     return false;
   }
 
-  factory UserFilter.fromJson(Map<String, dynamic> json) => _$UserFilterFromJson(json);
+  factory UserFilter.fromJson(Map<String, dynamic> json) =>
+      _$UserFilterFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserFilterToJson(this);
-
 }
 
 @JsonSerializable()
-class UserProfileImage
-{
+class UserProfileImage {
   final String? main;
   final String? preview;
 
   UserProfileImage({required this.main, required this.preview});
 
-  factory UserProfileImage.fromJson(Map<String, dynamic> json) => _$UserProfileImageFromJson(json);
+  factory UserProfileImage.fromJson(Map<String, dynamic> json) =>
+      _$UserProfileImageFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserProfileImageToJson(this);
-
 }
 
 @JsonSerializable()
@@ -103,7 +104,7 @@ class UserProfileData {
   String? refreshToken;
 
   Tariff? userTariff;
-
+  int? religionId;
   UserFilter filter = UserFilter();
 
   bool isVisible = false;
@@ -148,24 +149,26 @@ class UserProfileData {
     lastName = json["lastName"];
     nationality = json["nationality"];
     observeIslamCanons = json["observeCanons"];
-    userTariff = (json["tariff"] == null) ? null : Tariff(
-        title: (json["tariff"] as Map<dynamic, dynamic>)["title"],
-        expiredAt: (json["tariff"] as Map<dynamic, dynamic> )["expiredAt"]
-    );
+    userTariff = (json["tariff"] == null)
+        ? null
+        : Tariff(
+            title: (json["tariff"] as Map<dynamic, dynamic>)["title"],
+            expiredAt: (json["tariff"] as Map<dynamic, dynamic>)["expiredAt"]);
 
     List<dynamic> list = json["images"];
-    if(list.isNotEmpty)
-    {
+    if (list.isNotEmpty) {
       images = [];
-      for(final item in list)
-      {
-        images!.add(UserProfileImage(main: item["main"], preview: item["preview"]));
+      for (final item in list) {
+        images!.add(
+            UserProfileImage(main: item["main"], preview: item["preview"]));
       }
     }
 
     inFavourite = json["inFavourite"] ?? false;
     isBlocked = json["isBlocked"];
-    emailNotification = EmailNotification.fromJson(json["emailNotification"] ?? <String, dynamic>{});
+    emailNotification = EmailNotification.fromJson(
+        json["emailNotification"] ?? <String, dynamic>{});
+    religionId = json["religionId"];
   }
 
   Map<String, dynamic> dataToJSON() {
@@ -174,7 +177,7 @@ class UserProfileData {
         try {
           String str = interests![i].toLowerCase();
           interests![i] = standartInterestList[str]!;
-        } catch (err) {};
+        } catch (err) {}
       }
     }
 
@@ -220,6 +223,7 @@ class UserProfileData {
       "nationality": nationality,
       "observeCanons": observeIslamCanons,
       "emailNotification": emailNotification.toJson(),
+      "religionId": religionId,
     };
     return body;
   }
@@ -268,7 +272,7 @@ class UserProfileData {
   int getAdditionalPhotosLength() {
     int length = 0;
     if (images != null) {
-      if (images!.length > 0) {
+      if (images!.isNotEmpty) {
         length = images!.length - 1;
       }
     }
@@ -307,12 +311,12 @@ class UserProfileData {
     this.userTariff,
     this.isBlocked = false,
     this.emailNotification = const EmailNotification(),
+    this.religionId,
   });
 }
 
 @JsonSerializable()
-class Tariff
-{
+class Tariff {
   final String? title;
   final String? expiredAt;
 

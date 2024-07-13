@@ -483,10 +483,10 @@ class _UserCardExpandedState extends State<UserCardExpanded> {
                         decoration: const BoxDecoration(
                           shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.all(Radius.circular(12)),
-                          color: Color.fromARGB(255, 236, 235, 235),
+                          color:  Color.fromARGB(255, 236, 235, 235),
                         ),
-                        height: 140,
-                        width: 100,
+                          height: 140,
+                          width: 100,
                         child: (widget.item.images == null ||
                                 widget.item.images!.isEmpty)
                             ? const Icon(

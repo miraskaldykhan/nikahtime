@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Payment/payment.dart';
 import 'package:untitled/Screens/Profile/bloc/profile_bloc.dart';
 import 'package:untitled/Screens/Employeers/employee_information.dart';
+import 'package:untitled/Screens/Profile/contacts_page.dart';
 import 'package:untitled/Screens/Profile/web_view_page.dart';
 import 'package:untitled/Screens/welcome.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
@@ -156,16 +157,20 @@ class _ProfileSettingsState extends State<ProfileSettings> {
     } else {
       switch (userTariff.title!) {
         case "1 месяц":
-          return LocaleKeys.profileScreen_settings_subscription_type_1_month.tr();
+          return LocaleKeys.profileScreen_settings_subscription_type_1_month
+              .tr();
         case "3 месяца":
-          return LocaleKeys.profileScreen_settings_subscription_type_3_months.tr();
+          return LocaleKeys.profileScreen_settings_subscription_type_3_months
+              .tr();
         case "6 месяцев":
-          return LocaleKeys.profileScreen_settings_subscription_type_6_months.tr();
+          return LocaleKeys.profileScreen_settings_subscription_type_6_months
+              .tr();
         case "Тестовый период":
           return LocaleKeys.profileScreen_settings_subscription_type_trial.tr();
         default:
           if (userTariff.expiredAt == null) {
-            return LocaleKeys.profileScreen_settings_subscription_type_unlimited.tr();
+            return LocaleKeys.profileScreen_settings_subscription_type_unlimited
+                .tr();
           } else {
             return userTariff.title!;
           }
@@ -243,8 +248,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color:
-                                  const Color.fromARGB(255, 00, 207, 145),
+                              color: const Color.fromARGB(255, 00, 207, 145),
                             ),
                           ),
                         ],
@@ -286,13 +290,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: LocaleKeys.profileScreen_settings_privacy
-                                .tr(),
+                            text:
+                                LocaleKeys.profileScreen_settings_privacy.tr(),
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color:
-                                  const Color.fromARGB(255, 00, 207, 145),
+                              color: const Color.fromARGB(255, 00, 207, 145),
                             ),
                           ),
                         ],
@@ -319,14 +322,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: LocaleKeys
-                                .profileScreen_settings_agreement
+                            text: LocaleKeys.profileScreen_settings_agreement
                                 .tr(),
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color:
-                                  const Color.fromARGB(255, 00, 207, 145),
+                              color: const Color.fromARGB(255, 00, 207, 145),
                             ),
                           ),
                         ],
@@ -353,13 +354,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: LocaleKeys.profileScreen_settings_useTerms
-                                .tr(),
+                            text:
+                                LocaleKeys.profileScreen_settings_useTerms.tr(),
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color:
-                                  const Color.fromARGB(255, 00, 207, 145),
+                              color: const Color.fromARGB(255, 00, 207, 145),
                             ),
                           ),
                         ],
@@ -386,14 +386,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: LocaleKeys
-                                .profileScreen_settings_paymentRules
+                            text: LocaleKeys.profileScreen_settings_paymentRules
                                 .tr(),
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color:
-                                  const Color.fromARGB(255, 00, 207, 145),
+                              color: const Color.fromARGB(255, 00, 207, 145),
                             ),
                           ),
                         ],
@@ -420,14 +418,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: LocaleKeys
-                                .profileScreen_settings_refundRules
+                            text: LocaleKeys.profileScreen_settings_refundRules
                                 .tr(),
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color:
-                                  const Color.fromARGB(255, 00, 207, 145),
+                              color: const Color.fromARGB(255, 00, 207, 145),
                             ),
                           ),
                         ],
@@ -442,8 +438,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       //_launchInBrowser("https://www.nikahtime.ru/refund/policy");
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => CustomWebView(
-                                initialUrl:
-                                    "https://www.nikahtime.ru/tariffs",
+                                initialUrl: "https://www.nikahtime.ru/tariffs",
                                 header: LocaleKeys
                                     .profileScreen_settings_tariffs
                                     .tr(),
@@ -454,13 +449,12 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: LocaleKeys.profileScreen_settings_tariffs
-                                .tr(),
+                            text:
+                                LocaleKeys.profileScreen_settings_tariffs.tr(),
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color:
-                                  const Color.fromARGB(255, 00, 207, 145),
+                              color: const Color.fromARGB(255, 00, 207, 145),
                             ),
                           ),
                         ],
@@ -516,10 +510,9 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                               title: Text(LocaleKeys
                                   .profileScreen_settings_error_header
                                   .tr()),
-                              content: Text(LocaleKeys
-                                      .profileScreen_settings_mail
-                                      .tr() +
-                                  error.toString())),
+                              content: Text(
+                                  LocaleKeys.profileScreen_settings_mail.tr() +
+                                      error.toString())),
                         );
                       }
                     },
@@ -534,8 +527,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              color:
-                                  const Color.fromARGB(255, 00, 207, 145),
+                              color: const Color.fromARGB(255, 00, 207, 145),
                             ),
                           ),
                         ],
@@ -562,8 +554,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        LocaleKeys.profileScreen_settings_language_text
-                            .tr(),
+                        LocaleKeys.profileScreen_settings_language_text.tr(),
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.left,
                         style: GoogleFonts.rubik(
@@ -595,6 +586,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   ),
                   //==========================
                   // Удаление аккаунта
+
                   InkWell(
                     splashColor: Colors.transparent,
                     onTap: () async {
@@ -607,8 +599,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         children: [
                           const Icon(
                             Icons.delete_outline,
-                            color:
-                                Color.fromARGB(255, 0xF4, 0x43, 0x36),
+                            color: Color.fromARGB(255, 0xF4, 0x43, 0x36),
                           ),
                           const SizedBox(
                             width: 4,
@@ -621,9 +612,41 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
-                              color: const Color.fromARGB(
-                                  255, 0xF4, 0x43, 0x36),
+                              color:
+                                  const Color.fromARGB(255, 0xF4, 0x43, 0x36),
                             ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    splashColor: Colors.transparent,
+                    onTap: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (buildContext) => const ContactsPage()),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.contacts_outlined,
+                              color: Colors.blue),
+                          const SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            'contacts'.tr(),
+                            textDirection: TextDirection.ltr,
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.rubik(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                                color: Colors.blue),
                           )
                         ],
                       ),
@@ -637,11 +660,10 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   InkWell(
                     splashColor: Colors.transparent,
                     onTap: () async {
-                      await NetworkService().SendLogoutGet((context
-                              .read<ProfileBloc>()
-                              .state as ProfileInitial)
-                          .userProfileData!
-                          .accessToken!);
+                      await NetworkService().SendLogoutGet(
+                          (context.read<ProfileBloc>().state as ProfileInitial)
+                              .userProfileData!
+                              .accessToken!);
                       SharedPreferences prefs =
                           await SharedPreferences.getInstance();
                       prefs.setString("token", "empty");
@@ -654,9 +676,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         await messaging.deleteToken();
                       } catch (_) {}
 
-                      context
-                          .read<ProfileBloc>()
-                          .add(const ClearProfileInfo());
+                      context.read<ProfileBloc>().add(const ClearProfileInfo());
 
                       Navigator.pushAndRemoveUntil(
                         context,

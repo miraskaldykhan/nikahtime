@@ -5,9 +5,9 @@
         "loading": "Wait, user profiles are being loaded",
         "notFound": "Unfortunately, no one is here yet",
         "searchNotFound": "Unfortunately, we can't find any user",
-        "searchHint" : "Input search value here",
-        "searchMainHint" : "To search for users, you must enter the first or last name in the search bar",
-        "match":  {
+        "searchHint": "Input search value here",
+        "searchMainHint": "To search for users, you must enter the first or last name in the search bar",
+        "match": {
             "male": "{firstName} likes you too!\nYou can be the first to write.",
             "female": "{firstName} likes you too!\nYou can be the first to write.",
             "": "{firstName} likes you too!\nYou can be the first to write."
@@ -26,7 +26,7 @@
         "lastName": "Last Name",
         "age": "Age",
         "yearsCount": {
-            "zero":"{} y.o.",
+            "zero": "{} y.o.",
             "one": "{} y.o.",
             "two": "{} y.o.",
             "few": "{} y.o.",
@@ -144,13 +144,13 @@
         "paymentButton": "Subscribe",
         "paymentDone": "Subscription is issued",
         "daysCount": {
-            "zero":"{} days",
+            "zero": "{} days",
             "one": "{} day",
             "many": "{} days",
             "other": "{} days"
         },
         "monthsCount": {
-            "zero":"{} mos",
+            "zero": "{} mos",
             "one": "{} mo",
             "many": "{} mos",
             "other": "{} mos"
@@ -200,7 +200,7 @@
         "getPhoto": "Take photo from Gallery",
         "takeVide": "Take video from Camera",
         "getVideo": "Take video from Gallery",
-        "delete" : "Delete",
+        "delete": "Delete",
         "errorHintText": "This field is required",
         "phoneNumberHint": "Input country name or code",
         "selectOptions": "Select options",
@@ -238,22 +238,26 @@
         "notSelected": "Not selected"
     },
     "familyState": {
-        "notMarried"  : "Single",
-        "married"     : "Married",
-        "divorced"    : "Divorced"
+        "notMarried": "Single",
+        "married": "Married",
+        "divorced": "Divorced"
     },
-
     "observantOfTheCanonsFemaleState": {
-        "observingIslamCanons"  : "Islamic Muslim woman",
-        "nonObservingIslamCanons"     : "I observe religious rites \non holidays"
+        "observingIslamCanons": "Islamic Muslim woman",
+        "nonObservingIslamCanons": "I observe religious rites \non holidays"
     },
     "observantOfTheCanonsMaleState": {
-        "observingIslamCanons"  : "Islamic Muslim man",
-        "nonObservingIslamCanons"     : "I observe religious rites \non holidays"
+        "observingIslamCanons": "Islamic Muslim man",
+        "nonObservingIslamCanons": "I observe religious rites \non holidays"
     },
+    "Islam": "Islam",
+    "Christianity": "Christianity",
+    "Judaism": "Judaism",
+    "religionSubtitle": "Religious  affiliation",
+    "contacts": "Contacts",
     "faithState": {
-        "observantMuslim" : "Ready to move",
-        "nonObservantMuslim" : "Not ready to move",
+        "observantMuslim": "Ready to move",
+        "nonObservantMuslim": "Not ready to move",
         "notSelected": "Not selected"
     },
     "childrenState": {
@@ -261,42 +265,42 @@
         "no": "No children"
     },
     "badHabbits": {
-        "smoking"   : "Smoking",
-        "alcohol"   : "Alcohol",
-        "gambling"  : "Gambling addiction",
-        "other_h"     : "Other",
+        "smoking": "Smoking",
+        "alcohol": "Alcohol",
+        "gambling": "Gambling addiction",
+        "other_h": "Other",
         "missing": "Missing"
     },
     "interestTag": {
-        "walks":"Walks",
-        "sport":"Sport",
-        "cinema":"Cinema",
-        "yoga":"Yoga",
-        "food":"Food",
-        "tourism":"Tourism",
-        "leisure":"Leisure",
-        "swimming":"Swimming",
-        "crossFit":"CrossFit",
-        "bicycle":"Bicycle",
-        "animals":"Animals",
-        "comedy":"Comedy",
-        "love":"Love"
+        "walks": "Walks",
+        "sport": "Sport",
+        "cinema": "Cinema",
+        "yoga": "Yoga",
+        "food": "Food",
+        "tourism": "Tourism",
+        "leisure": "Leisure",
+        "swimming": "Swimming",
+        "crossFit": "CrossFit",
+        "bicycle": "Bicycle",
+        "animals": "Animals",
+        "comedy": "Comedy",
+        "love": "Love"
     },
     "claim": {
         "toReport": "Report",
         "claimReason": {
-            "propaganda":"Hate propaganda and inciting hatred",
-            "misleading":"Misleading",
-            "promo":"Promotional materials",
-            "bulling":"Offensive language",
-            "adults":"Adult content",
-            "spam":"Spam",
-            "finance":"Financial services"
+            "propaganda": "Hate propaganda and inciting hatred",
+            "misleading": "Misleading",
+            "promo": "Promotional materials",
+            "bulling": "Offensive language",
+            "adults": "Adult content",
+            "spam": "Spam",
+            "finance": "Financial services"
         },
         "description": "We will review this report within 24 hours and, if a violation is detected, we will take the necessary measures to stop it.",
-        "send" : "Send",
-        "reason" : "Select a reason for the complaint",
-        "comment" : "Comment"
+        "send": "Send",
+        "reason": "Select a reason for the complaint",
+        "comment": "Comment"
     },
     "chat": {
         "cancelButtonText": "OK",
@@ -348,7 +352,7 @@
     "welcome_screen": {
         "createAcc": "Create account",
         "ageConfirmed": {
-            "question":"Are you 18?",
+            "question": "Are you 18?",
             "bad": "I'm not 18 yet",
             "good": "I'm 18",
             "action": "Verify Your age to continue"
@@ -373,31 +377,31 @@
     "registration": {
         "header": "Registration",
         "appendix": {
-            "text" : "By registering You agree with\n",
-            "item1" : "Privacy Policy",
-            "and" : " and ",
+            "text": "By registering You agree with\n",
+            "item1": "Privacy Policy",
+            "and": " and ",
             "item2": "Terms of Use"
         },
         "sendCode": "Send Code",
         "type": {
             "message": "or register by",
             "phone": {
-                "by":"Phone number",
+                "by": "Phone number",
                 "header": "My number",
                 "text": "Please enter your current phone number. We will send you a 6-digit code to verify your account. ",
                 "hintPass": "Create password",
                 "hintSecPass": "Repeat password",
-                "error": "A user with this phone number already exists. If it's you, go through the password recovery procedure" ,
+                "error": "A user with this phone number already exists. If it's you, go through the password recovery procedure",
                 "nextScreenMessage": "specified number"
             },
             "email": {
-                "by":"E-mail address",
+                "by": "E-mail address",
                 "header": "My E-mail",
                 "text": "Please enter your current E-mail address. We will send you a 6-digit code to verify your account. ",
                 "hintMail": "Enter E-mail",
                 "hintPass": "Create password",
                 "hintSecPass": "Repeat password",
-                "error": "A user with this E-mail address already exists. If it's you, go through the password recovery procedure" ,
+                "error": "A user with this E-mail address already exists. If it's you, go through the password recovery procedure",
                 "nextScreenMessage": "specified E-mail address"
             }
         },
@@ -408,8 +412,8 @@
             "sendAgain": "Send PIN-code again"
         },
         "error": {
-            "msg" : "Check your input and try again",
-            "diffPass" : "The entered passwords do not match.",
+            "msg": "Check your input and try again",
+            "diffPass": "The entered passwords do not match.",
             "badPass": "Password must be at least 8 characters long",
             "badPIN": "Incorrect code entered",
             "maxLength": "Reached max length (less 25 symbols)"
@@ -492,7 +496,6 @@
             "header": "Password recovery"
         }
     },
-
     "appUpdater": {
         "title": "Update NikahTime?",
         "description": "A new version of NikahTime is available!",
@@ -500,14 +503,13 @@
         "cancelAction": "Not update",
         "updateAction": "Update"
     },
-
-    "smoking"   : "Smoking",
-    "alcohol"   : "Alcohol",
-    "gambling"  : "Gambling addiction",
+    "smoking": "Smoking",
+    "alcohol": "Alcohol",
+    "gambling": "Gambling addiction",
     "other": "other",
-    "other_h"     : "Other",
+    "other_h": "Other",
     "missing": "Missing",
-    "needPhotoError" : "You must add at least 1 photo",
+    "needPhotoError": "You must add at least 1 photo",
     "news": {
         "header": "News",
         "read": "Continue reading",

@@ -41,34 +41,28 @@ class _FavoriteMainPageScreenState extends State<FavoriteMainPageScreen> {
   int lastBuildItemIndex = 0;
 
   @override
-  void dispose()
-  {
+  void dispose() {
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();
     super.dispose();
   }
 
-  void _onScroll()
-  {
-    if(anketas.length > 10){
-      if(lastBuildItemIndex + 2 >= anketas.length)
-      {
+  void _onScroll() {
+    if (anketas.length > 10) {
+      if (lastBuildItemIndex + 2 >= anketas.length) {
         sendAnketesRequest();
         lastBuildItemIndex = 0;
       }
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     ProfileInitial state = context.read<ProfileBloc>().state as ProfileInitial;
     bool needPay = state.userProfileData?.userTariff == null;
 
-    if(needPay)
-    {
+    if (needPay) {
       return Center(child: paymentStub(context));
     }
 
@@ -95,33 +89,32 @@ class _FavoriteMainPageScreenState extends State<FavoriteMainPageScreen> {
           SizedBox(
             width: double.infinity,
             child: MaterialButton(
-              height: 40,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
-                side: const BorderSide(
-                    width: 1, color: Color.fromARGB(255, 0, 207, 145)),
-              ),
-              child: Text(
-                LocaleKeys.common_vizited_q.tr(),
-                textDirection: TextDirection.ltr,
-                textAlign: TextAlign.left,
-                style: GoogleFonts.rubik(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  color: const Color.fromARGB(255, 0, 207, 145),
+                height: 40,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                  side: const BorderSide(
+                      width: 1, color: Color.fromARGB(255, 0, 207, 145)),
                 ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (_, __, ___) =>
-                        PeopleWhoVizitedMeScreen(widget.userProfileData),
-                    transitionDuration: const Duration(seconds: 0),
+                child: Text(
+                  LocaleKeys.common_vizited_q.tr(),
+                  textDirection: TextDirection.ltr,
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.rubik(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: const Color.fromARGB(255, 0, 207, 145),
                   ),
-                );
-              }
-            ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (_, __, ___) =>
+                          PeopleWhoVizitedMeScreen(widget.userProfileData),
+                      transitionDuration: const Duration(seconds: 0),
+                    ),
+                  );
+                }),
           ),
           const SizedBox(
             height: 12,
@@ -169,8 +162,7 @@ class _FavoriteMainPageScreenState extends State<FavoriteMainPageScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      SingleUser(anketa: item),
+                  builder: (context) => SingleUser(anketa: item),
                 )).then((_) => {setState(() {})});
           },
           child: Container(
@@ -182,7 +174,8 @@ class _FavoriteMainPageScreenState extends State<FavoriteMainPageScreen> {
                 color: Color.fromARGB(255, 236, 235, 235),
               ),
               child: (item.images == null || item.images!.isEmpty)
-                  ? const Icon(Icons.photo_camera, color: Color.fromRGBO(230, 230, 230, 1), size: 60)
+                  ? const Icon(Icons.photo_camera,
+                      color: Color.fromRGBO(230, 230, 230, 1), size: 60)
                   : ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image.network(item.images![0].preview.toString(),
@@ -263,7 +256,10 @@ class _FavoriteMainPageScreenState extends State<FavoriteMainPageScreen> {
                           minWidth: 80,
                           padding: const EdgeInsets.all(0),
                           onPressed: () {
-                            CreateChat(context, widget.userProfileData.gender ?? "", widget.userProfileData.id ?? 0)
+                            CreateChat(
+                                    context,
+                                    widget.userProfileData.gender ?? "",
+                                    widget.userProfileData.id ?? 0)
                                 .createChatWithUser(item.id!);
                           },
                           child: const Icon(Icons.chat_rounded,
@@ -342,20 +338,16 @@ class _FavoriteMainPageScreenState extends State<FavoriteMainPageScreen> {
   }
 
   sendAnketesRequest() async {
-    try
-    {
+    try {
       var response = await NetworkService().getFavoriteUsers(
-        accessToken: widget.userProfileData.accessToken!,
-        page: page
-      );
+          accessToken: widget.userProfileData.accessToken!, page: page);
       page++;
       anketas.addAll(response.users as Iterable<UserProfileData>);
 
       setState(() {
         isLoadingComplete = true;
       });
-
-    } catch(e){
+    } catch (e) {
       return;
     }
   }
