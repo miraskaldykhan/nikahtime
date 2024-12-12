@@ -74,7 +74,7 @@ class _PaymentViewState extends State<PaymentView> {
       LocaleKeys.paymentScreen_tittle.tr(),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
-      style: GoogleFonts.rubik(
+      style: TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 24,
         color: const Color.fromARGB(255, 33, 33, 33),
@@ -136,7 +136,7 @@ class _PaymentViewState extends State<PaymentView> {
             LocaleKeys.entering_recoveryBy_error.tr(),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center,
-            style: GoogleFonts.rubik(
+            style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16,
               color: const Color.fromRGBO(0, 0xcf, 0x91, 1),
@@ -217,7 +217,7 @@ class _PaymentViewState extends State<PaymentView> {
         borderRadius:
         BorderRadius.circular(12.0),
       ),
-      color: const Color.fromARGB(255, 0, 207, 145),
+      color:  Theme.of(context).colorScheme.secondary,
       onPressed: () async {
         if (state.pageState == PageState.preBuyWaiting) {
           return;
@@ -242,7 +242,7 @@ class _PaymentViewState extends State<PaymentView> {
         LocaleKeys.paymentScreen_continue.tr(),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.left,
-        style: GoogleFonts.rubik(
+        style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
             color: Colors.white),
@@ -258,7 +258,7 @@ class _PaymentViewState extends State<PaymentView> {
           borderRadius:
           BorderRadius.circular(12.0),
         ),
-        color: const Color.fromARGB(255, 0, 207, 145),
+        color:  Theme.of(context).colorScheme.secondary,
         onPressed: () async {
           // context.read<PaymentBloc>().add(
           //     BuyTariffEvent(language: context.locale.languageCode)
@@ -269,7 +269,7 @@ class _PaymentViewState extends State<PaymentView> {
           LocaleKeys.paymentScreen_paymentButton.tr(),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.left,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16,
               color: Colors.white),
@@ -281,10 +281,10 @@ class _PaymentViewState extends State<PaymentView> {
           LocaleKeys.paymentScreen_paymentDone.tr(),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.left,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
-            color: const Color.fromARGB(255, 0, 207, 145),
+            color:  Theme.of(context).colorScheme.secondary,
           ),
         ),
       );
@@ -366,10 +366,10 @@ class _PaymentViewState extends State<PaymentView> {
                       visible: selectedTariff.isPromotion,
                       child: Text(
                         LocaleKeys.paymentScreen_promo.tr(),
-                        style: const TextStyle(
+                        style:  TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 32,
-                          color: const Color.fromARGB(255, 0, 207, 145),
+                          color:  Theme.of(context).colorScheme.secondary,
                         ),
                       ),
                     ),
@@ -391,10 +391,10 @@ class _PaymentViewState extends State<PaymentView> {
                       children: [
                         Text(
                           selectedTariff.displayedPrice,
-                          style: const TextStyle(
+                          style:  TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 32,
-                            color: const Color.fromARGB(255, 0, 207, 145),
+                            color:  Theme.of(context).colorScheme.secondary,
                           ),
                         ),
                         Visibility(
@@ -571,7 +571,7 @@ class _PaymentViewState extends State<PaymentView> {
                             LocaleKeys.paymentScreen_paymentMethod.tr(),
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 20,
                               color: Colors.black,
@@ -646,16 +646,16 @@ class _PaymentViewState extends State<PaymentView> {
                                   children: [
                                     Row(
                                       children: [
-                                        const Icon(
+                                         Icon(
                                           Icons.credit_card_rounded,
-                                          color: Color.fromARGB(255, 0, 207, 145),
+                                          color: Theme.of(context).colorScheme.secondary,
                                         ),
                                         const SizedBox(width: 4,),
                                         Text(
                                           LocaleKeys.paymentScreen_paymentMethodCard.tr(),
                                           textDirection: TextDirection.ltr,
                                           textAlign: TextAlign.left,
-                                          style: GoogleFonts.rubik(
+                                          style: TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontSize: 16,
                                             color: Colors.black,
@@ -685,7 +685,7 @@ class _PaymentViewState extends State<PaymentView> {
                                   LocaleKeys.paymentScreen_emailForReceiptTitle.tr(),
                                   textDirection: TextDirection.ltr,
                                   textAlign: TextAlign.left,
-                                  style: GoogleFonts.rubik(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12,
                                     color: const Color.fromARGB(255,0,0,0),
@@ -710,9 +710,9 @@ class _PaymentViewState extends State<PaymentView> {
                                       borderRadius: BorderRadius.all(Radius.circular(10)),
                                     ),
                                     hintText: LocaleKeys.entering_recoveryBy_email_hint.tr(),
-                                    focusedBorder: const OutlineInputBorder(
+                                    focusedBorder:  OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Color.fromARGB(255, 0, 207, 145),
+                                        color: Theme.of(context).colorScheme.secondary,
                                         width: 1,
                                       ),
                                       borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -724,7 +724,7 @@ class _PaymentViewState extends State<PaymentView> {
                                     visible: (state).emailForReceiptError != null,
                                     child: Text(
                                       (state).emailForReceiptError ?? "",
-                                      style: GoogleFonts.rubik(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12,
                                         color: Colors.red,
@@ -836,7 +836,7 @@ class _PaymentViewState extends State<PaymentView> {
                     LocaleKeys.paymentScreen_error_title.tr(),
                     textDirection: TextDirection.ltr,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 20,
                       color: Colors.black,
@@ -847,7 +847,7 @@ class _PaymentViewState extends State<PaymentView> {
                     errorDetail,
                     textDirection: TextDirection.ltr,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
                       color: const Color.fromARGB(
@@ -864,7 +864,7 @@ class _PaymentViewState extends State<PaymentView> {
                       LocaleKeys.paymentScreen_error_closeButton.tr(),
                       textDirection: TextDirection.ltr,
                       textAlign: TextAlign.left,
-                      style: GoogleFonts.rubik(
+                      style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
                         color: const Color.fromARGB(

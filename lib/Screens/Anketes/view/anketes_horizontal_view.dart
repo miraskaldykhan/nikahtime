@@ -19,7 +19,7 @@ class FeedHorizontalListView extends StatefulWidget {
 }
 
 class _FeedHorizontalListViewState extends State<FeedHorizontalListView> {
-  CarouselController buttonCarouselController = CarouselController();
+  car.CarouselController buttonCarouselController = car.CarouselController();
   final _scrollController = ScrollController();
   int lastGuestId = -1;
 
@@ -53,10 +53,10 @@ class _FeedHorizontalListViewState extends State<FeedHorizontalListView> {
 
     return Column(
       children: [
-        CarouselSlider(
+        car.CarouselSlider(
           items: widget.anketas.map((item) => userCardExpanded(item)).toList(),
           carouselController: buttonCarouselController,
-          options: CarouselOptions(
+          options: car.CarouselOptions(
               viewportFraction: 1,
               height: MediaQuery.of(context).size.height -
                   255 -
@@ -284,7 +284,7 @@ class _FeedHorizontalListViewState extends State<FeedHorizontalListView> {
                                       ? LocaleKeys.usersScreen_selectedForYou
                                           .tr()
                                       : "",
-                                  style: GoogleFonts.rubik(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 14,
                                     //color: const Color.fromARGB(255,33,33,33),
@@ -314,7 +314,7 @@ class _FeedHorizontalListViewState extends State<FeedHorizontalListView> {
                                 : null,
                             label: Text(
                               (item.isOnline!) ? LocaleKeys.common_online.tr() : LocaleKeys.common_offline.tr(),
-                              style: GoogleFonts.rubik(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                                 //color: const Color.fromARGB(255,33,33,33),
@@ -334,8 +334,8 @@ class _FeedHorizontalListViewState extends State<FeedHorizontalListView> {
                                 bottomRight: Radius.circular(12),
                               ), //BorderRadius.all(Radius.circular(12)),
                               child: Container(
-                                width: double
-                                    .infinity, //MediaQuery.of(context).size.width / 1.5,
+                                width: double.infinity,
+                                //MediaQuery.of(context).size.width / 1.5,
                                 padding: const EdgeInsets.all(16),
                                 color: Colors.black45,
                                 child: BackdropFilter(
@@ -351,7 +351,7 @@ class _FeedHorizontalListViewState extends State<FeedHorizontalListView> {
                                     children: [
                                       Text(
                                         "${item.firstName ?? ""} ${item.lastName ?? ""}",
-                                        style: GoogleFonts.rubik(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 24,
                                           color: Colors.white,
@@ -360,7 +360,7 @@ class _FeedHorizontalListViewState extends State<FeedHorizontalListView> {
                                       ),
                                       Text(
                                         '${localized.plural(LocaleKeys.user_yearsCount, item.age ?? 0)}, ${item.city ??= ""}',
-                                        style: GoogleFonts.rubik(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 16,
                                           color: Colors.white,
@@ -604,7 +604,7 @@ class _FeedHorizontalListViewState extends State<FeedHorizontalListView> {
         selected: false,
         label: Text(
           showTagLabelCurrentLocale(items[i]),
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w400,
             fontSize: 16,
           ),

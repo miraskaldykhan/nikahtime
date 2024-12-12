@@ -58,10 +58,10 @@ class _EnteringRecoveryPasswordByPhoneNumberScreenState extends State<EnteringRe
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                               ),
                               hintText: LocaleKeys.entering_recoveryBy_number_hint.tr(),
-                              focusedBorder: const OutlineInputBorder(
+                              focusedBorder:  OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 0, 207, 145),
-                                  width: 1,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  width: 2,
                                 ),
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                               ),
@@ -71,7 +71,7 @@ class _EnteringRecoveryPasswordByPhoneNumberScreenState extends State<EnteringRe
                             visible: _isError,
                               child: Text(
                                 errorMessage,
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 12,
                                   color: Colors.red,
@@ -100,8 +100,8 @@ class _EnteringRecoveryPasswordByPhoneNumberScreenState extends State<EnteringRe
             borderRadius: BorderRadius.circular(12.0),
           ),
           height: 56,
-          color: const Color.fromARGB(255,00,0xCF,0x91),
-          disabledColor: const Color.fromARGB(255,00,0xCF,0x91),
+          color: Theme.of(context).colorScheme.secondary,
+          disabledColor: Theme.of(context).colorScheme.secondary,
 
           child: _enterButtonAction(),
           onPressed: _isLoadingComplete ? () {
@@ -125,7 +125,7 @@ class _EnteringRecoveryPasswordByPhoneNumberScreenState extends State<EnteringRe
         LocaleKeys.entering_recoveryBy_number_get.tr(),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.left,
-        style: GoogleFonts.rubik(
+        style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 16,
           color: const Color.fromARGB(255,255,255,255),
@@ -193,7 +193,7 @@ class _MyNumber extends StatelessWidget{
       LocaleKeys.entering_recoveryBy_number_header.tr(),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
-      style: GoogleFonts.rubik(
+      style: TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 24,
         color: const Color.fromARGB(255,33,33,33),
@@ -211,7 +211,7 @@ class _Message extends StatelessWidget{
       LocaleKeys.entering_recoveryBy_number_msg.tr(),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.justify,
-      style: GoogleFonts.rubik(
+      style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14,
         color: const Color.fromARGB(255, 117, 116, 115),

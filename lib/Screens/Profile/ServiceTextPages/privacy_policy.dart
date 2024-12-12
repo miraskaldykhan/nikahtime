@@ -274,7 +274,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       str,
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
-      style: GoogleFonts.rubik(
+      style: TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 24,
         color: const Color.fromARGB(255,33,33,33),
@@ -286,7 +286,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       str,
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
-      style: GoogleFonts.rubik(
+      style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 16,
         color: const Color.fromARGB(255,33,33,33),
@@ -298,7 +298,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       str,
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
-      style: GoogleFonts.rubik(
+      style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 16,
         color: const Color.fromARGB(255,33,33,33),
@@ -307,7 +307,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   }
   
   TextStyle simpleTextStyle(){
-    return GoogleFonts.rubik(
+    return TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 16,
       color: const Color.fromARGB(255,33,33,33),
@@ -315,7 +315,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   }
 
   TextStyle boldTextStyle(){
-    return GoogleFonts.rubik(
+    return TextStyle(
       fontWeight: FontWeight.w700,
       fontSize: 16,
       color: const Color.fromARGB(255,33,33,33),

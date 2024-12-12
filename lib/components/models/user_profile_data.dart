@@ -30,6 +30,7 @@ class UserFilter {
   String? observeIslamCanons = "";
   String? religiousAffiliation = "";
   int? religionId;
+
   UserFilter();
 
   bool isEmpty() {
@@ -74,6 +75,7 @@ class UserProfileImage {
 class UserProfileData {
   bool? isProfileParametersMatched;
   bool? isOnline;
+  bool? isFriend;
   int? id;
   String? firstName;
   String? lastName;
@@ -126,6 +128,7 @@ class UserProfileData {
   void jsonToData(Map<dynamic, dynamic> json) {
     photos = List<String>.from(json["photos"]);
     gender = json["gender"];
+    isFriend = json['is_friend'];
     birthDate = json["birthDate"];
     age = json["age"];
     country = json["country"];
@@ -202,6 +205,7 @@ class UserProfileData {
       'lastName': lastName,
       'photos': [],
       'images': jsonImages,
+      'is_friend': isFriend,
       'gender': gender,
       'birthDate': birthDate,
       'country': country,
@@ -285,6 +289,7 @@ class UserProfileData {
     this.id,
     this.firstName,
     this.lastName,
+    this.isFriend,
     this.photos,
     this.images,
     this.gender,

@@ -33,11 +33,11 @@ class PolicyAgreement extends StatelessWidget {
                     ),
                     TextSpan(
                       text: LocaleKeys.registration_appendix_item1.tr(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         height: 1.4,
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
-                        color: Color.fromARGB(255, 00, 0xCF, 0x91),
+                        color: Theme.of(context).colorScheme.secondary
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
@@ -47,7 +47,7 @@ class PolicyAgreement extends StatelessWidget {
                     ),
                     TextSpan(
                       text: LocaleKeys.registration_appendix_and.tr(),
-                      style: GoogleFonts.rubik(
+                      style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 14,
                         color: const Color.fromARGB(255, 117, 116, 115),
@@ -55,10 +55,10 @@ class PolicyAgreement extends StatelessWidget {
                     ),
                     TextSpan(
                       text: LocaleKeys.registration_appendix_item2.tr(),
-                      style: GoogleFonts.rubik(
+                      style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
-                        color: const Color.fromARGB(255, 00, 0xCF, 0x91),
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {

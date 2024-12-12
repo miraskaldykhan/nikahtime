@@ -29,7 +29,7 @@ class _ApplicationRulesScreenState extends State<ApplicationRulesScreen> {
                               'Правила пользования приложением',
                               textDirection: TextDirection.ltr,
                               textAlign: TextAlign.left,
-                              style: GoogleFonts.rubik(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 24,
                                 color: const Color.fromARGB(255,33,33,33),
@@ -38,13 +38,13 @@ class _ApplicationRulesScreenState extends State<ApplicationRulesScreen> {
                             const SizedBox(height: 24,),
                             RichText(
                               text: TextSpan(
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
                                   color: const Color.fromARGB(255,33,33,33),
                                 ),
                                 children: <TextSpan>[
-                                  TextSpan(text: '1.', style: GoogleFonts.rubik(
+                                  TextSpan(text: '1.', style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 16,
                                       color: const Color.fromARGB(255,33,33,33),
@@ -57,13 +57,13 @@ class _ApplicationRulesScreenState extends State<ApplicationRulesScreen> {
                             const SizedBox(height: 24,),
                             RichText(
                               text: TextSpan(
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
                                   color: const Color.fromARGB(255,33,33,33),
                                 ),
                                 children: <TextSpan>[
-                                  TextSpan(text: '2.', style: GoogleFonts.rubik(
+                                  TextSpan(text: '2.', style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 16,
                                     color: const Color.fromARGB(255,33,33,33),
@@ -78,13 +78,13 @@ class _ApplicationRulesScreenState extends State<ApplicationRulesScreen> {
                             const SizedBox(height: 24,),
                             RichText(
                               text: TextSpan(
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
                                   color: const Color.fromARGB(255,33,33,33),
                                 ),
                                 children: <TextSpan>[
-                                  TextSpan(text: '3.', style: GoogleFonts.rubik(
+                                  TextSpan(text: '3.', style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 16,
                                     color: const Color.fromARGB(255,33,33,33),
@@ -99,13 +99,13 @@ class _ApplicationRulesScreenState extends State<ApplicationRulesScreen> {
                             const SizedBox(height: 24,),
                             RichText(
                               text: TextSpan(
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
                                   color: const Color.fromARGB(255,33,33,33),
                                 ),
                                 children: <TextSpan>[
-                                  TextSpan(text: '4.', style: GoogleFonts.rubik(
+                                  TextSpan(text: '4.', style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 16,
                                     color: const Color.fromARGB(255,33,33,33),
@@ -120,13 +120,13 @@ class _ApplicationRulesScreenState extends State<ApplicationRulesScreen> {
                             const SizedBox(height: 24,),
                             RichText(
                               text: TextSpan(
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
                                   color: const Color.fromARGB(255,33,33,33),
                                 ),
                                 children: <TextSpan>[
-                                  TextSpan(text: '5.', style: GoogleFonts.rubik(
+                                  TextSpan(text: '5.', style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     fontSize: 16,
                                     color: const Color.fromARGB(255,33,33,33),

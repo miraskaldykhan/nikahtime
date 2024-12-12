@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class CustomWebView extends StatefulWidget {
@@ -31,37 +34,49 @@ class _CustomWebViewState extends State<CustomWebView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar:AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        title: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Row(
-            children: [
-              const Icon(
-                Icons.arrow_back_ios_sharp,
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              Text(
-                widget.header,
-                style: GoogleFonts.rubik(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                  //color: const Color.fromARGB(255, 00, 207, 145),
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: (){
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child:  SvgPicture.asset(
+                  'assets/icons/back.svg',
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
-            ],
-          ),
-        ),
-        automaticallyImplyLeading: false,
+            ),
+            const SizedBox(width: 10,),
+            Text(
+            widget.header,
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 24,
+              color:
+                  Color.fromARGB(255, 33, 33, 33),
+            ),
+            ),
+          ],
+        )
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: WebView(
           initialUrl: widget.initialUrl,
           javascriptMode: JavascriptMode.unrestricted,
@@ -79,10 +94,12 @@ class _CustomWebViewState extends State<CustomWebView> {
           },
 
           gestureNavigationEnabled: true,
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
       ),
     );
   }
 
+
 }
+

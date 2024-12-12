@@ -97,7 +97,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                     contact.displayName,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 2,
-                                    style: GoogleFonts.rubik(
+                                    style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16,
                                       color: Color.fromARGB(255, 63, 63, 63),
@@ -111,7 +111,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                 contact.phones.first.number.toString(),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16,
                                   color: const Color.fromARGB(255, 63, 63, 63),
@@ -129,7 +129,7 @@ class _ContactsPageState extends State<ContactsPage> {
                       //       padding: const EdgeInsets.only(right: 16),
                       //       child: Text(
                       //         getTimeValue(chatInfo.lastMessageTime.toString()),
-                      //         style: GoogleFonts.rubik(
+                      //         style: TextStyle(
                       //           fontWeight: FontWeight.w400,
                       //           fontSize: 12,
                       //           color: const Color.fromARGB(255, 157, 157, 157),

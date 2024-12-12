@@ -30,7 +30,7 @@ class _CrossMatchState extends State<CrossMatch> with TickerProviderStateMixin {
     super.initState();
 
     _personMainPhotoFutureBuilder =
-        displayImageMiniature(widget._person.photos![0].toString());
+        displayImageMiniature(widget._person.photos![0].toString(), Theme.of(context).colorScheme.secondary);
 
     random = Random();
 
@@ -113,7 +113,7 @@ class _CrossMatchState extends State<CrossMatch> with TickerProviderStateMixin {
                 crossMatchwidget._person.photos![0] == "null")
             ? const Icon(Icons.photo_camera, color: Color.fromRGBO(230, 230, 230, 1), size: 60)
             : ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(24.0),
                 child: _personMainPhotoFutureBuilder)));
 
     var widget = Stack(
@@ -127,8 +127,8 @@ class _CrossMatchState extends State<CrossMatch> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration:  BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Stack(
           children: [
@@ -184,7 +184,7 @@ class _CrossMatchState extends State<CrossMatch> with TickerProviderStateMixin {
                         LocaleKeys.usersScreen_writeMessage,
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.left,
-                        style: GoogleFonts.rubik(
+                        style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
                           color: const Color.fromARGB(255, 255, 255, 255),
@@ -205,17 +205,17 @@ class _CrossMatchState extends State<CrossMatch> with TickerProviderStateMixin {
                       height: 56,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
-                        side: const BorderSide(
-                            width: 1, color: Color.fromARGB(255, 0, 207, 145)),
+                        side:  BorderSide(
+                            width: 2, color: Theme.of(context).colorScheme.secondary),
                       ),
-                      child: const Text(
+                      child:  Text(
                         LocaleKeys.usersScreen_continueViewing,
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
-                          color: Color.fromARGB(255, 0, 207, 145),
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
                       ).tr(),
                       onPressed: () {

@@ -49,7 +49,7 @@ class ChatSettings extends StatelessWidget
                             "Уведомления",
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 20,
                               color: const Color.fromARGB(255, 33, 33, 33),
@@ -62,7 +62,7 @@ class ChatSettings extends StatelessWidget
                                 "Дублировать уведомления на почту",
                                 textDirection: TextDirection.ltr,
                                 textAlign: TextAlign.left,
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
                                   color: const Color.fromARGB(255, 33, 33, 33),
@@ -82,7 +82,7 @@ class ChatSettings extends StatelessWidget
                               TextField(
                                 decoration: CustomInputDecoration(
                                   hintText: "Email",
-                                ).GetDecoration(),
+                                ).GetDecoration(Theme.of(context).colorScheme.primary),
                                 onChanged: (value) {
                                   context.read<ChatSettingsBloc>().add(
                                       InputAction(
@@ -103,7 +103,7 @@ class ChatSettings extends StatelessWidget
                                   visible: (context.read<ChatSettingsBloc>().state as ChatSettingsInitial).emailError.isNotEmpty,
                                   child: Text(
                                     (context.read<ChatSettingsBloc>().state as ChatSettingsInitial).emailError,
-                                    style: GoogleFonts.rubik(
+                                    style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
                                       color: Colors.red,

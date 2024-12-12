@@ -60,7 +60,7 @@ class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<Entering
                               hintText: LocaleKeys.entering_code_hint.tr(),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 0, 207, 145),
+                                  color: Theme.of(context).colorScheme.secondary,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -71,7 +71,7 @@ class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<Entering
                               visible: error,
                               child: Text(
                                 errMessage,
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 12,
                                   color: Colors.red,
@@ -85,10 +85,10 @@ class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<Entering
                               children: [
                                 TextSpan(
                                   text: LocaleKeys.entering_code_again.tr(),
-                                  style: const TextStyle(
+                                  style:  TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 14,
-                                    color: const Color.fromARGB(255,00,0xCF,0x91),
+                                    color: Theme.of(context).colorScheme.secondary,
                                   ),
                                   recognizer: TapGestureRecognizer()..onTap = () async {
                                     debugPrint("click");
@@ -130,8 +130,8 @@ class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<Entering
             borderRadius: BorderRadius.circular(12.0),
           ),
           height: 56,
-          color: Color.fromARGB(255,00,0xCF,0x91),
-          disabledColor: Color.fromARGB(255,00,0xCF,0x91),
+          color: Theme.of(context).colorScheme.secondary,
+          disabledColor: Theme.of(context).colorScheme.secondary,
 
           child: _enterButtonAction(),
           onPressed: _isLoadingComplete ? () {
@@ -155,7 +155,7 @@ class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<Entering
         LocaleKeys.entering_code_action.tr(),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.left,
-        style: GoogleFonts.rubik(
+        style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 16,
           color: Color.fromARGB(255,255,255,255),
@@ -264,7 +264,7 @@ class _EmailAddressState extends State<_EmailAddress> {
         hintText: LocaleKeys.entering_code_hint.tr(),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Color.fromARGB(255, 0, 207, 145),
+            color: Theme.of(context).colorScheme.secondary,
             width: 1,
           ),
           borderRadius: BorderRadius.all(Radius.circular(10)),

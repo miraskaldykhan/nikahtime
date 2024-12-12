@@ -1,11 +1,20 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled/Screens/Chat/Stories/models/friends_stories.dart';
+import 'package:untitled/Screens/Chat/Stories/models/stories_model.dart';
+import 'package:untitled/Screens/Chat/Stories/models/viewers_model.dart';
+import 'package:untitled/Screens/Contacts/models/contacts.dart';
+import 'package:untitled/Screens/Contacts/models/followers_profile.dart';
+import 'package:untitled/Screens/Contacts/models/friends_profile.dart';
 import 'package:untitled/Screens/Employeers/employee_information.dart';
 import 'package:untitled/components/models/nikah_error.dart';
 import 'package:untitled/components/models/paginated_news_list.dart';
@@ -39,13 +48,16 @@ class NetworkService {
     _dio.options.headers["accept"] = "application/json";
   }
 
-  final String baseUrl = "https://www.nikahtime.ru/api";
+  final String baseUrl = "https://dev.nikahtime.ru/api";
+
 //LOGIN
   final String login = "/login";
+
 //REGISTRATION
   final String registration = "/registration";
   final String registration_second = "/registration/code";
   final String registration_verify = "/registration/code/verify";
+
 //ACCOUNT
   final String account_pin_code_request = "/account/password/code";
   final String account_pin_code_verify = "/account/password/code/verify";
@@ -392,6 +404,7 @@ class NetworkService {
     request.headers.addAll(headers);
     print(request.fields);
     var response = await request.send();
+    log("request: ${response.request!.headers}");
     return response;
   }
 
@@ -635,6 +648,30 @@ class NetworkService {
     var response = await http.post(Uri.parse('$baseUrl/chats/send/message'),
         body: json.encode(
             {"message": message, "chatId": chatID, "messageType": messageType}),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        });
+    if (response.statusCode != 200) {
+      //debugPrint("ChatsSendMessage ${response.body}");
+    }
+    return response;
+  }
+
+  ChatsEditMessage(String message, int messageId) async {
+    String? accessToken;
+
+    Future<void> getAccessToken() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      accessToken = prefs.getString("token") ?? "";
+    }
+
+    await getAccessToken();
+    var data = json.encode({"message": message});
+    var response = await http.put(
+        Uri.parse('https://dev.nikahtime.ru/api/chats/messages/$messageId'),
+        body: data,
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $accessToken',
@@ -1059,5 +1096,392 @@ class NetworkService {
         ));
 
     return CommentaryItem.fromJson(response.data);
+  }
+
+  //STORIES
+
+  sendStories({
+    required String filePath,
+    required String accessToken,
+    bool isVideo = false,
+  }) async {
+    ///TODO: swap to DIO
+    FormData formData = FormData.fromMap({
+      "fileType": isVideo ? "video" : "image",
+      "file": await MultipartFile.fromFile(filePath),
+    });
+    var response =
+        await _dio.post("https://dev.nikahtime.ru/api/storeStory/file",
+            data: formData,
+            options: Options(
+              headers: {
+                'accept': 'application/json',
+                'Authorization': 'Bearer $accessToken',
+                'Content-Type': 'multipart/form-data',
+              },
+            ));
+    if (response.statusCode == 200) {
+      // Достаем значение fileURL как строку
+      log("fileURL: ${response.data['fileURL']}");
+      String fileUrl = response.data['fileURL'];
+
+      var resForAddStory =
+          await _dio.post("https://dev.nikahtime.ru/api/stories/store",
+              data: {
+                "type": isVideo ? "video" : "image",
+                "content": fileUrl,
+              },
+              options: Options(
+                headers: {
+                  'accept': 'application/json',
+                  'Authorization': 'Bearer $accessToken',
+                  'Content-Type': 'application/json',
+                },
+              ));
+      if (resForAddStory.statusCode == 201) {
+        log("Story added");
+      } else {
+        log("Story not added!!!!");
+      }
+    }
+    if (response.statusCode != 200) {
+      throw "Error: ${response.statusCode}: Ошибка при отправке файла на сервер";
+    }
+    return response;
+  }
+
+  Future<void> viewStories({
+    required int id,
+    required String accessToken,
+  }) async {
+    FormData formData = FormData.fromMap({
+      "story_id": id,
+    });
+    log("STORY ID : $id");
+    var response = await _dio.post(
+      "https://dev.nikahtime.ru/api/stories/showStory",
+      data: formData,
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      log("Story viewed");
+    } else {
+      log("Story not viewed :${response.statusCode}");
+    }
+  }
+
+  Future<FriendsStories> getFriendsStories({
+    required String accessToken,
+  }) async {
+    var response = await _dio.get(
+      "https://dev.nikahtime.ru/api/stories/getFriendsStories",
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+
+    log("Response dat from get Friends Stories: ${response.data}");
+    var dataList = FriendsStories.fromJson(response.data);
+    return dataList;
+  }
+
+  Future<ViewersOfStories> getStoriesViewers({
+    required String accessToken,
+    required int id,
+  }) async {
+    var response = await _dio.get(
+      "https://dev.nikahtime.ru/api/stories/showStoryViewers/$id",
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      ),
+    );
+    log("parsedJson: ${response.data}");
+    return ViewersOfStories.fromJson(response.data);
+  }
+
+  Future<MyStoryResponse> getMyStories({
+    required String accessToken,
+  }) async {
+    var response = await _dio.get(
+      "https://dev.nikahtime.ru/api/stories/getMyStories",
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      ),
+    );
+    log("parsedJson: ${response.data}");
+    final storyResponse = MyStoryResponse.fromJson(response.data);
+    return storyResponse;
+  }
+
+  deleteStories({
+    required String accessToken,
+    required int id,
+  }) async {
+    var response = await _dio.delete(
+      "https://dev.nikahtime.ru/api/stories/deleteStory/$id",
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      log("Story deleted");
+    } else {
+      log("Story not deleted");
+    }
+  }
+
+  likeStories({
+    required int id,
+    required String accessToken,
+  }) async {
+    FormData formData = FormData.fromMap({
+      "story_id": id,
+    });
+    var response = await _dio.post(
+      "https://dev.nikahtime.ru/api/stories/like",
+      data: formData,
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      log("Story liked");
+    }
+  }
+
+  Future<List<RegisteredContacts>> getRegisteredContacts({
+    required String accessToken,
+  }) async {
+    var permissionStatus = await FlutterContacts.requestPermission();
+
+    if (permissionStatus) {
+      List<Contact> contacts =
+          await FlutterContacts.getContacts(withProperties: true);
+      List<Map<String, String>> formattedContacts = contacts
+          .where((contact) => contact.phones.isNotEmpty)
+          .map((contact) => {
+                "name": contact.displayName.isNotEmpty
+                    ? contact.displayName
+                    : "undefined",
+                "phone_number": contact.phones.first.number,
+              })
+          .toList();
+      Map<String, dynamic> data = {
+        "contacts": formattedContacts,
+      };
+
+      if (formattedContacts.isNotEmpty) {
+        FormData formData = FormData.fromMap(data);
+        var response = await _dio.post(
+          "https://dev.nikahtime.ru/api/contacts/getRegistered",
+          data: formData,
+          options: Options(
+            headers: {
+              'accept': 'application/json',
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          ),
+        );
+        log("ASDAS: ${List<RegisteredContacts>.from(
+          response.data!.map(
+            (x) => RegisteredContacts.fromJson(x),
+          ),
+        )}");
+        return List<RegisteredContacts>.from(
+          response.data!.map(
+            (x) => RegisteredContacts.fromJson(x),
+          ),
+        );
+      } else {
+        throw "You don't have contacts";
+      }
+    } else {
+      openAppSettings();
+      throw Exception("Permission not granted");
+    }
+  }
+
+  Future<List<UnRegisteredContacts>> getNotRegisteredContacts({
+    required String accessToken,
+  }) async {
+    var permissionStatus = await FlutterContacts.requestPermission();
+
+    if (permissionStatus) {
+      List<Contact> contacts =
+          await FlutterContacts.getContacts(withProperties: true);
+
+      List<Map<String, String>> formattedContacts = contacts
+          .where((contact) => contact.phones.isNotEmpty)
+          .map((contact) => {
+                "name": contact.displayName.isNotEmpty
+                    ? contact.displayName
+                    : "undefined",
+                "phone_number": contact.phones.first.number,
+              })
+          .toList();
+      if (formattedContacts.isNotEmpty) {
+        Map<String, dynamic> data = {
+          "contacts": formattedContacts,
+        };
+        //
+        // log("Request Data: ${jsonEncode(data)}");
+
+        var response = await _dio.post(
+          "https://dev.nikahtime.ru/api/contacts/getUnregistered",
+          data: jsonEncode(data),
+          options: Options(
+            headers: {
+              'accept': 'application/json',
+              'X-CSRF-TOKEN': 'aYODYACtHkuWk4sRWdo13ctYE6Wpa5b7fHbMwmON',
+              'Authorization': 'Bearer $accessToken',
+              'Content-Type': 'application/json',
+            },
+          ),
+        );
+        log("data length: ${response.data!.length}");
+        return List<UnRegisteredContacts>.from(
+          response.data!.map(
+            (x) => UnRegisteredContacts.fromJson(x),
+          ),
+        );
+      } else {
+        throw "You don't have contacts";
+      }
+    } else {
+      throw Exception("Permission not granted");
+    }
+  }
+
+  Future<FriendsProfile> getMineFriends({
+    required String accessToken,
+  }) async {
+    var response = await _dio.get(
+      "https://dev.nikahtime.ru/api/friends/getFriendList",
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    log("ASDAS: ${FriendsProfile.fromJson(response.data)}");
+    return FriendsProfile.fromJson(response.data);
+  }
+
+  Future<FollowersProfiles> getMineFollowers({
+    required String accessToken,
+  }) async {
+    var response = await _dio.get(
+      "https://dev.nikahtime.ru/api/friends/getFollowerList",
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    log("ASDAS: ${FollowersProfiles.fromJson(response.data)}");
+    return FollowersProfiles.fromJson(response.data);
+  }
+
+  Future<void> moveFollowerToFriend({
+    required String accessToken,
+    required int id,
+  }) async {
+    var response = await _dio.post(
+      "https://dev.nikahtime.ru/api/friends/moveFollowerToFriend",
+      data: {
+        "follower_id": id,
+      },
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    log("ASDAS: ${response.data}");
+    if (response.statusCode == 200) {
+      log("moved");
+    } else {
+      log("not moved");
+    }
+  }
+
+  Future<void> sendFriendsRequest({
+    required String accessToken,
+    required int userId,
+  }) async {
+    var response = await _dio.post(
+      "https://dev.nikahtime.ru/api/friends/sendFriendRequest",
+      data: {
+        "target_user_id": userId,
+      },
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    log("ASDAS: ${response.data}");
+    if (response.statusCode == 200) {
+      log("moved");
+    } else {
+      log("not moved");
+    }
+  }
+
+  Future<void> moveFriendToFollower({
+    required String accessToken,
+    required int userId,
+  }) async {
+    var response = await _dio.post(
+      "https://dev.nikahtime.ru/api/friends/moveFriendToFollower",
+      data: {
+        "friend_id": userId,
+      },
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      ),
+    );
+    log("ASDAS: ${response.data}");
+    if (response.statusCode == 201) {
+      log("moved");
+    } else {
+      log("not moved");
+    }
   }
 }

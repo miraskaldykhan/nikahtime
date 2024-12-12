@@ -59,25 +59,44 @@ class SendFile extends ChatWithUserEvent {
 
 class AsnwerChat extends ChatWithUserEvent {
   final String answerText;
+
   const AsnwerChat({
     required this.answerText,
   });
+
   @override
   List<Object?> get props => [answerText];
 }
 
 class EditChat extends ChatWithUserEvent {
   final String editText;
+  final int messageId;
+
   const EditChat({
     required this.editText,
+    required this.messageId,
   });
+
   @override
   List<Object?> get props => [editText];
 }
 
+class EditChatActive extends ChatWithUserEvent {
+  final int messageId;
+  final String editText;
+
+  const EditChatActive({
+    required this.messageId,
+    required this.editText,
+  });
+
+  @override
+  List<Object?> get props => [messageId];
+}
+
 class RemoveAnswerChat extends ChatWithUserEvent {
   const RemoveAnswerChat();
+
   @override
   List<Object?> get props => [];
 }
-

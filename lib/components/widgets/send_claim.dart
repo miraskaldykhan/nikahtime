@@ -88,7 +88,7 @@ class SendClaim{
                 options: claimReason,
                 decoration: CustomInputDecoration(
                   hintText: LocaleKeys.claim_reason.tr(),
-                ).GetDecoration(),
+                ).GetDecoration(Theme.of(context).colorScheme.primary),
                 dropdownHeight: 150,
                 onChanged: (dynamic value){
                   claim = value;
@@ -101,7 +101,7 @@ class SendClaim{
               TextField(
                 decoration: CustomInputDecoration(
                   hintText: LocaleKeys.claim_comment.tr(),
-                ).GetDecoration(),
+                ).GetDecoration(Theme.of(context).colorScheme.primary),
                 minLines: 1,
                 maxLines: 5,
                 maxLength: cntrl.text.isEmpty ? null : 255,
@@ -118,7 +118,7 @@ class SendClaim{
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       LocaleKeys.common_errorHintText.tr(),
-                      style: GoogleFonts.rubik(
+                      style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 12,
                         color: Colors.red,

@@ -152,7 +152,7 @@ class _EnteringBySelectedTypeScreenState extends State<EnteringBySelectedTypeScr
       controller: widget._emailTextController,
       decoration: CustomInputDecoration(
           hintText: widget.hintText
-      ).GetDecoration(),
+      ).GetDecoration(Theme.of(context).colorScheme.primary),
     );
   }
 
@@ -169,19 +169,22 @@ class _EnteringBySelectedTypeScreenState extends State<EnteringBySelectedTypeScr
                 _passwordVisible = !_passwordVisible;
               });
             },
-            icon: const Icon(Icons.remove_red_eye)),
+            icon: _passwordVisible ? const Icon( Icons.remove_red_eye, color: Colors.grey,) : 
+            const Icon( Icons.visibility_off, color: Colors.grey,)
+            ) ,
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Color.fromARGB(255, 218, 216, 215),
-            width: 1,
+            width: 2, //изменена ширина
           ),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
+        hintStyle: TextStyle(color: Colors.grey), // добавлен хинт стайл
         hintText: LocaleKeys.entering_main_hintPass.tr(),
-        focusedBorder: const OutlineInputBorder(
+        focusedBorder:  OutlineInputBorder(
           borderSide: BorderSide(
-            color: Color.fromARGB(255, 0, 207, 145),
-            width: 1,
+            color: Theme.of(context).colorScheme.secondary,
+            width: 2,
           ),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
@@ -197,8 +200,8 @@ class _EnteringBySelectedTypeScreenState extends State<EnteringBySelectedTypeScr
             borderRadius: BorderRadius.circular(12.0),
           ),
           height: 56,
-          color: Color.fromARGB(255, 00, 0xCF, 0x91),
-          disabledColor: Color.fromARGB(255, 00, 0xCF, 0x91),
+          color: Theme.of(context).colorScheme.secondary,
+          disabledColor: Theme.of(context).colorScheme.secondary,
           child: _enterButtonAction(),
           onPressed: _isLoadingComplete
               ? () {
@@ -216,7 +219,7 @@ class _EnteringBySelectedTypeScreenState extends State<EnteringBySelectedTypeScr
         LocaleKeys.entering_main_enter.tr(),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.left,
-        style: GoogleFonts.rubik(
+        style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 16,
           color: Color.fromARGB(255, 255, 255, 255),

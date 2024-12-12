@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSContactsUsageDescription</key>
-    <string>We need access to your contacts to display them.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -39,7 +37,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -49,12 +47,17 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Allow access to take photos and record videos to upload to your profile or to share in your chats</string>
+	<key>NSContactsUsageDescription</key>
+	<string>We need access to your contacts to display them in contacts.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow access to record video</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow access to download and save photos and videos</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>external-accessory</string>
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
@@ -76,8 +79,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>beta-reports-active</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 </dict>
 </plist>

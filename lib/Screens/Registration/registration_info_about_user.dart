@@ -67,9 +67,9 @@ class _RegistrationInfoAboutUserScreenState
                       ),
                       hintStyle: const TextStyle(height: 1.4),
                       hintText: LocaleKeys.registration_about_example.tr(),
-                      focusedBorder: const OutlineInputBorder(
+                      focusedBorder:  OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromARGB(255, 0, 207, 145),
+                          color: Theme.of(context).colorScheme.secondary,
                           width: 1,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -114,7 +114,7 @@ class _RegisterButton extends StatefulWidget {
   Future<void> _putNewUserInfo() async {
     debugPrint("UPDATE USER PROFILE START");
     var response = await http.put(
-      Uri.parse("https://www.nikahtime.ru/api/account/user/update"),
+      Uri.parse("https://dev.nikahtime.ru/api/account/user/update"),
       headers: {
         'accept': 'application/json',
         'content-type': 'application/json',
@@ -167,7 +167,7 @@ class _RegisterButtonState extends State<_RegisterButton> {
         width: double.infinity,
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
+              backgroundColor:  Theme.of(context).colorScheme.secondary,
               elevation: 0,
               fixedSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(
@@ -196,7 +196,7 @@ class _RegisterButtonState extends State<_RegisterButton> {
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  const Color.fromARGB(255, 00, 0xcf, 0x91),
+                                   Theme.of(context).colorScheme.secondary,
                               elevation: 0,
                               fixedSize: const Size(double.infinity, 56),
                               shape: RoundedRectangleBorder(

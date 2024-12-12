@@ -67,7 +67,7 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
     return BlocProvider(
       create: (context) => NewsItemBloc(id: widget.id),
       child: Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: BackNavigateAppBar(context),
       body: SafeArea(
         child: Builder(
@@ -77,7 +77,7 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
                 state as NewsItemInitial;
                 if (state.screenState == NewsItemStateEnum.preload) {
                   context.read<NewsItemBloc>().add(const LoadFullNews());
-                  return singleNewsWaitBox();
+                  return singleNewsWaitBox(Theme.of(context).scaffoldBackgroundColor);
                 }
                 _scrollController.addListener(() {
                   if(_scrollController.position.pixels.toInt() >= _scrollController.position.maxScrollExtent.toInt() - 100)
@@ -85,7 +85,7 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
                     if((context.read<NewsItemBloc>().state as NewsItemInitial).commentariesState == CommentariesState.ready)
                       {
                         debugPrint("MAX" + "   " + _scrollController.position.pixels.toString() + "   " + _scrollController.position.maxScrollExtent.toString());
-                        context.read<NewsItemBloc>().add(LoadCommenariesPage());
+                        context.read<NewsItemBloc>().add(const LoadCommenariesPage());
                       }
                   }
                 });
@@ -115,33 +115,16 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
               actionButtons(context, state),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.only(right: 16.0, left: 16, bottom: 10 ),
                   child: Row(
                     children: [
                       Text(
                         LocaleKeys.news_commentaries.tr(),//"Комментарии",
-                        style: GoogleFonts.rubik(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
                           //height: 1.4,
                           color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(width: 8,),
-                      Flexible(
-                        flex: 1,
-                        child: SizedBox(
-                          height: 40,
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Image.asset(
-                                  "assets/icons/pattern.png",
-                                  repeat: ImageRepeat.repeat,
-                                ),
-                              ),
-                            ],
-                          ),
                         ),
                       ),
                     ],
@@ -150,7 +133,7 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
               ),
               messagesStub(context, state),
               SliverToBoxAdapter(
-                child: (state.commentariesState != CommentariesState.noMoreItem) ? Center(child: CircularProgressIndicator()) : null,
+                child: (state.commentariesState != CommentariesState.noMoreItem) ? const Center(child: CircularProgressIndicator()) : null,
               ),
               const SliverToBoxAdapter(
                 child: SizedBox(
@@ -200,7 +183,9 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
     Widget webViewNews(BuildContext context, NewsItemInitial state)
     {
       return SliverToBoxAdapter(
-        child: SizedBox(
+        child: Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           height: height,
           child: WebView(
             zoomEnabled: false,
@@ -328,7 +313,7 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
 },
 
             gestureNavigationEnabled: true,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           ),
         ),
       );
@@ -339,41 +324,67 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
       return SliverToBoxAdapter(
         key: dataKey,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          padding: const EdgeInsets.only(right: 16.0, left: 16, top: 8, bottom: 8),
+          child: Column(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  button(
-                    iconData: MainPageCustomIcon.message,
-                    iconColor: const Color(0xff1dc3a5),
-                    value: state.item?.commentsCount ?? 0,
-                    action: (){},
-                    disableShadow: true,
+                   Container(
+                            padding: const EdgeInsets.only(top: 2),
+                            width: 40,
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                borderRadius: BorderRadius.circular(10)
+            
+                            ),
+                            child: button(
+                                  iconData: MenuIcons.favorite,
+                                  iconColor: (state.item?.inFavourite == true) ? Theme.of(context).colorScheme.secondary : Colors.black12,
+                                  backgroundColor: (state.item?.inFavourite == true) ? const Color(0xffffe0de) : Colors.white,
+                                  value: 0,
+                                  action: (){
+                                      widget.likeAction();
+                                      context.read<NewsItemBloc>().add(ToggleLikeNewsItem(id: state.id));                              },
+                                ),
+                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      button(
+                        iconData: MainPageCustomIcon.message,
+                        iconColor: Theme.of(context).colorScheme.secondary,
+                        value: state.item?.commentsCount ?? 0,
+                        action: (){},
+                        disableShadow: true,
+                      ),
+                      const SizedBox(width: 12,),
+                      button(
+                        iconData: (state.item?.inFavourite == true) ? MainPageCustomIcon.heart : MainPageCustomIcon.heart_outlined,
+                        iconColor: Theme.of(context).colorScheme.secondary,
+                        backgroundColor: (state.item?.inFavourite == true) ? const Color(0xffffe0de) : Colors.white,
+                        value: state.item?.likesCount ?? 0,
+                        disableShadow: true,
+                      ),
+                                        const SizedBox(width: 12,),
+              
+                     button(
+                      iconData: Icons.remove_red_eye,
+                      iconColor: Theme.of(context).colorScheme.secondary,
+                      backgroundColor: Colors.white,
+                      value: state.item?.viewsCount ?? 0,
+                      disableShadow: true,
+                      showZero: true
                   ),
-                  const SizedBox(width: 12,),
-                  button(
-                    iconData: (state.item?.inFavourite == true) ? MainPageCustomIcon.heart : MainPageCustomIcon.heart_outlined,
-                    iconColor: Colors.red,
-                    backgroundColor: (state.item?.inFavourite == true) ? const Color(0xffffe0de) : Colors.white,
-                    value: state.item?.likesCount ?? 0,
-                    disableShadow: true,
-                    action: (){
-                      widget.likeAction();
-                      context.read<NewsItemBloc>().add(ToggleLikeNewsItem(id: state.id));
-                    },
-                  )
+                    ],
+                  ),
+              
                 ],
               ),
-              button(
-                  iconData: Icons.remove_red_eye,
-                  iconColor: const Color.fromRGBO(0, 0, 0, 0.54),
-                  backgroundColor: Colors.white,
-                  value: state.item?.viewsCount ?? 0,
-                  disableShadow: true,
-                  showZero: true
-              )
+              const SizedBox(height: 10,),
+              const Divider(color: Color(0xffDEDEDE), indent: 3,)
             ],
           ),
         ),
@@ -384,7 +395,7 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
     {
       if(state.commentariesState == CommentariesState.preload)
       {
-        context.read<NewsItemBloc>().add(LoadCommenariesPage());
+        context.read<NewsItemBloc>().add(const LoadCommenariesPage());
         return const SliverToBoxAdapter(
           child: SizedBox(
             height: 64,
@@ -403,7 +414,7 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
             child: Center(
               child: Text(
                 LocaleKeys.news_commentEmpty.tr(),
-                style: GoogleFonts.rubik(
+                style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                   height: 1.4,
@@ -418,9 +429,12 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
       return SliverList(
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            return buildCommentaryItem(
-              context: context,
-              item: state.commentsList!.commentariesList[index]);
+            return Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: buildCommentaryItem(
+                context: context,
+                item: state.commentsList!.commentariesList[index]),
+            );
           },
           childCount: state.commentsList?.commentariesList.length ?? 0,
         ),
@@ -475,11 +489,11 @@ class NewsItemFullScreenState extends State<NewsItemFullScreen> {
                   },
                   child: Text(
                     LocaleKeys.news_showAllCommenaries.tr(),
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
                       height: 2,
-                      color: const Color.fromARGB(255, 0, 207, 145),
+                      color:  Theme.of(context).colorScheme.secondary,
                     ),
                   ),
                 ),

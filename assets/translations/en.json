@@ -132,10 +132,29 @@
             "link": "Open in VK",
             "link_second": "Open in WhatsApp",
             "price": "The cost of a consultation lasting up to 60 minutes",
-            "donate_msg": "Support us",
             "donate_msg_text": "Assalamu'alaykum Warahmatullahi Wabarakatuh.\n\nGood day everybody!\nWe are glad to meet you in our site, NikahTime. Actually, this application we build from heart to helping everyone who wanna find the true love and make a halal family according from Islamic path.\n\nSo, we're happy to invite you for give donate or sadaqa to develop NikahTime site be better in the future. We want make all of member get comfortable and success for the goal, that find the true love and make a family, Insya Allah.\n\nIf you kindly to give our site be better and going to new version for IOS and GooglePlay, please sent to this number 2202 2032 5291 7218. Thank you",
             "text_copied": "Card number was copied",
-            "phone_copied": "Phone number was copied"
+            "phone_copied": "Phone number was copied",
+                "donate_msg": {
+                    "header": "Support the Project",
+                    "text": "Dear user, if you make a Sadaqah (donation), these funds will go toward making the world a kinder place! It will also support the growth and maintenance of the NikahTime project!",
+                    "text2": "Thank you! You are helping us make the world a better place!",
+                    "later_btn": "Later",
+                    "support_btn": "Support"
+                },
+                "theme": {
+                    "header": "Theme",
+                    "tiffani": "Tiffany",
+                    "pinkClouds": "Pink Clouds"
+                },
+                "notifications": "Notifications",
+                "family_consultation": "Family Consultation",
+                "change_photo": "Change Photo",
+                "donate_msg_text": "Assalamu Alaikum wa Rahmatullahi wa Barakatuh and greetings of the day, dear user! The goal of the NikahTime app is that, by the grace of Allah, everyone who wishes can find happiness and their other half! You have the opportunity to participate in this noble cause and help NikahTime improve by making a Sadaqah (donation) to the card number 2202 2032 5291 7218. We are raising these funds to develop and release a new version of NikahTime!",
+                "text_copied": "Card number copied",
+                "phone_copied": "Phone number copied"
+            
+            
         }
     },
     "paymentScreen": {
@@ -191,6 +210,20 @@
             "duplicateProductObject": "Subscription activation is in processing. The funds will be refunded after 3 days if the subscription is not activated."
         }
     },
+
+    "tariffs": {
+        "description": "One of the main goals of the NikahTime app is to speed up the process of finding a soulmate, helping as many people as possible to get married.",
+        "header": "Premium Subscription Features:",
+        "option1": "Display the number of times stories are viewed by the same person",
+        "option2": "Show the time of story views",
+        "option3": "Anonymous story viewing",
+        "option4": "Anonymous reading of messages",
+        "option5": "View the last seen time of users",
+        "option6": "Ability to post stories",
+        "option7": "Customizable incognito mode for visiting profiles",
+        "button": "Subscribe for 169 RUB/month",
+        "canCancel": "You can cancel at any time"
+    },    
     "common": {
         "online": "Online",
         "offline": "Offline",

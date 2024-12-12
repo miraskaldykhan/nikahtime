@@ -79,7 +79,7 @@ class _RegistrationEmailScreenState extends State<RegistrationEmailScreen> {
                       visible: emailError,
                       child: Text(
                         errorMessage,
-                        style: GoogleFonts.rubik(
+                        style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 12,
                           color: Colors.red,
@@ -102,7 +102,7 @@ class _RegistrationEmailScreenState extends State<RegistrationEmailScreen> {
                       visible: passwordError,
                       child: Text(
                         errorMessage,
-                        style: GoogleFonts.rubik(
+                        style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 12,
                           color: Colors.red,
@@ -125,7 +125,7 @@ class _RegistrationEmailScreenState extends State<RegistrationEmailScreen> {
                       visible: passwordError,
                       child: Text(
                         errorMessage,
-                        style: GoogleFonts.rubik(
+                        style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 12,
                           color: Colors.red,
@@ -152,8 +152,8 @@ class _RegistrationEmailScreenState extends State<RegistrationEmailScreen> {
             borderRadius: BorderRadius.circular(12.0),
           ),
           height: 56,
-          color: Color.fromARGB(255,00,0xCF,0x91),
-          disabledColor: Color.fromARGB(255,00,0xCF,0x91),
+          color: Theme.of(context).colorScheme.secondary,
+          disabledColor: Theme.of(context).colorScheme.secondary,
 
           child: _enterButtonAction(),
           onPressed: _isLoadingComplete ? () {
@@ -196,8 +196,8 @@ class _RegistrationEmailScreenState extends State<RegistrationEmailScreen> {
         LocaleKeys.registration_sendCode.tr(),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.left,
-        style: GoogleFonts.rubik(
-          fontWeight: FontWeight.w500,
+        style: TextStyle(
+          fontWeight: FontWeight.w700,
           fontSize: 16,
           color: Color.fromARGB(255,255,255,255),
         ),
@@ -263,20 +263,21 @@ class _RegistrationEmailScreenState extends State<RegistrationEmailScreen> {
               _passwordVisible = !_passwordVisible;
             });
           },
-          icon: Icon(_passwordVisible ? Icons.visibility_off : Icons.remove_red_eye)
+          icon: Icon(_passwordVisible ? Icons.visibility_off : Icons.remove_red_eye, color: Colors.grey,)
       ) : null,
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(
           color: Color.fromARGB(255, 218, 216, 215),
-          width: 1,
+          width: 2,
         ),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       hintText: hintText,
-      focusedBorder: const OutlineInputBorder(
+      hintStyle: TextStyle(color: Colors.grey),
+      focusedBorder:  OutlineInputBorder(
         borderSide: BorderSide(
-          color: Color.fromARGB(255, 0, 207, 145),
-          width: 1,
+          color: Theme.of(context).colorScheme.secondary,
+          width: 2,
         ),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),

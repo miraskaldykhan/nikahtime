@@ -93,7 +93,7 @@ class _Message extends StatelessWidget{
       LocaleKeys.entering_conclusion_msg.tr(),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
-      style: GoogleFonts.rubik(
+      style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14,
         color: Color.fromARGB(255, 117, 116, 115),
@@ -124,7 +124,7 @@ class _RegisterButton extends StatelessWidget{
               LocaleKeys.entering_conclusion_ok.tr(),
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.left,
-              style: GoogleFonts.rubik(
+              style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
                 color: Colors.white,

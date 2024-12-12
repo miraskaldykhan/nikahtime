@@ -3,27 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
 
-Widget newsListWaitBox() {
-  return _waitBox(label: LocaleKeys.news_loading_feed.tr());
+Widget newsListWaitBox(Color color) {
+  return _waitBox(label: LocaleKeys.news_loading_feed.tr(),  color: color);
 }
 
-Widget singleNewsWaitBox() {
-  return _waitBox(label: LocaleKeys.news_loading_news.tr());
+Widget singleNewsWaitBox(Color color) {
+  return _waitBox(label: LocaleKeys.news_loading_news.tr(), color: color);
 }
 
-Widget answersWaitBox() {
-  return _waitBox(label: LocaleKeys.news_loading_commentaries.tr());
+Widget answersWaitBox(Color color) {
+  return _waitBox(label: LocaleKeys.news_loading_commentaries.tr(),  color: color);
 }
 
-Widget _waitBox({required String label}) {
+Widget _waitBox({required String label, required Color color}) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const CircularProgressIndicator(
+         CircularProgressIndicator(
           valueColor:
-          AlwaysStoppedAnimation<Color>(Color.fromRGBO(0, 0xcf, 0x91, 1)),
+          AlwaysStoppedAnimation<Color>(color!),
         ),
         const SizedBox(
           height: 16,
@@ -32,10 +32,10 @@ Widget _waitBox({required String label}) {
           label,
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
-            color: const Color.fromRGBO(0, 0xcf, 0x91, 1),
+            color: color,
           ),
         ),
       ],

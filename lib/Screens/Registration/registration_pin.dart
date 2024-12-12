@@ -26,11 +26,9 @@ class RegistrationPinScreen extends StatefulWidget {
   String registerType = "";
 
   RegistrationPinScreen(
-      this._messageStr,
-      this._validatorType,
-      this.registerType,
-      {Key? key}
-  ) : super(key: key);
+      this._messageStr, this._validatorType, this.registerType,
+      {Key? key})
+      : super(key: key);
 
   @override
   State<RegistrationPinScreen> createState() => _RegistrationPinScreenState();
@@ -60,11 +58,15 @@ class _RegistrationPinScreenState extends State<RegistrationPinScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                  CustomInputDecoration().titleText(LocaleKeys.registration_PIN_header.tr()),
+                  CustomInputDecoration()
+                      .titleText(LocaleKeys.registration_PIN_header.tr()),
                   SizedBox(height: 8),
                   _SubHeader(widget._messageStr, widget._validatorType),
                   SizedBox(height: 32),
-                  _PIN_Entering(pinCodeTextController: _pinCodeTextController,),
+                  _PIN_Entering(
+                    registerType: widget.registerType,
+                    pinCodeTextController: _pinCodeTextController,
+                  ),
                   CustomInputDecoration().errorBox(err, errMessage: msg),
                   SizedBox(height: 16),
                   _sendCodeAgain(widget._validatorType),
@@ -93,8 +95,8 @@ class _RegistrationPinScreenState extends State<RegistrationPinScreen> {
             borderRadius: BorderRadius.circular(12.0),
           ),
           height: 56,
-          color: Color.fromARGB(255, 00, 0xCF, 0x91),
-          disabledColor: Color.fromARGB(255, 00, 0xCF, 0x91),
+          color: Theme.of(context).colorScheme.secondary,
+          disabledColor: Theme.of(context).colorScheme.secondary,
           child: _enterButtonAction(),
           onPressed: _isLoadingComplete
               ? () {
@@ -118,8 +120,8 @@ class _RegistrationPinScreenState extends State<RegistrationPinScreen> {
         LocaleKeys.registration_PIN_action.tr(),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.left,
-        style: GoogleFonts.rubik(
-          fontWeight: FontWeight.w500,
+        style: TextStyle(
+          fontWeight: FontWeight.w700,
           fontSize: 16,
           color: Color.fromARGB(255, 255, 255, 255),
         ),
@@ -182,9 +184,10 @@ class _RegistrationPinScreenState extends State<RegistrationPinScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => RegistrationCreateProfileScreen(userProfileData),
+        builder: (BuildContext context) =>
+            RegistrationCreateProfileScreen(userProfileData),
       ),
-          (route) => false,
+      (route) => false,
     );
   }
 }
@@ -202,7 +205,8 @@ class _SubHeader extends StatelessWidget {
       textDirection: TextDirection.ltr,
       text: TextSpan(
         //text: 'Код отправлен на $_messageStr:\n $_validator',
-        text: LocaleKeys.registration_PIN_message.tr(args: [_messageStr, _validator]),
+        text: LocaleKeys.registration_PIN_message
+            .tr(args: [_messageStr, _validator]),
         style: const TextStyle(
             fontWeight: FontWeight.w400,
             fontSize: 14,
@@ -216,11 +220,13 @@ class _SubHeader extends StatelessWidget {
 class _PIN_Entering extends StatelessWidget {
   _PIN_Entering({
     Key? key,
-    required this.pinCodeTextController
+    required this.pinCodeTextController,
+    required this.registerType,
   }) : super(key: key);
 
   FocusNode focusNode = FocusNode();
   final TextEditingController pinCodeTextController;
+  final String registerType;
 
   @override
   Widget build(BuildContext context) {
@@ -231,12 +237,12 @@ class _PIN_Entering extends StatelessWidget {
           children: <Widget>[
             PinCodeTextField(
               textStyle: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 20,
-                //color: const Color.fromARGB(255,33,33,33),
-              ),
+                  fontWeight: FontWeight.w500, fontSize: 20, color: Colors.black
+                  //color: const Color.fromARGB(255,33,33,33),
+                  ),
               controller: pinCodeTextController,
-              length: 6,
+              length: registerType == 'email' ? 6 : 4,
+              hintStyle: TextStyle(color: Colors.grey),
               obscureText: false,
               animationType: AnimationType.none,
               pinTheme: PinTheme(
@@ -247,8 +253,8 @@ class _PIN_Entering extends StatelessWidget {
                   borderWidth: 1,
                   fieldHeight: 48,
                   fieldWidth: 48,
-                  selectedColor: Color.fromARGB(255, 00, 0xcf, 0x91),
-                  activeColor: Color.fromARGB(255, 00, 0xcf, 0x91)
+                  selectedColor: Theme.of(context).colorScheme.secondary,
+                  activeColor: Theme.of(context).colorScheme.secondary
                   // activeFillColor: Color.fromARGB(255,0xc4,0xc3,0xc1)
                   ),
               animationDuration: Duration(milliseconds: 0),
@@ -303,10 +309,10 @@ class _sendCodeAgainState extends State<_sendCodeAgain> {
             children: [
               TextSpan(
                 text: LocaleKeys.registration_PIN_sendAgain.tr(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
-                  color: Color.fromARGB(255, 00, 0xCF, 0x91),
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
@@ -322,10 +328,10 @@ class _sendCodeAgainState extends State<_sendCodeAgain> {
         ),
         Text(
           "$_start",
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 14,
-            color: Color.fromARGB(255, 00, 0xCF, 0x91),
+            color: Theme.of(context).colorScheme.secondary,
           ),
         ),
       ],

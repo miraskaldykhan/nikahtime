@@ -60,9 +60,9 @@ class _EnteringRecoveryPasswordByEmailScreenState extends State<EnteringRecovery
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                               ),
                               hintText: LocaleKeys.entering_recoveryBy_email_hint.tr(),
-                              focusedBorder: const OutlineInputBorder(
+                              focusedBorder:  OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 0, 207, 145),
+                                  color: Theme.of(context).colorScheme.secondary,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -73,7 +73,7 @@ class _EnteringRecoveryPasswordByEmailScreenState extends State<EnteringRecovery
                               visible: _isError,
                               child: Text(
                                 errorMessage,
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 12,
                                   color: Colors.red,
@@ -102,8 +102,8 @@ class _EnteringRecoveryPasswordByEmailScreenState extends State<EnteringRecovery
             borderRadius: BorderRadius.circular(12.0),
           ),
           height: 56,
-          color: Color.fromARGB(255,00,0xCF,0x91),
-          disabledColor: Color.fromARGB(255,00,0xCF,0x91),
+          color: Theme.of(context).colorScheme.secondary,
+          disabledColor: Theme.of(context).colorScheme.secondary,
 
           child: _enterButtonAction(),
           onPressed: _isLoadingComplete ? () {
@@ -127,7 +127,7 @@ class _EnteringRecoveryPasswordByEmailScreenState extends State<EnteringRecovery
         LocaleKeys.entering_recoveryBy_email_get.tr(),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.left,
-        style: GoogleFonts.rubik(
+        style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 16,
           color: Color.fromARGB(255,255,255,255),
@@ -200,7 +200,7 @@ class _Message extends StatelessWidget{
       LocaleKeys.entering_recoveryBy_email_msg.tr(),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.justify,
-      style: GoogleFonts.rubik(
+      style: TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: 14,
         color: Color.fromARGB(255, 117, 116, 115),

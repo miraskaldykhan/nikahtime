@@ -32,6 +32,7 @@ abstract class  LocaleKeys {
   static const user_birthDate = 'user.birthDate';
   static const user_country = 'user.country';
   static const user_city = 'user.city';
+  static const contacts = 'contacts';
   static const user_contactPhoneNumber = 'user.contactPhoneNumber';
   static const user_placeOfWork = 'user.placeOfWork';
   static const user_workPosition = 'user.workPosition';
@@ -77,7 +78,9 @@ abstract class  LocaleKeys {
   static const profileScreen_settings_subscription = 'profileScreen.settings.subscription';
   static const profileScreen_settings_language_header = 'profileScreen.settings.language.header';
   static const profileScreen_settings_language_text = 'profileScreen.settings.language.text';
-  static const profileScreen_settings_language = 'profileScreen.settings.language';
+  static const profileScreen_settings_theme_header = 'profileScreen.settings.theme.header';
+  static const profileScreen_settings_theme_tiffani = 'profileScreen.settings.theme.tiffani';
+  static const profileScreen_settings_theme_pinkClouds = 'profileScreen.settings.theme.pinkClouds';
   static const profileScreen_settings_common = 'profileScreen.settings.common';
   static const profileScreen_settings_privacy = 'profileScreen.settings.privacy';
   static const profileScreen_settings_agreement = 'profileScreen.settings.agreement';
@@ -90,6 +93,7 @@ abstract class  LocaleKeys {
   static const profileScreen_settings_error_header = 'profileScreen.settings.error.header';
   static const profileScreen_settings_error_text = 'profileScreen.settings.error.text';
   static const profileScreen_settings_error = 'profileScreen.settings.error';
+  static const profileScreen_settings_e = 'profileScreen.settings.error';
   static const profileScreen_settings_mail = 'profileScreen.settings.mail';
   static const profileScreen_settings_connectToDevs = 'profileScreen.settings.connectToDevs';
   static const profileScreen_settings_deleteAccount = 'profileScreen.settings.deleteAccount';
@@ -99,6 +103,7 @@ abstract class  LocaleKeys {
   static const profileScreen_settings_deleteAccountAlert_msg = 'profileScreen.settings.deleteAccountAlert.msg';
   static const profileScreen_settings_deleteAccountAlert = 'profileScreen.settings.deleteAccountAlert';
   static const profileScreen_settings_exit = 'profileScreen.settings.exit';
+  static const profileScreen_settings_change_photo = 'profileScreen.settings.change_photo';
   static const profileScreen_settings_about = 'profileScreen.settings.about';
   static const profileScreen_settings_directors = 'profileScreen.settings.directors';
   static const profileScreen_settings_associateDirectors = 'profileScreen.settings.associateDirectors';
@@ -110,13 +115,28 @@ abstract class  LocaleKeys {
   static const profileScreen_settings_link = 'profileScreen.settings.link';
   static const profileScreen_settings_link_second = 'profileScreen.settings.link_second';
   static const profileScreen_settings_price = 'profileScreen.settings.price';
-  static const profileScreen_settings_donate_msg = 'profileScreen.settings.donate_msg';
-  static const profileScreen_settings_donate_msg_text = 'profileScreen.settings.donate_msg_text';
+  static const profileScreen_settings_donate_msg_header = 'profileScreen.settings.donate_msg.header';
+  static const profileScreen_settings_donate_msg_text = 'profileScreen.settings.donate_msg.text';
+  static const profileScreen_settings_donate_msg_text2 = 'profileScreen.settings.donate_msg.text2';
+  static const profileScreen_settings_donate_msg_support_btn = 'profileScreen.settings.donate_msg.support_btn';
+  static const profileScreen_settings_donate_msg_later_btn = 'profileScreen.settings.donate_msg.later_btn';
   static const profileScreen_settings_text_copied = 'profileScreen.settings.text_copied';
   static const profileScreen_settings_phone_copied = 'profileScreen.settings.phone_copied';
   static const profileScreen_settings = 'profileScreen.settings';
-  static const profileScreen = 'profileScreen';
+  static const profileScreen_settings_family_consultation = 'profileScreen.settings.family_consultation';
+  static const profileScreen_settings_notifications = 'profileScreen.settings.notifications';
   static const paymentScreen_tittle = 'paymentScreen.tittle';
+  static const tariffs_header = 'tariffs.header';
+  static const tariffs_description = 'tariffs.description';
+  static const tariffs_option1 = 'tariffs.option1';
+  static const tariffs_option2 = 'tariffs.option2';
+  static const tariffs_option3 = 'tariffs.option3';
+  static const tariffs_option4 = 'tariffs.option4';
+  static const tariffs_option5 = 'tariffs.option5';
+  static const tariffs_option6 = 'tariffs.option6';
+  static const tariffs_option7 = 'tariffs.option7';
+  static const tariffs_button = 'tariffs.button';
+  static const tariffs_canCancel = 'tariffs.canCancel';
   static const paymentScreen_promo = 'paymentScreen.promo';
   static const paymentScreen_paymentButton = 'paymentScreen.paymentButton';
   static const paymentScreen_paymentDone = 'paymentScreen.paymentDone';
@@ -442,5 +462,11 @@ abstract class  LocaleKeys {
   static const news_views_billion = 'news.views.billion';
   static const news_views = 'news.views';
   static const news = 'news';
+
+  static var welcome_screen_header;
+
+  static var usersScreen_favorites_youFavorite;
+
+  static var usersScreen_favorites_whoVisitedMe;
 
 }

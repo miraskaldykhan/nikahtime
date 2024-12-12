@@ -8,7 +8,6 @@ import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
-import '../../components/widgets/custom_appbar.dart';
 
 class PeopleWhoVizitedMeScreen extends StatefulWidget {
   const PeopleWhoVizitedMeScreen(this.userProfileData, {super.key});
@@ -65,14 +64,14 @@ class PeopleWhoVizitedMeScreenState extends State<PeopleWhoVizitedMeScreen> {
     });
   }
 
-  Widget waitBox() {
+  Widget waitBox(Color color) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const CircularProgressIndicator(
+         CircularProgressIndicator(
           valueColor:
-              AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 00, 207, 145)),
+              AlwaysStoppedAnimation<Color>(color),
         ),
         const SizedBox(
           height: 16,
@@ -81,10 +80,10 @@ class PeopleWhoVizitedMeScreenState extends State<PeopleWhoVizitedMeScreen> {
           LocaleKeys.usersScreen_loading.tr(),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
-            color: const Color.fromARGB(255, 00, 207, 145),
+            color: color,
           ),
         ),
       ],
@@ -117,31 +116,27 @@ class PeopleWhoVizitedMeScreenState extends State<PeopleWhoVizitedMeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const CustomAppBar(),
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: isLoadingComplete
             ? SizedBox(
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.only(left: 16, right: 16),
-                      child: Text(
-                        LocaleKeys.common_vizited.tr(),
-                        textDirection: TextDirection.ltr,
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.rubik(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24,
-                          color: const Color.fromARGB(255, 33, 33, 33),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    Expanded(
-                      child: FeedVerticalGridView(
+                      Expanded(
+                       child:  
+                       vizitedMeAnketas.isEmpty
+                       ? Center(
+                         child: SizedBox(
+                           width: 240,
+                           child: Text(
+                                  LocaleKeys.usersScreen_notFound.tr(),
+                                  textAlign: TextAlign.center,
+                                  style:  TextStyle( color: Theme.of(context).colorScheme.secondary, fontSize: 22, fontWeight: FontWeight.w500)
+                                  ),
+                         ),
+                       )
+                     : FeedVerticalGridView(
                         userProfileData: widget.userProfileData,
                         anketas: vizitedMeAnketas,
                         uploadMore: () async {
@@ -153,7 +148,7 @@ class PeopleWhoVizitedMeScreenState extends State<PeopleWhoVizitedMeScreen> {
                 ),
               )
             : Center(
-                child: waitBox(),
+                child: waitBox(Theme.of(context).colorScheme.primary),
               ));
   }
 }

@@ -10,6 +10,7 @@ import 'package:untitled/Screens/Chat/chat_class.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
 
 part 'chat_with_user_event.dart';
+
 part 'chat_with_user_state.dart';
 
 class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
@@ -24,7 +25,9 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
     on<AsnwerChat>(answerChat);
     on<RemoveAnswerChat>(removeAnswerChat);
     on<EditChat>(editChat);
+    on<EditChatActive>(editChatActive);
   }
+
   Future<void> answerChat(
       AsnwerChat answerChat, Emitter<ChatWithUserState> emit) async {
     emit((state as ChatWithUserInitial).copyThis(
@@ -34,13 +37,16 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
     ));
   }
 
-  Future<void> editChat(
-      EditChat editChat, Emitter<ChatWithUserState> emit) async {
-    emit((state as ChatWithUserInitial).copyThis(
-      editBoxVisible: true,
-      editText: editChat.editText,
-      pageState: PageState.newMessage,
-    ));
+  Future<void> editChatActive(
+      EditChatActive editChat, Emitter<ChatWithUserState> emit) async {
+    emit(
+      (state as ChatWithUserInitial).copyThis(
+        editBoxVisible: true,
+        editText: editChat.editText,
+        pageState: PageState.newMessage,
+        editMessageId: editChat.messageId,
+      ),
+    );
   }
 
   Future<void> removeAnswerChat(
@@ -49,17 +55,78 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
       answerBoxVisible: false,
       editBoxVisible: false,
       answerText: '',
+      editText: '',
       pageState: PageState.hold,
     ));
   }
-
-
 
   String? accessToken;
 
   Future<void> getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accessToken = prefs.getString("token") ?? "";
+  }
+
+  Future<void> editChat(
+      EditChat editChat, Emitter<ChatWithUserState> emit) async {
+    var text = editChat.editText.trim();
+
+    if (text.isEmpty) {
+      return;
+    }
+
+    text = text.replaceAll(RegExp(r'((?<=\n)\s+)|((?<=\s)\s+)'), "");
+
+    if (accessToken == null) {
+      await getAccessToken();
+    }
+
+    List<ChatMessage> messages =
+        (state as ChatWithUserInitial).messages.reversed.toList().map((e) {
+      if (e.messageId == editChat.messageId) {
+        return e.copyWith(message: editChat.editText, edited: 'Изменено');
+      } else {
+        return e;
+      }
+    }).toList();
+
+    emit(
+      (state as ChatWithUserInitial).copyThis(
+        messages: messages.reversed.toList(),
+        editBoxVisible: false,
+        editText: '',
+        editMessageId: null,
+      ),
+    );
+
+    try {
+      var response = await NetworkService().ChatsEditMessage(
+        text,
+        editChat.messageId,
+      );
+      if (response.statusCode != 200) {
+        throw Exception("Error on edited");
+      }
+    } catch (err) {
+      emit(
+        (state as ChatWithUserInitial).copyThis(
+          pageState: PageState.error,
+          messages: messages.reversed.toList(),
+          editBoxVisible: false,
+          editText: '',
+          editMessageId: null,
+        ),
+      );
+      return;
+    }
+    emit((state as ChatWithUserInitial).copyThis(
+      pageState: PageState.ready,
+      messages: messages.reversed.toList(),
+      editBoxVisible: false,
+      answerBoxVisible: false,
+      editText: '',
+      editMessageId: null,
+    ));
   }
 
   void _loadChatData(
@@ -273,43 +340,58 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
       await getAccessToken();
     }
 
+    // Prepare messages list
     List<ChatMessage> messages =
         (state as ChatWithUserInitial).messages.reversed.toList();
     messages.add(createMsg(str: event.file.path, type: event.fileType));
 
+    // Emit loading state
     emit((state as ChatWithUserInitial).copyThis(
         pageState: PageState.loading, messages: messages.reversed.toList()));
 
-    var response = await NetworkService()
-        .UploadFileRequest(accessToken!, event.file.path, event.fileType);
-
-    String url = "";
     try {
-      await response.stream.transform(utf8.decoder).listen((value) async {
-        Map valueMap = json.decode(value.toString());
-        url = valueMap["fileURL"];
-      });
+      // Send file upload request
+      var response = await NetworkService()
+          .UploadFileRequest(accessToken!, event.file.path, event.fileType);
+
+      // Check response status code
+      if (response.statusCode != 200) {
+        throw Exception('Failed to upload file: ${response.statusCode}');
+      }
+
+      // Collect the entire response body as a string
+      final responseBody = await response.stream.bytesToString();
+
+      // Debug print for response body
+      print('Response body: $responseBody');
+
+      // Decode the response body
+      final valueMap = json.decode(responseBody);
+
+      // Extract the file URL
+      final url = valueMap["fileURL"];
+      // Send message with the file URL
+      await NetworkService().ChatsSendMessage(accessToken!, url.toString(),
+          (state as ChatWithUserInitial).chatData!.chatId!, event.fileType);
+
+      // Optional: Update messages list to reflect sent status
+      messages.removeLast();
+      messages.add(createMsg(
+          str: url.toString(), type: event.fileType, isMessageSend: true));
+
+      // Emit ready state with updated messages
+      emit((state as ChatWithUserInitial).copyThis(
+          pageState: PageState.ready, messages: messages.reversed.toList()));
+
+      print("File URL: $url");
     } catch (error) {
+      // Print and handle errors
+      print('Error during file upload or JSON decoding: $error');
+
+      // Emit error state
       emit((state as ChatWithUserInitial).copyThis(
         pageState: PageState.error,
       ));
-      return;
     }
-//
-    await NetworkService().ChatsSendMessage(accessToken!, url.toString(),
-        (state as ChatWithUserInitial).chatData!.chatId!, event.fileType);
-    //messages.removeLast();
-    //messages.add(
-    //  createMsg(
-    //    str: url.toString(),
-    //    type: event.fileType,
-    //    isMessageSend: true
-    //  )
-    //);
-//
-    //emit((state as ChatWithUserInitial).copyThis(
-    //    pageState: PageState.ready,
-    //    messages: messages.reversed.toList()
-    //));
   }
 }

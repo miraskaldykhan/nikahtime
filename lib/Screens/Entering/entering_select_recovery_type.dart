@@ -76,7 +76,7 @@ class _EnteringSelectRecoveryPasswordTypeScreenState extends State<EnteringSelec
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
-                      color: Color.fromARGB(255, 0, 207, 145),
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
                   onPressed:(){
@@ -112,7 +112,7 @@ class Header extends StatelessWidget{
       LocaleKeys.entering_checkType_header.tr(),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
-      style: GoogleFonts.rubik(
+      style: TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 24,
         color: const Color.fromARGB(255,33,33,33),

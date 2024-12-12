@@ -209,7 +209,7 @@ Future<void> showPaymentDialog(
                 text,//"Для просмотра необходимо иметь активную подписку",
                 textDirection: TextDirection.ltr,
                 textAlign: TextAlign.left,
-                style: GoogleFonts.rubik(
+                style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 20,
                   color: Colors.black,
@@ -220,7 +220,7 @@ Future<void> showPaymentDialog(
                 LocaleKeys.common_payment_alert_detail.tr(),
                 textDirection: TextDirection.ltr,
                 textAlign: TextAlign.left,
-                style: GoogleFonts.rubik(
+                style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 16,
                   color: Color.fromARGB(
@@ -236,7 +236,7 @@ Future<void> showPaymentDialog(
                     borderRadius:
                     BorderRadius.circular(12.0),
                   ),
-                  color: Color.fromARGB(255, 0, 207, 145),
+                  color: Theme.of(context).colorScheme.secondary,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -249,7 +249,7 @@ Future<void> showPaymentDialog(
                     LocaleKeys.common_payment_alert_moreButton.tr(),
                     textDirection: TextDirection.ltr,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
                         color: Colors.white),
@@ -265,7 +265,7 @@ Future<void> showPaymentDialog(
                   LocaleKeys.common_payment_alert_notNowButton.tr(),
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.left,
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
                     color: Color.fromARGB(
@@ -292,7 +292,7 @@ Widget paymentStub(BuildContext context) {
           LocaleKeys.common_payment_alert_titleForView.tr(),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.left,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w700,
             fontSize: 24,
             color: Colors.black,
@@ -303,7 +303,7 @@ Widget paymentStub(BuildContext context) {
           LocaleKeys.common_payment_alert_detail.tr(),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.left,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
             color: const Color.fromARGB(255, 117, 117, 117),
@@ -319,7 +319,7 @@ Widget paymentStub(BuildContext context) {
               borderRadius:
               BorderRadius.circular(12.0),
             ),
-            color: const Color.fromARGB(255, 0, 207, 145),
+            color:  Theme.of(context).colorScheme.secondary,
             onPressed: () {
               Navigator.push(
                 context,
@@ -332,7 +332,7 @@ Widget paymentStub(BuildContext context) {
               LocaleKeys.common_payment_alert_moreButton.tr(),
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.left,
-              style: GoogleFonts.rubik(
+              style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 16,
                   color: Colors.white),

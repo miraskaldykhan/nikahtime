@@ -56,7 +56,8 @@ Widget commentaryItem({
                           width: size,
                           height: size,
                           child: displayImageMiniature(
-                              item.commentary?.user?.avatar?.preview ?? ""
+                              item.commentary?.user?.avatar?.preview ?? "",
+                              Theme.of(context).colorScheme.secondary
                             //chatInfo.userAvatar.toString()
                           )
                       ),
@@ -74,7 +75,7 @@ Widget commentaryItem({
                           item.commentary?.user?.name ?? "",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
-                          style: GoogleFonts.rubik(
+                          style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
                             //height: 1.4,
@@ -85,7 +86,7 @@ Widget commentaryItem({
                           item.commentary?.text ?? "",
                           overflow: TextOverflow.ellipsis,
                           maxLines: 10,
-                          style: GoogleFonts.rubik(
+                          style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 14,
                             height: 1.4,
@@ -96,7 +97,7 @@ Widget commentaryItem({
                           children: [
                             Text(
                               formatDate(item.commentary?.leftDate ?? ""),
-                              style: GoogleFonts.rubik(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
                                 height: 1.4,
@@ -111,7 +112,7 @@ Widget commentaryItem({
                               },
                               child: Text(
                                 LocaleKeys.news_reply.tr(),//"Ответить",
-                                style: GoogleFonts.rubik(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12,
                                   height: 1.4,

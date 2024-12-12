@@ -26,7 +26,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                   'Правила пользования и поведения в приложении NikahTime.',
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.left,
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                     color: const Color.fromARGB(255,33,33,33),
@@ -36,7 +36,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                 RichText(
                   textAlign: TextAlign.justify,
                   text: TextSpan(
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 14,
                       color: const Color.fromARGB(255,33,33,33),
@@ -62,7 +62,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                   'Справочная информация:',
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.left,
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                     color: const Color.fromARGB(255,33,33,33),
@@ -72,7 +72,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                 RichText(
                   textAlign: TextAlign.justify,
                   text: TextSpan(
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
                       color: const Color.fromARGB(255,33,33,33),
@@ -116,7 +116,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                   'В общении друг с другом придерживайтесь следующих принципов:',
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.left,
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                     color: const Color.fromARGB(255,33,33,33),
@@ -126,7 +126,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                 RichText(
                   textAlign: TextAlign.justify,
                   text: TextSpan(
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
                       color: const Color.fromARGB(255,33,33,33),
@@ -155,7 +155,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                   'Здесь запрещены:',
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.left,
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                     color: const Color.fromARGB(255,33,33,33),
@@ -165,7 +165,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                 RichText(
                   textAlign: TextAlign.justify,
                   text: TextSpan(
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
                       color: const Color.fromARGB(255,33,33,33),
@@ -197,7 +197,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                   'Предупреждаем вас:',
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.left,
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                     color: const Color.fromARGB(255,33,33,33),
@@ -207,7 +207,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                 RichText(
                   textAlign: TextAlign.justify,
                   text: TextSpan(
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 16,
                       color: const Color.fromARGB(255,33,33,33),
@@ -239,7 +239,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                   'Аллах сотворил человека из одной души и из неё же сотворил ей пару, с которой она успокаивается. (Коран, сура Аль-А’раф 7:189). ',
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                     color: const Color.fromARGB(255,33,33,33),
@@ -250,7 +250,7 @@ class _TermsOfRulesScreenState extends State<TermsOfRulesScreen> {
                   'Добро пожаловать в NikahTime!',
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
                     color: const Color.fromARGB(255,33,33,33),

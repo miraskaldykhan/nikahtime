@@ -64,7 +64,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
 
                           CustomInputDecoration().subtitleText(LocaleKeys.user_country.tr()),
                           DropdownFormField<String>(
-                            decoration: CustomInputDecoration().GetDecoration(),
+                            decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
                             onSaved: (dynamic str) {
                               userFilter.country = "$str";
                               setState(() {});
@@ -96,7 +96,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
                               children: [
                                 CustomInputDecoration().subtitleText(LocaleKeys.user_nationality.tr()),
                                 DropdownFormField<String>(
-                                  decoration: CustomInputDecoration().GetDecoration(),
+                                  decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
                                   onSaved: (dynamic str) {},
                                   onChanged: (dynamic item){
                                     userFilter.nationality = item;
@@ -120,7 +120,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
                                 Visibility(
                                   visible: userFilter.country == "Россия",
                                   child: DropdownFormField<Map<String, dynamic>>(
-                                    decoration: CustomInputDecoration().GetDecoration(),
+                                    decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
                                     onSaved: (dynamic str) {},
                                     onChanged: (dynamic item) {
                                       userFilter.city =
@@ -153,7 +153,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
                                   child: TextField(
                                     decoration: CustomInputDecoration(
                                       hintText: userFilter.city ?? "",
-                                    ).GetDecoration(),
+                                    ).GetDecoration(Theme.of(context).colorScheme.primary),
                                     controller: _nonRussianCountryController,
                                     onSubmitted: (value){
                                       userFilter.city = _nonRussianCountryController.text;
@@ -163,7 +163,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
 
                                 CustomInputDecoration().subtitleText(LocaleKeys.user_education.tr()),
                                 InputDecorator(
-                                  decoration: CustomInputDecoration().GetDecoration(),
+                                  decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
                                       hint: Text(
@@ -194,7 +194,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
 
                                 CustomInputDecoration().subtitleText(LocaleKeys.user_maritalStatus.tr()),
                                 InputDecorator(
-                                  decoration: CustomInputDecoration().GetDecoration(),
+                                  decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
                                       hint: Text(
@@ -224,7 +224,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
 
                                 CustomInputDecoration().subtitleText(LocaleKeys.user_haveChildren_title.tr()),
                                 InputDecorator(
-                                  decoration: CustomInputDecoration(hintText: LocaleKeys.user_haveChildren_hint.tr()).GetDecoration(),
+                                  decoration: CustomInputDecoration(hintText: LocaleKeys.user_haveChildren_hint.tr()).GetDecoration(Theme.of(context).colorScheme.primary),
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
                                       hint: Text(
@@ -252,7 +252,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
                                 Visibility(
                                   visible: haveBadHabbitsSwitch,
                                   child: CustomizableMultiselectField(
-                                    decoration: CustomInputDecoration().GetDecoration(),
+                                    decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
                                     customizableMultiselectWidgetOptions: CustomizableMultiselectWidgetOptions(
                                       chipShape: RoundedRectangleBorder(
                                         side: const BorderSide(color: Colors.red, width: 1),
@@ -309,16 +309,16 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
                     height: 56,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
-                      side: const BorderSide(width: 1, color: Color.fromARGB(255, 0, 207, 145)),
+                      side:  BorderSide(width: 1, color: Theme.of(context).colorScheme.secondary),
                     ),
                     child: Text(
                       setButtonName(isOpened),
                       textDirection: TextDirection.ltr,
                       textAlign: TextAlign.left,
-                      style: const TextStyle(
+                      style:  TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
-                        color: Color.fromARGB(255, 0, 207, 145),
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ),
                     onPressed:(){
@@ -334,7 +334,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
                 child:
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:const Color.fromARGB(255, 00, 0xcf, 0x91),
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
                       elevation: 0,
                       fixedSize: const Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(
@@ -619,9 +619,9 @@ class _AgeSlideState extends State<_AgeSlide> {
                         signed: false,
                         decimal: false
                     ),
-                    decoration: const InputDecoration(
+                    decoration:  InputDecoration(
                       contentPadding: EdgeInsets.all(8.0),
-                      enabledBorder: const OutlineInputBorder(
+                      enabledBorder:  OutlineInputBorder(
                         borderSide: BorderSide(
                           color: Color.fromARGB(255, 218, 216, 215),
                           width: 1,
@@ -629,9 +629,9 @@ class _AgeSlideState extends State<_AgeSlide> {
                         borderRadius: BorderRadius.all(Radius.circular(4)),
                       ),
                       hintText: "",
-                      focusedBorder: const OutlineInputBorder(
+                      focusedBorder:  OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color.fromARGB(255, 0, 207, 145),
+                          color: Theme.of(context).colorScheme.secondary,
                           width: 1,
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -680,7 +680,7 @@ class _AgeSlideState extends State<_AgeSlide> {
                           _prevEndValue = _endValue;
                         }
                       },
-                      decoration: const InputDecoration(
+                      decoration:  InputDecoration(
                         contentPadding: EdgeInsets.all(8.0),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -692,7 +692,7 @@ class _AgeSlideState extends State<_AgeSlide> {
                         hintText: "",
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Color.fromARGB(255, 0, 207, 145),
+                            color: Theme.of(context).colorScheme.secondary,
                             width: 1,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -711,7 +711,7 @@ class _AgeSlideState extends State<_AgeSlide> {
 
   Widget AgeSlider(){
     return RangeSlider(
-      activeColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
+      activeColor:  Theme.of(context).colorScheme.secondary,
       values: RangeValues(_startValue, _endValue),
       min: minValue,
       max: maxValue,

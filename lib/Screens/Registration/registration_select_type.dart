@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:untitled/Screens/Registration/registration_create_profile.dart';
@@ -32,214 +33,205 @@ class _RegistrationSelectTypeScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
-      body: Container(
-        margin: const EdgeInsets.only(left: 16, right: 16),
-        width: double.infinity,
-        //margin: EdgeInsets.only(top: 104),
-        child: SingleChildScrollView(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Header(),
-                SizedBox(
-                  height: 16,
-                ),
-                Container(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 00, 0xcf, 0x91)  ,
-                          elevation: 0,
-                          fixedSize: Size(double.infinity, 56),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                        child: Text(
-                          LocaleKeys.registration_type_phone_by.tr(),
-                          textDirection: TextDirection.ltr,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (_, __, ___) =>
-                              const RegistrationPhoneNumberScreen(),
-                              transitionDuration:
-                              const Duration(seconds: 0),
-                            ),
-                          );
-                        })),
-                SizedBox(
-                  height: 16,
-                ),
-                Container(
-                  width: double.infinity,
-                  child: MaterialButton(
-                      height: 64,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                        side: BorderSide(
-                            width: 1,
-                            color: Color.fromARGB(255, 218, 216, 215)),
-                      ),
-                      child: Text(
-                        LocaleKeys.registration_type_email_by.tr(),
-                        textDirection: TextDirection.ltr,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 0, 207, 145),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (_, __, ___) =>
-                            const RegistrationEmailScreen(),
-                            transitionDuration:
-                            const Duration(seconds: 0),
-                          ),
-                        );
-                        setState(() {});
-                      }),
-                ),
-                const SizedBox(height: 44),
-                Row(children: <Widget>[
-                  Expanded(
-                    child: Container(
-                        margin: const EdgeInsets.only(
-                            left: 10.0, right: 15.0),
-                        child: const Divider(
-                            height: 1,
-                            color: Color.fromRGBO(0, 0, 0, 23))),
-                  ),
-                  Text(LocaleKeys.registration_type_message.tr(),),
-                  Expanded(
-                    child: Container(
-                        margin: const EdgeInsets.only(
-                            left: 15.0, right: 10.0),
-                        child: const Divider(
-                            height: 1,
-                            color: Color.fromRGBO(0, 0, 0, 23))),
-                  ),
-                ]),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      appBar: const CustomAppBar(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(left: 16, right: 16),
+            width: double.infinity,
+            //margin: EdgeInsets.only(top: 104),
+            child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    // Container(
-                    //     height: 48,
-                    //     width: 48,
-                    //     decoration: BoxDecoration(
-                    //       border: Border.all(
-                    //         color: const Color.fromARGB(255, 218, 216, 215),
-                    //         width: 1,
-                    //       ),
-                    //       borderRadius:
-                    //       const BorderRadius.all(Radius.circular(10)),
-                    //     ),
-                    //     child: IconButton(
-                    //       icon: const FaIcon(FontAwesomeIcons.facebook),
-                    //       color: Colors.green,
-                    //       onPressed: () {
-                    //         ;
-                    //       },
-                    //     )),
-                    Container(
-                        height: 48,
-                        width: 48,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color:
-                            const Color.fromARGB(255, 218, 216, 215),
-                            width: 1,
-                          ),
-                          borderRadius:
-                          const BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.google),
-                          color: Color.fromRGBO(00, 0xcf, 0x91, 1),
-                          onPressed: () async {
-                            _sendGoogleSignInRegistrationRequest();
-                          },
-                        )),
+                    const Header(),
                     const SizedBox(
-                      width: 16,
+                      height: 16,
                     ),
                     Container(
-                        height: 48,
-                        width: 48,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color:
-                            const Color.fromARGB(255, 218, 216, 215),
-                            width: 1,
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.secondary  ,
+                              elevation: 0,
+                              fixedSize: const Size(double.infinity, 56),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                            ),
+                            child: Text(
+                              LocaleKeys.registration_type_phone_by.tr(),
+                              textDirection: TextDirection.ltr,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder: (_, __, ___) =>
+                                  const RegistrationPhoneNumberScreen(),
+                                  transitionDuration:
+                                  const Duration(seconds: 0),
+                                ),
+                              );
+                            })),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: MaterialButton(
+                          height: 56,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            side: BorderSide(
+                                width: 2,
+                                color:  Theme.of(context).colorScheme.secondary ),
                           ),
-                          borderRadius:
-                          const BorderRadius.all(Radius.circular(10)),
-                        ),
-                        child: IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.apple),
-                          color: Color.fromRGBO(00, 0xcf, 0x91, 1),
-                          onPressed: () async {
-                            _sendAppleSignInRegistrationRequest();
-                            return;
-                          },
-                        )),
-                    // Container(
-                    //     height: 48,
-                    //     width: 48,
-                    //     decoration: BoxDecoration(
-                    //       border: Border.all(
-                    //         color: const Color.fromARGB(255, 218, 216, 215),
-                    //         width: 1,
-                    //       ),
-                    //       borderRadius:
-                    //       const BorderRadius.all(Radius.circular(10)),
-                    //     ),
-                    //     child: IconButton(
-                    //       icon: const FaIcon(FontAwesomeIcons.instagram),
-                    //       color: Colors.green,
-                    //       onPressed: () {
-                    //         ;
-                    //       },
-                    //     )),
-                    // Container(
-                    //     height: 48,
-                    //     width: 48,
-                    //     decoration: BoxDecoration(
-                    //       border: Border.all(
-                    //         color: Color.fromARGB(255, 218, 216, 215),
-                    //         width: 1,
-                    //       ),
-                    //       borderRadius: BorderRadius.all(Radius.circular(10)),
-                    //     ),
-                    //     child: IconButton(
-                    //       icon: const FaIcon(FontAwesomeIcons.vk),
-                    //       color: Colors.green,
-                    //       onPressed: () {
-                    //         ;
-                    //       },
-                    //     )),
+                          child: Text(
+                            LocaleKeys.registration_type_email_by.tr(),
+                            textDirection: TextDirection.ltr,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                              color:  Theme.of(context).colorScheme.secondary ,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) =>
+                                const RegistrationEmailScreen(),
+                                transitionDuration:
+                                const Duration(seconds: 0),
+                              ),
+                            );
+                            setState(() {});
+                          }),
+                    ),
+                    const SizedBox(height: 20),
+                    const _OrLoginOption(),
+                    const SizedBox(height: 20),
+                   Container(
+            width: double.infinity,
+            child: Row(
+              children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () async { 
+                _sendGoogleSignInRegistrationRequest();
+              },
+              child: Container(
+                height: 52,
+                 decoration: BoxDecoration(
+                      border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                      borderRadius: BorderRadius.circular(10)
+                 ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/icons/google.png', width: 20,),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Google',
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
                   ],
                 ),
-                SizedBox(height: 16),
-                PolicyAgreement()
-              ]
+              ),
+            ),
           ),
-        ),
+          const SizedBox(width: 16), // Расстояние между кнопками
+          Expanded(
+            child: GestureDetector(
+              onTap: () async { 
+                _sendAppleSignInRegistrationRequest();
+              },
+              child: Container(
+                height: 52,
+                 decoration: BoxDecoration(
+                      border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                      borderRadius: BorderRadius.circular(10)
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/icons/apple.png', width: 20,),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Apple',
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          
+                          
+                          // Container(
+                          //     height: 48,
+                          //     width: 48,
+                          //     decoration: BoxDecoration(
+                          //       border: Border.all(
+                          //         color: const Color.fromARGB(255, 218, 216, 215),
+                          //         width: 1,
+                          //       ),
+                          //       borderRadius:
+                          //       const BorderRadius.all(Radius.circular(10)),
+                          //     ),
+                          //     child: IconButton(
+                          //       icon: const FaIcon(FontAwesomeIcons.instagram),
+                          //       color: Colors.green,
+                          //       onPressed: () {
+                          //         ;
+                          //       },
+                          //     )),
+                          // Container(
+                          //     height: 48,
+                          //     width: 48,
+                          //     decoration: BoxDecoration(
+                          //       border: Border.all(
+                          //         color: Color.fromARGB(255, 218, 216, 215),
+                          //         width: 1,
+                          //       ),
+                          //       borderRadius: BorderRadius.all(Radius.circular(10)),
+                          //     ),
+                          //     child: IconButton(
+                          //       icon: const FaIcon(FontAwesomeIcons.vk),
+                          //       color: Colors.green,
+                          //       onPressed: () {
+                          //         ;
+                          //       },
+                          //     )),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                  ]
+              ),
+            ),
+          ),
+          const Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Column(
+                        children: [
+                          PolicyAgreement(),
+                          SizedBox(height: 20,)
+                        ],
+                      ))
+        ],
       ),
     );
   }
@@ -418,12 +410,52 @@ class Header extends StatelessWidget {
             LocaleKeys.registration_header.tr(),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.left,
-            style: GoogleFonts.rubik(
+            style: const TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 24,
-              color: const Color.fromARGB(255, 33, 33, 33),
+              color: Color.fromARGB(255, 33, 33, 33),
             ),
           )
         ]);
   }
+}
+
+
+class _OrLoginOption extends StatelessWidget {
+    const _OrLoginOption ({Key? key}) : super (key:key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+   return  Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Expanded(
+                child: Divider(
+                  thickness: 1, 
+                  color: Colors.black, 
+                  indent: 0, 
+                  endIndent: 10, 
+                ),
+              ),
+              Text(
+                LocaleKeys.welcome_screen_createAcc.tr(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black
+                ),
+              ),
+              const Expanded(
+                child: Divider(
+                  thickness: 1,
+                  color: Colors.black,
+                  indent: 10,
+                  endIndent: 0,
+                ),
+              ),
+            ],
+          );
+  }
+  
 }

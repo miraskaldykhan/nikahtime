@@ -17,7 +17,7 @@ class CustomInputDecoration{
         visible: error,
         child: Text(
           errMessage.tr(),
-          style: GoogleFonts.rubik(
+          style: const TextStyle(
             fontWeight: FontWeight.w400,
             fontSize: 12,
             color: Colors.red,
@@ -26,22 +26,25 @@ class CustomInputDecoration{
     );
   }
 
-  InputDecoration GetDecoration(){
+  InputDecoration GetDecoration(Color color){
     return InputDecoration(
+      hintStyle: const TextStyle(color: Colors.grey),
+      labelStyle: const TextStyle(color: Colors.grey),
+      fillColor: Colors.white,
       suffixIcon: (Icon == null) ? null : Icon,
       hintText: hintText,
       //labelText: labeltext,
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(
           color: Color.fromARGB(255, 218, 216, 215),
-          width: 1,
+          width: 2,
         ),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
-      focusedBorder: const OutlineInputBorder(
+      focusedBorder:  OutlineInputBorder(
         borderSide: BorderSide(
-          color: Color.fromARGB(255, 0, 207, 145),
-          width: 1,
+          color: color,
+          width: 2,
         ),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
@@ -61,10 +64,10 @@ class CustomInputDecoration{
                 str,
                 textDirection: TextDirection.ltr,
                 textAlign: TextAlign.left,
-                style: GoogleFonts.rubik(
+                style: const TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
-                  color: const Color.fromARGB(255,0,0,0),
+                  color:  Color.fromARGB(255,0,0,0),
                 ),
               ),
             ),
@@ -77,7 +80,7 @@ class CustomInputDecoration{
                     LocaleKeys.common_fieldNotRequired.tr(),
                     textDirection: TextDirection.ltr,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.rubik(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 12,
                       color: const Color.fromARGB(255,0,0,0),
@@ -113,7 +116,7 @@ class CustomInputDecoration{
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           anketasHeaderName(label),
-          const SizedBox(height: 8,),
+          const SizedBox(height: 6,),
           anketasBodyText(text.toString()),
           const SizedBox(height: 20,),
         ],
@@ -141,7 +144,7 @@ class CustomInputDecoration{
       textAlign: TextAlign.left,
       style: const TextStyle(
         fontWeight: FontWeight.w500,
-        fontSize: 20,
+        fontSize: 22,
         color: Colors.black,
       ),
     );
@@ -207,7 +210,7 @@ class BirthDateState extends State<BirthDate> {
       decoration: CustomInputDecoration(
         hintText: (widget.userProfileData.birthDate != null) ? widget.userProfileData.birthDate!.replaceAll("-", ".") : "xx.xx.xxxx",
         Icon: const Icon(Icons.calendar_today, color: Colors.grey,),
-      ).GetDecoration(),
+      ).GetDecoration(Theme.of(context).colorScheme.primary),
     );
   }
 }
@@ -245,7 +248,7 @@ class PhoneNumberFieldState extends State<PhoneNumberField> {
           decoration: BoxDecoration(
             border: Border.all(
               color: Color.fromARGB(255, 218, 216, 215),
-              width: 1, //                   <--- border width here
+              width: 2, //                   <--- border width here
             ),
             borderRadius: const BorderRadius.all(
                 Radius.circular(10.0) //                 <--- border radius here
@@ -325,6 +328,7 @@ class CustomSwitcherState extends State<CustomSwitcher> {
         Row(
           children: [
             CupertinoSwitch(
+                activeColor: Theme.of(context).colorScheme.primary,
                 value: _switchValue,
                 onChanged: (bool value) {
                   setState(() {

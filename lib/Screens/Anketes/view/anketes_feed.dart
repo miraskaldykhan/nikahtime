@@ -105,33 +105,32 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
 
   AppBar buildSimpleAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
       elevation: 0,
       title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(
           LocaleKeys.usersScreen_tittle,
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.left,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w700,
-            fontSize: 24,
+            fontSize: 25,
             color: const Color.fromARGB(255, 33, 33, 33),
           ),
         ).tr(),
         Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 40,
+              height: 40,
               decoration: iconDecoration(),
               child: IconButton(
                   splashRadius: 1,
                   iconSize: 20.0,
                   padding: const EdgeInsets.all(0),
-                  icon: const Icon(
-                    Icons.search,
+                  icon: SvgPicture.asset('assets/icons/search.svg', color: Theme.of(context).primaryColor,),
                     color: Color.fromARGB(255, 117, 116, 115),
-                  ),
                   onPressed: () {
                     context.read<AnketesBloc>().add(const SwitchSearchMode());
                   }),
@@ -140,17 +139,15 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
               width: 8,
             ),
             Container(
-              width: 32,
-              height: 32,
+              width: 40,
+              height: 40,
               decoration: iconDecoration(),
               child: IconButton(
                   splashRadius: 1,
                   iconSize: 20.0,
                   padding: const EdgeInsets.all(0),
-                  icon: const Icon(
-                    Icons.filter_alt_outlined,
+                   icon: SvgPicture.asset('assets/icons/filter.svg', color: Theme.of(context).primaryColor,),
                     color: Color.fromARGB(255, 117, 116, 115),
-                  ),
                   onPressed: () {
                     showFilters(context);
                   }),
@@ -158,22 +155,22 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
             const SizedBox(
               width: 8,
             ),
-            Container(
-              width: 32,
-              height: 32,
-              decoration: iconDecoration(),
-              child: IconButton(
-                  splashRadius: 1,
-                  iconSize: 20.0,
-                  padding: const EdgeInsets.all(0),
-                  icon: const Icon(
-                    Icons.vertical_split,
-                    color: Color.fromARGB(255, 117, 116, 115),
-                  ),
-                  onPressed: () {
-                    context.read<AnketesBloc>().add(const SwitchShowMode());
-                  }),
-            ),
+            // Container(
+            //   width: 40,
+            //   height: 40,
+            //   decoration: iconDecoration(),
+            //   child: IconButton(
+            //       splashRadius: 1,
+            //       iconSize: 20.0,
+            //       padding: const EdgeInsets.all(0),
+            //       icon: const Icon(
+            //         Icons.vertical_split,
+            //         color: Color.fromARGB(255, 117, 116, 115),
+            //       ),
+            //       onPressed: () {
+            //         context.read<AnketesBloc>().add(const SwitchShowMode());
+            //       }),
+            // ),
           ],
         ),
       ]),
@@ -187,24 +184,23 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
       required Function onClearAction,
       required Function onSubmitAction}) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
       elevation: 0,
       title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 40,
+              height: 40,
               decoration: iconDecoration(),
               child: IconButton(
                   splashRadius: 1,
                   iconSize: 20.0,
                   padding: const EdgeInsets.all(0),
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new,
+                  icon: SvgPicture.asset('assets/icons/back.svg', color: Theme.of(context).colorScheme.secondary,),
                     color: Color.fromARGB(255, 117, 116, 115),
-                  ),
                   onPressed: () {
                     onBackAction();
                   }),
@@ -215,14 +211,15 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
             Flexible(
                 flex: 1,
                 child: Container(
-                  height: 32,
+                  height: 40,
                   padding: const EdgeInsets.only(left: 6),
                   decoration: BoxDecoration(
-                      color: const Color.fromRGBO(0xfb, 0xfb, 0xff, 1),
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(12.0)),
                       border: Border.all(
-                        color: Colors.green,
+                        color: Theme.of(context).colorScheme.primary,
+                         width: 2
                       )),
                   child: Center(
                     child: TextField(
@@ -234,15 +231,16 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
                           fontWeight: FontWeight.w400, fontSize: 14, height: 1),
                       decoration: InputDecoration(
                         filled: true,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 6),
                         fillColor: const Color.fromRGBO(0x5A, 0x5A, 0xEE, 0),
                         suffixIcon: GestureDetector(
                           onTap: () {
                             onClearAction();
                           },
-                          child: const Icon(
+                          child: Icon(
                             Icons.close,
                             size: 20,
-                            color: Color.fromARGB(255, 117, 116, 115),
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
                         ),
                         hintText: LocaleKeys.usersScreen_searchHint.tr(),
@@ -261,27 +259,27 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
                         border: const UnderlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(0xfb, 0xfb, 0xff, 1)),
+                              color: Color.fromRGBO(0xfb, 0xfb, 0xff, 1), width: 2),
                         ),
                         focusedBorder: const UnderlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                          borderRadius: BorderRadius.all(Radius.circular(12.0),  ),
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(0xfb, 0xfb, 0xff, 1)),
+                              color: Color.fromRGBO(0xfb, 0xfb, 0xff, 1),  width: 2),
                         ),
                         enabledBorder: const UnderlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(0xfb, 0xfb, 0xff, 1)),
+                              color: Color.fromRGBO(0xfb, 0xfb, 0xff, 1),  width: 2),
                         ),
                         errorBorder: const UnderlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(12.0)),
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(0xff, 0x45, 0x67, 1)),
+                              color: Color.fromRGBO(0xff, 0x45, 0x67, 1),  width: 2),
                         ),
                         focusedErrorBorder: const UnderlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                          borderRadius: BorderRadius.all(Radius.circular(12.0), ),
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(0xff, 0x45, 0x67, 1)),
+                              color: Color.fromRGBO(0xff, 0x45, 0x67, 1), width: 2),
                         ),
                       ),
                       onSubmitted: (value) {
@@ -335,10 +333,10 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
               LocaleKeys.usersScreen_searchMainHint.tr(),
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.center,
-              style: GoogleFonts.rubik(
+              style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
-                color: const Color.fromRGBO(0, 0xcf, 0x91, 1),
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
@@ -349,10 +347,10 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
             LocaleKeys.usersScreen_searchNotFound.tr(),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center,
-            style: GoogleFonts.rubik(
+            style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16,
-              color: const Color.fromRGBO(0, 0xcf, 0x91, 1),
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         );
@@ -362,10 +360,10 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
             LocaleKeys.usersScreen_notFound.tr(),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center,
-            style: GoogleFonts.rubik(
+            style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16,
-              color: const Color.fromRGBO(0, 0xcf, 0x91, 1),
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         );
@@ -413,9 +411,9 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const CircularProgressIndicator(
+         CircularProgressIndicator(
           valueColor:
-              AlwaysStoppedAnimation<Color>(Color.fromRGBO(0, 0xcf, 0x91, 1)),
+              AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
         ),
         const SizedBox(
           height: 16,
@@ -424,10 +422,10 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
           LocaleKeys.usersScreen_loading.tr(),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
-            color: const Color.fromRGBO(0, 0xcf, 0x91, 1),
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ],
@@ -448,6 +446,7 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Container(
+              color: Theme.of(context).scaffoldBackgroundColor,
               padding: const EdgeInsets.all(12),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -464,7 +463,7 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
                             LocaleKeys.filters_tittle.tr(),
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 24,
                               color: Colors.black,
@@ -486,11 +485,10 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
                                     children: [
                                       TextSpan(
                                         text: LocaleKeys.filters_reset.tr(),
-                                        style: GoogleFonts.rubik(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 18,
-                                          color: const Color.fromARGB(
-                                              255, 0, 207, 145),
+                                          color: Theme.of(context).colorScheme.primary,
                                         ),
                                       ),
                                     ],
@@ -506,11 +504,11 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
                                   LocaleKeys.filters_close,
                                   textDirection: TextDirection.ltr,
                                   textAlign: TextAlign.left,
-                                  style: GoogleFonts.rubik(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 18,
                                     color:
-                                        const Color.fromARGB(255, 0, 207, 145),
+                                        Theme.of(context).colorScheme.primary,
                                   ),
                                 ).tr(),
                               ),
@@ -528,7 +526,7 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
                                   LocaleKeys.filters_isOnline,
                                   textDirection: TextDirection.ltr,
                                   textAlign: TextAlign.left,
-                                  style: GoogleFonts.rubik(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
                                     color: const Color.fromARGB(255, 33, 33, 33),
@@ -555,19 +553,19 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
                           height: 56,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
-                            side: const BorderSide(
+                            side: BorderSide(
                               width: 1,
-                              color: Color.fromARGB(255, 0, 207, 145),
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
-                          child: const Text(
+                          child: Text(
                             LocaleKeys.filters_complicatedFilter,
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
-                              color: Color.fromARGB(255, 0, 207, 145),
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ).tr(),
                           onPressed: () {
@@ -596,7 +594,7 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
-                                const Color.fromARGB(255, 0, 207, 145),
+                                Theme.of(context).colorScheme.primary,
                             elevation: 0,
                             fixedSize: const Size(double.infinity, 56),
                             shape: RoundedRectangleBorder(
@@ -634,9 +632,9 @@ class AnketesFeedScreenState extends State<AnketesFeedScreen>
 
   BoxDecoration iconDecoration() {
     return BoxDecoration(
-      border: Border.all(
-        width: 1.0,
-        color: const Color.fromARGB(255, 218, 216, 215),
+      border: GradientBoxBorder(
+        gradient: LinearGradient(colors: [Theme.of(context).colorScheme.primary,Theme.of(context).colorScheme.secondary,]),
+        width: 2.0,
       ),
       borderRadius: const BorderRadius.all(Radius.circular(12.0)),
     );
@@ -766,7 +764,7 @@ class _AgeSlideState extends State<_AgeSlide> {
                   textInputAction: TextInputAction.done,
                   keyboardType: const TextInputType.numberWithOptions(
                       signed: false, decimal: false),
-                  decoration: const InputDecoration(
+                  decoration:  InputDecoration(
                     contentPadding: EdgeInsets.all(8.0),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -778,7 +776,7 @@ class _AgeSlideState extends State<_AgeSlide> {
                     hintText: "",
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Color.fromARGB(255, 0, 207, 145),
+                        color: Theme.of(context).colorScheme.primary,
                         width: 1,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -826,7 +824,7 @@ class _AgeSlideState extends State<_AgeSlide> {
                       _prevEndValue = userFilter.maxAge;
                     }
                   },
-                  decoration: const InputDecoration(
+                  decoration:  InputDecoration(
                     contentPadding: EdgeInsets.all(8.0),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -838,7 +836,7 @@ class _AgeSlideState extends State<_AgeSlide> {
                     hintText: "",
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Color.fromARGB(255, 0, 207, 145),
+                        color: Theme.of(context).colorScheme.primary,
                         width: 1,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -856,7 +854,7 @@ class _AgeSlideState extends State<_AgeSlide> {
 
   Widget ageSliderItem() {
     return RangeSlider(
-      activeColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
+      activeColor:  Theme.of(context).colorScheme.secondary,
       values: RangeValues(userFilter.minAge, userFilter.maxAge),
       min: minValue,
       max: maxValue,

@@ -45,7 +45,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
           LocaleKeys.profileScreen_settings_subscription_header.tr(),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.left,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 20,
             color: const Color.fromARGB(255, 33, 33, 33),
@@ -68,7 +68,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           .tr(),
                       textDirection: TextDirection.ltr,
                       textAlign: TextAlign.left,
-                      style: GoogleFonts.rubik(
+                      style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 16,
                         color: const Color.fromARGB(255, 33, 33, 33),
@@ -78,7 +78,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                       getTariffTitle(userTariff: userTariff),
                       textDirection: TextDirection.ltr,
                       textAlign: TextAlign.left,
-                      style: GoogleFonts.rubik(
+                      style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
                         color: const Color.fromARGB(255, 33, 33, 33),
@@ -95,7 +95,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             .tr(),
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.left,
-                        style: GoogleFonts.rubik(
+                        style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 16,
                           color: const Color.fromARGB(255, 33, 33, 33),
@@ -105,7 +105,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         userTariff?.expiredAt ?? "",
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.left,
-                        style: GoogleFonts.rubik(
+                        style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16,
                           color: const Color.fromARGB(255, 33, 33, 33),
@@ -135,7 +135,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           text: LocaleKeys
                               .profileScreen_settings_subscription_subscribe
                               .tr(),
-                          style: GoogleFonts.rubik(
+                          style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
                             color: const Color.fromARGB(255, 00, 207, 145),
@@ -196,7 +196,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     LocaleKeys.profileScreen_settings_header.tr(),
                     textDirection: TextDirection.ltr,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 24,
                       color: const Color.fromARGB(255, 33, 33, 33),
@@ -235,7 +235,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             LocaleKeys.profileScreen_settings_about.tr(),
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 20,
                               color: const Color.fromARGB(255, 33, 33, 33),
@@ -245,7 +245,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             LocaleKeys.user_more.tr(),
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
                               color: const Color.fromARGB(255, 00, 207, 145),
@@ -264,7 +264,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     LocaleKeys.profileScreen_settings_common.tr(),
                     textDirection: TextDirection.ltr,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 20,
                       color: const Color.fromARGB(255, 33, 33, 33),
@@ -292,7 +292,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           TextSpan(
                             text:
                                 LocaleKeys.profileScreen_settings_privacy.tr(),
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
                               color: const Color.fromARGB(255, 00, 207, 145),
@@ -324,7 +324,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           TextSpan(
                             text: LocaleKeys.profileScreen_settings_agreement
                                 .tr(),
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
                               color: const Color.fromARGB(255, 00, 207, 145),
@@ -356,7 +356,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           TextSpan(
                             text:
                                 LocaleKeys.profileScreen_settings_useTerms.tr(),
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
                               color: const Color.fromARGB(255, 00, 207, 145),
@@ -388,7 +388,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           TextSpan(
                             text: LocaleKeys.profileScreen_settings_paymentRules
                                 .tr(),
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
                               color: const Color.fromARGB(255, 00, 207, 145),
@@ -420,7 +420,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           TextSpan(
                             text: LocaleKeys.profileScreen_settings_refundRules
                                 .tr(),
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
                               color: const Color.fromARGB(255, 00, 207, 145),
@@ -451,7 +451,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                           TextSpan(
                             text:
                                 LocaleKeys.profileScreen_settings_tariffs.tr(),
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
                               color: const Color.fromARGB(255, 00, 207, 145),
@@ -471,7 +471,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     LocaleKeys.profileScreen_settings_help.tr(),
                     textDirection: TextDirection.ltr,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 20,
                       color: const Color.fromARGB(255, 33, 33, 33),
@@ -524,7 +524,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             text: LocaleKeys
                                 .profileScreen_settings_connectToDevs
                                 .tr(),
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
                               color: const Color.fromARGB(255, 00, 207, 145),
@@ -544,7 +544,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     LocaleKeys.profileScreen_settings_language_header.tr(),
                     textDirection: TextDirection.ltr,
                     textAlign: TextAlign.left,
-                    style: GoogleFonts.rubik(
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 20,
                       color: const Color.fromARGB(255, 33, 33, 33),
@@ -557,7 +557,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         LocaleKeys.profileScreen_settings_language_text.tr(),
                         textDirection: TextDirection.ltr,
                         textAlign: TextAlign.left,
-                        style: GoogleFonts.rubik(
+                        style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 16,
                           color: const Color.fromARGB(255, 33, 33, 33),
@@ -609,7 +609,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                                 .tr(),
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                               color:
@@ -643,7 +643,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             'contacts'.tr(),
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
                                 color: Colors.blue),
@@ -700,7 +700,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                             LocaleKeys.profileScreen_settings_exit.tr(),
                             textDirection: TextDirection.ltr,
                             textAlign: TextAlign.left,
-                            style: GoogleFonts.rubik(
+                            style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                               color: const Color.fromARGB(255, 0, 0, 0),

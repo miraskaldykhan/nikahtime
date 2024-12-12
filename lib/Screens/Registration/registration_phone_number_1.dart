@@ -51,7 +51,7 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
                         visible: phoneError,
                         child: Text(
                           errorMessage,
-                          style: GoogleFonts.rubik(
+                          style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
                             color: Colors.red,
@@ -74,7 +74,7 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
                         visible: passwordError,
                         child: Text(
                           errorMessage,
-                          style: GoogleFonts.rubik(
+                          style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
                             color: Colors.red,
@@ -97,7 +97,7 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
                         visible: passwordError,
                         child: Text(
                           errorMessage,
-                          style: GoogleFonts.rubik(
+                          style: TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
                             color: Colors.red,
@@ -124,8 +124,8 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
             borderRadius: BorderRadius.circular(12.0),
           ),
           height: 56,
-          color: const Color.fromARGB(255,00,0xCF,0x91),
-          disabledColor: const Color.fromARGB(255,00,0xCF,0x91),
+          color: Theme.of(context).colorScheme.secondary,
+          disabledColor: Theme.of(context).colorScheme.secondary,
           onPressed: _isLoadingComplete ? () {
             if(_secondPasswordTextController.text != _firstPasswordTextController.text || _secondPasswordTextController.text == "")
             {
@@ -164,8 +164,8 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
         LocaleKeys.registration_sendCode.tr(),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.left,
-        style: GoogleFonts.rubik(
-          fontWeight: FontWeight.w500,
+        style: TextStyle(
+          fontWeight: FontWeight.w700,
           fontSize: 16,
           color: const Color.fromARGB(255,255,255,255),
         ),
@@ -185,7 +185,8 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
         body: {
           "grantType": "phoneNumber",
           "phoneNumber": phoneNumber,
-          "password": _firstPasswordTextController.text
+          "password": _firstPasswordTextController.text,
+          "authByCall": true
         },
         headers: {'Accept':'application/json'}
     );
@@ -235,7 +236,7 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
           decoration: BoxDecoration(
             border: Border.all(
               color: const Color.fromARGB(255, 218, 216, 215),
-              width: 1, //                   <--- border width here
+              width: 2, //                   <--- border width here
             ),
             borderRadius: const BorderRadius.all(
                 Radius.circular(10.0) //                 <--- border radius here
@@ -255,6 +256,7 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
                   searchBoxDecoration: InputDecoration(
                     hintText: LocaleKeys.common_phoneNumberHint.tr(),
                   ),
+                  
                   onInputChanged: (PhoneNumber number) {
                     debugPrint(number.phoneNumber);
                   },
@@ -266,6 +268,7 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
                     selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                   ),
                   hintText: '___ ___ __ __',
+                  
                   maxLength: 13,
                   ignoreBlank: false,
                   autoValidateMode: AutovalidateMode.disabled,
@@ -295,19 +298,20 @@ class _RegistrationPhoneNumberScreenState extends State<RegistrationPhoneNumberS
               _passwordVisible = !_passwordVisible;
             });
           },
-          icon: Icon(_passwordVisible ? Icons.visibility_off : Icons.remove_red_eye)
+          icon: Icon(_passwordVisible ? Icons.visibility_off : Icons.remove_red_eye, color: Colors.grey,)
       ) : null,
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(
           color: Color.fromARGB(255, 218, 216, 215),
-          width: 1,
+          width: 2,
         ),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       hintText: hintText,
-      focusedBorder: const OutlineInputBorder(
+      hintStyle: TextStyle(color: Colors.grey),
+      focusedBorder:  OutlineInputBorder(
         borderSide: BorderSide(
-          color: Color.fromARGB(255, 0, 207, 145),
+          color: Theme.of(context).colorScheme.secondary,
           width: 1,
         ),
         borderRadius: BorderRadius.all(Radius.circular(10)),

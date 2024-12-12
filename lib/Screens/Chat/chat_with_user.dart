@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:custom_pop_up_menu_fork/custom_pop_up_menu.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,15 +11,20 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:menu_bar/menu_bar.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/Screens/Chat/bloc/chat_with_user/chat_with_user_bloc.dart';
+import 'package:untitled/Screens/Chat/widgets/chat_audio.dart';
 import 'package:untitled/components/widgets/image_viewer.dart';
 import 'package:untitled/components/widgets/send_claim.dart';
 
@@ -52,6 +59,13 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
   TextEditingController messageController = TextEditingController();
   final ScrollController _myController = ScrollController();
   late Echo echo_message;
+
+  final Record _recorder = Record();
+  bool isRecording = false;
+  String? _recordedFilePath;
+  int _recordDuration = 0;
+  Timer? _timer;
+
   int lastMsgNmb = 0;
 
   connectToSocket() async {
@@ -116,36 +130,40 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     return BlocProvider.value(
       value: widget.bloc,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: header(context, (widget.bloc.state as ChatWithUserInitial)),
-          automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(64.0),
+          child: AppBar(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+            elevation: 0,
+            title: header(context, (widget.bloc.state as ChatWithUserInitial)),
+            automaticallyImplyLeading: false,
+          ),
         ),
         body: SafeArea(
-          child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
+          child: SizedBox(
               child: BlocBuilder<ChatWithUserBloc, ChatWithUserState>(
-                bloc: widget.bloc,
-                builder: (context, state) {
-                  return body(context, state);
-                },
-              )),
+            bloc: widget.bloc,
+            builder: (context, state) {
+              return body(context, state);
+            },
+          )),
         ),
       ),
     );
   }
 
-  Widget waitBox() {
-    return SizedBox(
+  Widget waitBox(Color color) {
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
       width: double.infinity,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(
-            valueColor:
-                AlwaysStoppedAnimation<Color>(Color.fromRGBO(0, 0xcf, 0x91, 1)),
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
           const SizedBox(
             height: 16,
@@ -154,10 +172,10 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
             LocaleKeys.chat_waitbox.tr(),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center,
-            style: GoogleFonts.rubik(
+            style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16,
-              color: const Color.fromRGBO(0, 0xcf, 0x91, 1),
+              color: color,
             ),
           ),
         ],
@@ -172,16 +190,23 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
         Row(
           children: [
             Container(
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1.0,
-                  color: const Color.fromARGB(255, 218, 216, 215),
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                borderRadius: BorderRadius.circular(10),
+                border: GradientBoxBorder(
+                    gradient: LinearGradient(colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.secondary
+                    ]),
+                    width: 2),
               ),
               child: IconButton(
                   iconSize: 18.0,
-                  icon: const Icon(Icons.arrow_back_ios_sharp),
+                  icon: SvgPicture.asset(
+                    'assets/icons/back.svg',
+                    color: Theme.of(context).primaryColor,
+                  ),
                   onPressed: () {
                     Navigator.pop(context,
                         (widget.bloc.state as ChatWithUserInitial).chatData);
@@ -224,7 +249,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(90.0),
                     child: displayImageMiniature(
-                        widget.chatData.avatar?.preview ?? ""),
+                        widget.chatData.avatar?.preview ?? "",
+                        Theme.of(context).colorScheme.secondary),
                   ),
                 )),
             Column(
@@ -235,10 +261,10 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
                     widget.chatData.userName.toString(),
-                    style: GoogleFonts.rubik(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
-                      color: const Color.fromARGB(255, 33, 33, 33),
+                      color: Color.fromARGB(255, 33, 33, 33),
                     ),
                   ),
                 ),
@@ -252,10 +278,10 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                                       .toString()) +
                                   LocaleKeys.chat_main_lastTimeOnline_postfix
                                       .tr(),
-                              style: GoogleFonts.rubik(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
-                                color: const Color.fromARGB(255, 157, 157, 157),
+                                color: Colors.black,
                               ),
                             ),
                           )
@@ -263,10 +289,10 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                             padding: const EdgeInsets.only(left: 10),
                             child: Text(
                               LocaleKeys.common_offline.tr(),
-                              style: GoogleFonts.rubik(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
-                                color: const Color.fromARGB(255, 157, 157, 157),
+                                color: Color.fromARGB(255, 157, 157, 157),
                               ),
                             ),
                           ))
@@ -274,10 +300,10 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                         padding: const EdgeInsets.only(left: 10),
                         child: Text(
                           LocaleKeys.common_online.tr(),
-                          style: GoogleFonts.rubik(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w400,
                             fontSize: 12,
-                            color: const Color.fromARGB(255, 157, 157, 157),
+                            color: Color.fromARGB(255, 157, 157, 157),
                           ),
                         ),
                       ),
@@ -312,53 +338,17 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     );
   }
 
-  Widget inputBox() {
-    return Row(
-      children: [
-        Expanded(
-            flex: 9,
-            child: TextField(
-              textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(
-                suffixIcon: GestureDetector(
-                  onTap: () {
-                    widget.bloc
-                        .add(SendTextMessage(text: messageController.text));
-                    messageController.text = "";
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10),
-                    child: const Icon(Icons.send),
-                  ),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(255, 218, 216, 215),
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(255, 0, 207, 145),
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-              keyboardType: TextInputType.multiline,
-              maxLines: 5,
-              minLines: 1,
-              controller: messageController,
-            )),
-        const SizedBox(
-          width: 5,
-        ),
-        Expanded(
-          flex: 1,
-          child: Container(
-              height: 60,
+  Widget inputBox(ChatWithUserInitial state) {
+    if (state.editBoxVisible) {
+      messageController.text = state.editText;
+      log("EDIT TEXT: ${state.editText}");
+    }
+    return SizedBox(
+      child: Row(
+        children: [
+          Container(
+              height: 40,
+              width: 40,
               decoration: BoxDecoration(
                 border: Border.all(
                   width: 1.0,
@@ -366,76 +356,301 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 ),
                 borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               ),
+              child: isRecording
+                  ? IconButton(
+                      splashRadius: 1,
+                      padding: const EdgeInsets.all(0),
+                      icon: const Icon(
+                        Icons.cancel,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        _cancelRecording();
+                      },
+                    )
+                  : IconButton(
+                      splashRadius: 1,
+                      padding: const EdgeInsets.all(0),
+                      icon: const Icon(
+                        Icons.attach_file_outlined,
+                        color: Color.fromARGB(255, 150, 150, 150),
+                      ),
+                      onPressed: () {
+                        filePicker();
+                      },
+                    )),
+          const SizedBox(
+            width: 5,
+          ),
+          Expanded(
+              child: SizedBox(
+            height: 40,
+            child: isRecording
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.fiber_manual_record,
+                          color: Colors.red, size: 12),
+                      const SizedBox(width: 5),
+                      Text(
+                        _formatDuration(_recordDuration),
+                        style: const TextStyle(color: Colors.red, fontSize: 12),
+                      ),
+                    ],
+                  )
+                : TextField(
+                    cursorColor: Colors.black,
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 10),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          if (state.editBoxVisible) {
+                            widget.bloc.add(
+                              EditChat(
+                                editText: messageController.text,
+                                messageId: state.editMessageId!,
+                              ),
+                            );
+                          } else {
+                            widget.bloc.add(
+                              SendTextMessage(text: messageController.text),
+                            );
+                          }
+                          messageController.text = "";
+                        },
+                        child: SvgPicture.asset(
+                          'assets/icons/send.svg',
+                          width: 20,
+                          height: 20,
+                          fit: BoxFit.none,
+                        ),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 218, 216, 215),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                    style: const TextStyle(fontSize: 14),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 5,
+                    minLines: 1,
+                    controller: messageController,
+                  ),
+          )),
+          const SizedBox(
+            width: 5,
+          ),
+          Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: GradientBoxBorder(
+                    gradient: LinearGradient(colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.secondary
+                    ]),
+                    width: 2),
+              ),
               child: IconButton(
                 splashRadius: 1,
                 padding: const EdgeInsets.all(0),
-                icon: const Icon(
-                  Icons.attach_file_outlined,
-                  color: Color.fromARGB(255, 150, 150, 150),
-                ),
+                icon: isRecording
+                    ? Icon(
+                        Icons.send,
+                        color: Theme.of(context).colorScheme.primary,
+                      ) // Send icon during recording
+                    : Icon(
+                        Icons.mic,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                 onPressed: () {
-                  filePicker();
+                  if (isRecording) {
+                    _sendRecordingToAPI(widget.bloc);
+                  } else {
+                    _startRecording();
+                  }
                 },
               )),
-        )
-      ],
+        ],
+      ),
     );
+  }
+
+  Future<void> _startRecording() async {
+    if (await _recorder.hasPermission()) {
+      final directory = await getApplicationDocumentsDirectory();
+      log("Directory: ${directory.path}");
+      final filePath =
+          '${directory.path}/voice_message_${DateTime.now().millisecondsSinceEpoch}.m4a';
+
+      await _recorder.start(
+        encoder: AudioEncoder.aacLc,
+        bitRate: 128000,
+        samplingRate: 44100,
+        path: filePath,
+      );
+
+      setState(() {
+        isRecording = true;
+        _recordedFilePath = filePath;
+      });
+
+      _startTimer();
+    }
+  }
+
+  Future<void> _cancelRecording() async {
+    if (isRecording) {
+      var s = await _recorder.stop();
+
+      final file = File(s!);
+
+      if (await file.exists()) {
+        await file.delete();
+      }
+
+      setState(() {
+        isRecording = false;
+        _timer?.cancel();
+        _recordedFilePath = null; // Clear the recorded file path
+      });
+    }
+  }
+
+  Future<void> _sendRecordingToAPI(ChatWithUserBloc bloc) async {
+    if (isRecording) {
+      var s = await _recorder.stop();
+      setState(() {
+        isRecording = false;
+        _timer?.cancel();
+      });
+
+      var file = File(s!);
+      print('FILEEEEE : ${s}');
+
+      // Add a slight delay to ensure state updates
+      await Future.delayed(Duration(milliseconds: 300));
+
+      setState(() {
+        bloc.add(SendFile(file: file, fileType: "audio"));
+      });
+
+      // Optionally, refresh the UI after the file is sent
+      setState(() {});
+    }
+  }
+
+  void _startTimer() {
+    _recordDuration = 0;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _recordDuration++;
+      });
+    });
+  }
+
+  String _formatDuration(int seconds) {
+    final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
+    final remainingSeconds = (seconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$remainingSeconds';
   }
 
   Widget body(BuildContext context, ChatWithUserState state) {
     state as ChatWithUserInitial;
     if (state.pageState == PageState.preload) {
-      widget.bloc.add(LoadChatData(chatId: widget.chatData.chatId!));
-      return waitBox();
+      widget.bloc.add(
+        LoadChatData(chatId: widget.chatData.chatId!),
+      );
+      return waitBox(Theme.of(context).colorScheme.primary);
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(child: chatListVisualBuilder(context, state)),
-        if (state.answerBoxVisible || state.editBoxVisible)
-          Row(
-            children: [
-              Image.asset(
-                'assets/icons/bxs_share.png',
-                width: 15,
-                height: 13,
-                color: const Color(
-                  0xff212121,
-                ).withOpacity(0.3),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                ),
-                child: Text(
-                  'В ответ на:',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(
-                      0xff212121,
-                    ).withOpacity(0.3),
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: chatListVisualBuilder(context, state)),
+          if (state.answerBoxVisible || state.editBoxVisible)
+            Row(
+              children: [
+                state.answerBoxVisible
+                    ? Image.asset(
+                        'assets/icons/bxs_share.png',
+                        width: 15,
+                        height: 13,
+                        color: const Color(
+                          0xff212121,
+                        ).withOpacity(0.3),
+                      )
+                    : Icon(
+                        Icons.edit,
+                        color: const Color(
+                          0xff212121,
+                        ).withOpacity(0.3),
+                        size: 15,
+                      ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                  ),
+                  child: Text(
+                    state.editBoxVisible ? 'Изменить: ' : 'В ответ на:',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(
+                        0xff212121,
+                      ).withOpacity(0.3),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Text(
-                  state.answerBoxVisible ? state.answerText : state.editText,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                Expanded(
+                  child: Text(
+                    state.answerBoxVisible ? state.answerText : "",
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: (state.chatData!.isChatBlocked != true)
-              ? inputBox()
-              : blockedBox(),
-        )
-      ],
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: IconButton(
+                    onPressed: () {
+                      widget.bloc.add(
+                        const RemoveAnswerChat(),
+                      );
+                    },
+                    icon: Icon(
+                      Icons.cancel,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: (state.chatData!.isChatBlocked != true)
+                ? inputBox(state)
+                : blockedBox(),
+          )
+        ],
+      ),
     );
   }
 
@@ -469,7 +684,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
       children: [
         dateDivider(message, index, state.messages.length - 1),
         Align(
-          alignment: message.isAuthUsermessage! == false
+          alignment: message.isAuthUsermessage!
               ? Alignment.topLeft
               : Alignment.topRight,
           child: CustomPopupMenu(
@@ -480,10 +695,26 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 const RemoveAnswerChat(),
               );
               return Container(
+                margin: EdgeInsets.only(
+                  left: message.isAuthUsermessage! == false
+                      ? 0
+                      : MediaQuery.of(context).size.width / 5 + 116,
+                  right: message.isAuthUsermessage! == true
+                      ? 0
+                      : MediaQuery.of(context).size.width / 5 + 116,
+                ),
                 padding: const EdgeInsets.all(
                   15,
                 ),
                 decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.14),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(
                       10,
@@ -570,13 +801,17 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                       ),
                       child: GestureDetector(
                         onTap: () {
-                          if (message.message != null) {
+                          if (message.message != null &&
+                              message.messageId != null) {
                             widget.bloc.add(
-                              EditChat(
-                                editText: message.message!,
+                              EditChatActive(
+                                editText: message.message!.toString(),
+                                messageId: message.messageId!,
                               ),
                             );
                             controller.hideMenu();
+                          } else {
+                            log("this message yet not sended to server");
                           }
                         },
                         child: Row(
@@ -652,8 +887,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: (message.isAuthUsermessage!)
-                    ? const Color.fromARGB(255, 235, 235, 235)
-                    : const Color.fromARGB(255, 227, 241, 237),
+                    ? const Color(0xFFEBEBEB)
+                    : const Color(0xFFE2F1EC),
                 borderRadius: BorderRadius.only(
                     topRight: const Radius.circular(10),
                     topLeft: const Radius.circular(10),
@@ -664,26 +899,26 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
               ),
               child: Column(
                 crossAxisAlignment: (message.isAuthUsermessage!)
-                    ? CrossAxisAlignment.end
+                    ? CrossAxisAlignment.start
                     : CrossAxisAlignment.start,
                 //spacing: 8,
                 children: [
+                  state.answerBoxVisible || state.editBoxVisible
+                      ? const Icon(Icons.arrow_back_sharp)
+                      : Container(),
                   messageBody(message),
                   Container(
                     margin: const EdgeInsets.only(top: 8),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          intl.DateFormat('HH:mm').format(
-                              intl.DateFormat('DD.MM.yyyy HH:mm:ss')
-                                  .parse(message.messageTime!)
-                                  .add(DateTime.now().timeZoneOffset -
-                                      const Duration(hours: 3))),
-                          style: GoogleFonts.rubik(
-                            fontWeight: FontWeight.w400,
+                          "${intl.DateFormat('HH:mm').format(intl.DateFormat('DD.MM.yyyy HH:mm:ss').parse(message.messageTime!).add(DateTime.now().timeZoneOffset - const Duration(hours: 3)))}  ${message.edited ?? ""}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
                             fontSize: 12,
+                            color: Colors.grey,
                           ),
                         ),
                         Visibility(
@@ -693,7 +928,9 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                                 const SizedBox(
                                   width: 2,
                                 ),
-                                Container(child: messageStatusMark(message)),
+                                Container(
+                                    child: messageStatusMark(message,
+                                        Theme.of(context).colorScheme.primary)),
                               ],
                             ))
                       ],
@@ -706,6 +943,41 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
         ),
       ],
     );
+  }
+
+  Future<void> editMessage(
+    int messageId,
+    String message,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String accessToken = prefs.getString("token") ?? "";
+    String csrfToken = "LHXZTMpSzw8TCVkXqAO6LFG41B4cN1Oth80CvX7J";
+
+    if (accessToken.isEmpty) {
+      debugPrint("Token not found.");
+      return;
+    }
+
+    Dio dio = Dio();
+    try {
+      Response response = await dio.put(
+        'https://dev.nikahtime.ru/api/chats/messages/$messageId',
+        options: Options(
+          headers: {
+            'accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'X-CSRF-TOKEN': csrfToken,
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        debugPrint('Message edited successfully');
+      } else {
+        debugPrint('Failed to delete message: ${response.statusMessage}');
+      }
+    } catch (e) {
+      debugPrint('Error deleting message: $e');
+    }
   }
 
   Future<void> deleteMessage(int messageId) async {
@@ -721,7 +993,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     Dio dio = Dio();
     try {
       Response response = await dio.delete(
-        'https://www.nikahtime.ru/api/chats/message/$messageId/delete',
+        'https://dev.nikahtime.ru/api/chats/messages/$messageId',
         options: Options(
           headers: {
             'accept': 'application/json',
@@ -741,26 +1013,23 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     }
   }
 
-  Widget messageStatusMark(ChatMessage message) {
+  Widget messageStatusMark(ChatMessage message, Color color) {
     List<Widget> children = [
-      Icon(
-        Icons.check,
-        size: 18,
-        color: (message.isMessageSeen == true)
-            ? const Color.fromRGBO(0, 0xcf, 0x91, 1)
-            : Colors.grey,
+      SvgPicture.asset(
+        'assets/icons/check_mess.svg',
+        color: (message.isMessageSeen == true) ? color : Colors.grey,
       )
     ];
-    if (message.isMessageSeen == true) {
-      children.add(const Positioned(
-          top: 0,
-          left: 4,
-          child: Icon(
-            Icons.check,
-            size: 18,
-            color: Color.fromRGBO(0, 0xcf, 0x91, 1),
-          )));
-    }
+    // if (message.isMessageSeen == true) {
+    //   children.add( Positioned(
+    //       top: 0,
+    //       left: 4,
+    //       child: SvgPicture.asset(
+    //     'assets/icons/check_mess.svg',
+    //     color: const Color.fromRGBO(0, 0xcf, 0x91, 1)
+
+    //   )));
+    // }
 
     return Stack(
       clipBehavior: Clip.none,
@@ -799,16 +1068,25 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
           height: 5,
         ),
         Row(children: <Widget>[
-          const Expanded(child: Divider()),
-          Text(
-            "${currDate.day}.${currDate.month}.${currDate.year}",
-            style: GoogleFonts.rubik(
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-              color: Colors.grey.shade600,
+          const Expanded(
+              child: Divider(
+            color: Color(0xFFDEDEDE),
+          )),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              "${currDate.day}.${currDate.month}.${currDate.year}",
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+                color: Colors.grey.shade600,
+              ),
             ),
           ),
-          const Expanded(child: Divider()),
+          const Expanded(
+              child: Divider(
+            color: Color(0xFFDEDEDE),
+          )),
         ]),
         const SizedBox(
           height: 15,
@@ -821,6 +1099,10 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     if (message.messageType == "text") {
       return Text(
         message.message!,
+        style: const TextStyle(
+            fontSize: 15,
+            color: Color(0xFF212121),
+            fontWeight: FontWeight.w500),
       );
     }
     if (message.messageType == "image") {
@@ -945,6 +1227,12 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
             ],
           ));
     }
+    if (message.messageType == "audio") {
+      String idStr = message.message!;
+      return VoiceMessageView(
+        url: idStr,
+      );
+    }
 
     return const Text("Ошибка загрузки сообщения");
   }
@@ -1042,14 +1330,23 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
 
   Widget moreButton(BuildContext context, ChatWithUserInitial state) {
     return Container(
+      width: 40,
+      height: 40,
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 1.0,
-          color: const Color.fromARGB(255, 218, 216, 215),
-        ),
-        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+        borderRadius: BorderRadius.circular(10),
+        border: GradientBoxBorder(
+            gradient: LinearGradient(colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.secondary
+            ]),
+            width: 2),
       ),
       child: PopupMenuButton(
+          color: Colors.white,
+          icon: SvgPicture.asset(
+            'assets/icons/more.svg',
+            color: Theme.of(context).primaryColor,
+          ),
           offset: const Offset(0, 50),
           shape: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.transparent, width: 2),
@@ -1067,42 +1364,34 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                   },
                   child: Row(
                     children: [
-                      const Icon(Icons.lock),
-                      const SizedBox(
-                        width: 16,
-                      ),
                       Expanded(
                           child: Container(
                         child: ((widget.bloc.state as ChatWithUserInitial)
                                 .chatData!
                                 .isChatBlocked)
-                            ? Text(LocaleKeys.chat_unblock.tr())
-                            : Text(LocaleKeys.chat_block.tr()),
-                      ))
+                            ? Text(
+                                LocaleKeys.chat_unblock.tr(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16),
+                              )
+                            : Text(LocaleKeys.chat_block.tr(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16)),
+                      )),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      SvgPicture.asset('assets/icons/lock.svg'),
                     ],
                   ),
                 ),
               );
             }
             items.addAll([
-              PopupMenuItem(
-                onTap: () async {
-                  await NetworkService()
-                      .chatsDeleteChatID(chatID: widget.chatData.chatId!);
-                  Navigator.pop(this.context);
-                },
-                child: Row(
-                  children: [
-                    const Icon(Icons.delete),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Text(
-                      LocaleKeys.chat_delete.tr(),
-                    )
-                  ],
-                ),
-              ),
               PopupMenuItem(
                 onTap: () async {
                   Future.delayed(
@@ -1118,13 +1407,44 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 },
                 child: Row(
                   children: [
-                    const Icon(Icons.block),
+                    Expanded(
+                      child: Text(LocaleKeys.chat_report.tr(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16)),
+                    ),
                     const SizedBox(
                       width: 16,
                     ),
-                    Text(
-                      LocaleKeys.chat_report.tr(),
-                    )
+                    SvgPicture.asset('assets/icons/block.svg'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                onTap: () async {
+                  await NetworkService()
+                      .chatsDeleteChatID(chatID: widget.chatData.chatId!);
+                  Navigator.pop(this.context);
+                },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        LocaleKeys.chat_delete.tr(),
+                        style: const TextStyle(
+                            color: Color(0xFFFC3B3B),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SvgPicture.asset(
+                      'assets/icons/trash.svg',
+                      color: const Color(0xFFFC3B3B),
+                    ),
                   ],
                 ),
               ),

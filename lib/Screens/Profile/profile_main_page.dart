@@ -6,8 +6,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_plus/dropdown_plus.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:provider/provider.dart';
@@ -192,350 +194,84 @@ class _ProfileMainPageScreenState extends State<ProfileMainPageScreen> {
               );
             }
             //debugPrint((context.read<ProfileBloc>().state as ProfileInitial).userProfileData!.lastName);
-            return Stack(
-              children: [
-                Container(
-                    margin: const EdgeInsets.only(left: 16, right: 16),
-                    width: double.infinity,
-                    child: SingleChildScrollView(
-                        keyboardDismissBehavior:
-                            ScrollViewKeyboardDismissBehavior.onDrag,
-                        child: Column(
-                            //mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 65),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    LocaleKeys.profileScreen_title,
-                                    textDirection: TextDirection.ltr,
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.rubik(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 24,
-                                      color:
-                                          const Color.fromARGB(255, 33, 33, 33),
-                                    ),
-                                  ).tr(),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 1.0,
-                                        color: const Color.fromARGB(
-                                            255, 218, 216, 215),
-                                      ),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(12.0)),
-                                    ),
-                                    child: IconButton(
-                                        splashRadius: 25.0,
-                                        iconSize: 20.0,
-                                        padding: const EdgeInsets.all(0),
-                                        icon: const Icon(
-                                          Icons.settings,
-                                          color: Color.fromARGB(
-                                              255, 117, 116, 115),
-                                        ),
-                                        onPressed: () {
-                                          updateUserData();
-                                          MyTracker.trackEvent(
-                                              "Open settings", {});
-                                          Navigator.push(
-                                            buildContext,
-                                            MaterialPageRoute(
-                                                builder: (buildContext) =>
-                                                    const ProfileSettings()),
-                                          ).then((_) => {setState(() {})});
-                                        }),
-                                  )
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              Text(
-                                LocaleKeys.profileScreen_generalInformation,
-                                textDirection: TextDirection.ltr,
-                                textAlign: TextAlign.left,
-                                style: GoogleFonts.rubik(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 24,
-                                  color: const Color.fromARGB(255, 33, 33, 33),
-                                ),
-                              ).tr(),
-                              const SizedBox(height: 24),
-
-                              PhotoPlace(widget.userProfileData, () {
-                                needUpdate = true;
-                                setState(() {});
-                              }),
-
-                              CustomInputDecoration().errorBox(photoErr,
-                                  errMessage: LocaleKeys.needPhotoError),
-
-                              const SizedBox(height: 24),
-                              Focus(
-                                child: TextField(
-                                  decoration: CustomInputDecoration(
-                                    hintText: LocaleKeys.user_firstName.tr(),
-                                  ).GetDecoration(),
-                                  controller: TextEditingController(
-                                      text: widget.userProfileData.firstName),
-                                  onChanged: (value) {
-                                    needUpdate = true;
-                                    widget.userProfileData.firstName = value;
-                                  },
-                                  onSubmitted: (value) {
-                                    widget.userProfileData.firstName = value;
-                                    checkFields();
-                                    setState(() {});
-                                  },
-                                ),
-                                onFocusChange: (hasFocus) {
-                                  if (!hasFocus) {
-                                    setState(() {});
-                                  }
-                                },
-                              ),
-
-                              CustomInputDecoration().errorBox(firstNameErr),
-                              const SizedBox(height: 8),
-                              Focus(
-                                child: TextField(
-                                  decoration: CustomInputDecoration(
-                                    hintText: LocaleKeys.user_lastName.tr(),
-                                  ).GetDecoration(),
-                                  controller: TextEditingController(
-                                      text: widget.userProfileData.lastName),
-                                  onChanged: (value) {
-                                    needUpdate = true;
-                                    widget.userProfileData.lastName = value;
-                                  },
-                                  onSubmitted: (value) {
-                                    widget.userProfileData.lastName = value;
-                                    checkFields();
-                                    setState(() {});
-                                  },
-                                ),
-                                onFocusChange: (hasFocus) {
-                                  if (!hasFocus) {
-                                    setState(() {});
-                                  }
-                                },
-                              ),
-                              CustomInputDecoration().errorBox(lastNameErr),
-
-                              Visibility(
-                                  visible:
-                                      (widget.userProfileData.gender == null),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      CustomInputDecoration().subtitleText(
-                                          LocaleKeys.user_gender_title.tr()),
-                                      _gender(context),
-                                    ],
-                                  )),
-
-                              CustomInputDecoration()
-                                  .subtitleText(LocaleKeys.user_birthDate.tr()),
-                              BirthDate(
-                                widget.userProfileData,
-                                onPick: () {
-                                  checkFields();
-                                },
-                              ),
-                              CustomInputDecoration().errorBox(birthDateErr),
-                              // religion
-                              CustomInputDecoration()
-                                  .subtitleText('religionSubtitle'.tr()),
-
-                              FormField<String>(
-                                  builder: (FormFieldState<String> state) {
-                                return InputDecorator(
-                                  decoration:
-                                      CustomInputDecoration().GetDecoration(),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: widget
-                                                  .userProfileData.religionId !=
-                                              null
-                                          ? widget.userProfileData.religionId ==
-                                                  1
-                                              ? 'Islam'
-                                              : widget.userProfileData
-                                                          .religionId ==
-                                                      2
-                                                  ? 'Christianity'
-                                                  : widget.userProfileData
-                                                              .religionId ==
-                                                          3
-                                                      ? 'Judaism'
-                                                      : 'Islam'
-                                          : 'Islam',
-                                      isDense: true,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          switch (val) {
-                                            case 'Islam':
-                                              widget.userProfileData
-                                                  .religionId = 1;
-                                              break;
-                                            case 'Christianity':
-                                              widget.userProfileData
-                                                  .religionId = 2;
-                                              break;
-                                            case 'Judaism':
-                                              widget.userProfileData
-                                                  .religionId = 3;
-                                              break;
-                                          }
-                                        });
-                                      },
-                                      items: [
-                                        DropdownMenuItem<String>(
-                                          value: 'Islam',
-                                          child: Text('Islam'.tr()),
-                                        ),
-                                        DropdownMenuItem<String>(
-                                          value: 'Christianity',
-                                          child: Text('Christianity'.tr()),
-                                        ),
-                                        DropdownMenuItem<String>(
-                                          value: 'Judaism',
-                                          child: Text('Judaism'.tr()),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                              CustomInputDecoration().subtitleText(
-                                  LocaleKeys.user_nationality.tr(),
-                                  isFieldRequired: false),
-                              DropdownFormField<String>(
-                                decoration:
-                                    CustomInputDecoration().GetDecoration(),
-                                onSaved: (dynamic str) {},
-                                onChanged: (dynamic item) {
-                                  widget.userProfileData.nationality = item;
-                                  checkFields();
+            return Scaffold(
+              appBar:  AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: (){
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child:  SvgPicture.asset(
+                  'assets/icons/back.svg',
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10,),
+            const Text(
+            LocaleKeys.profileScreen_title,
+            textDirection: TextDirection.ltr,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 24,
+              color:
+                  Color.fromARGB(255, 33, 33, 33),
+            ),
+            ).tr(),
+          ],
+        )
+      ),
+              body: Stack(
+                children: [
+                  Container(
+                      margin: const EdgeInsets.only(left: 16, right: 16),
+                      width: double.infinity,
+                      child: SingleChildScrollView(
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          child: Column(
+                              //mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20),
+              
+                                PhotoPlace(widget.userProfileData, () {
+                                  needUpdate = true;
                                   setState(() {});
-                                },
-                                displayItemFn: (dynamic item) => Text(
-                                  translateNationName(widget
-                                          .userProfileData.nationality ??
-                                      LocaleKeys.nationalityState_notSelected
-                                          .tr()),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                                findFn: (dynamic str) async =>
-                                    getNationalityy(str),
-                                dropdownItemFn: (dynamic item,
-                                        int position,
-                                        bool focused,
-                                        bool selected,
-                                        Function() onTap) =>
-                                    ListTile(
-                                  title: Text(translateNationName(item)),
-                                  tileColor: focused
-                                      ? const Color.fromARGB(20, 0, 0, 0)
-                                      : Colors.transparent,
-                                  onTap: onTap,
-                                ),
-                              ),
-                              // CustomInputDecoration().errorBox(nationalityErr),
-
-                              CustomInputDecoration()
-                                  .subtitleText(LocaleKeys.user_country.tr()),
-                              DropdownFormField<String>(
-                                decoration:
-                                    CustomInputDecoration().GetDecoration(),
-                                onSaved: (dynamic str) {},
-                                onChanged: (dynamic item) {
-                                  widget.userProfileData.country = "$item";
-                                  checkFields();
-                                  setState(() {});
-                                },
-                                displayItemFn: (dynamic str) => Text(
-                                  translateCountryName(
-                                      widget.userProfileData.country ?? ""),
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                                findFn: (dynamic str) async => getCountry(str),
-                                dropdownItemFn: (dynamic item,
-                                        int position,
-                                        bool focused,
-                                        bool selected,
-                                        Function() onTap) =>
-                                    ListTile(
-                                  title: Text(translateCountryName(item)),
-                                  tileColor: focused
-                                      ? const Color.fromARGB(20, 0, 0, 0)
-                                      : Colors.transparent,
-                                  onTap: onTap,
-                                ),
-                              ),
-                              CustomInputDecoration().errorBox(countryErr),
-
-                              CustomInputDecoration()
-                                  .subtitleText(LocaleKeys.user_city.tr()),
-                              Visibility(
-                                visible:
-                                    widget.userProfileData.country == "Россия",
-                                child: DropdownFormField<Map<String, dynamic>>(
-                                  decoration:
-                                      CustomInputDecoration().GetDecoration(),
-                                  onSaved: (dynamic str) {},
-                                  onChanged: (dynamic item) {
-                                    debugPrint(
-                                        "${item["name"]!}, ${item["region"]!}");
-                                    widget.userProfileData.city =
-                                        "${item["name"]!}, ${item["region"]!}";
-                                    checkFields();
-                                    setState(() {});
-                                  },
-                                  displayItemFn: (dynamic item) => Text(
-                                    widget.userProfileData.city ?? "",
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  findFn: (dynamic str) async =>
-                                      NetworkService().DadataRequest(str),
-                                  dropdownItemFn: (dynamic item,
-                                          int position,
-                                          bool focused,
-                                          bool selected,
-                                          Function() onTap) =>
-                                      ListTile(
-                                    title: Text(item['name'] ?? ' '),
-                                    subtitle: Text(
-                                      item['region'] ?? '',
-                                    ),
-                                    tileColor: focused
-                                        ? const Color.fromARGB(20, 0, 0, 0)
-                                        : Colors.transparent,
-                                    onTap: onTap,
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible:
-                                    widget.userProfileData.country != "Россия",
-                                child: Focus(
+                                }),
+              
+                                CustomInputDecoration().errorBox(photoErr,
+                                    errMessage: LocaleKeys.needPhotoError),
+              
+                                const SizedBox(height: 24),
+                                Focus(
                                   child: TextField(
                                     decoration: CustomInputDecoration(
-                                            hintText: LocaleKeys.user_city.tr())
-                                        .GetDecoration(),
+                                      hintText: LocaleKeys.user_firstName.tr(),
+                                    ).GetDecoration(Theme.of(context).colorScheme.primary),
                                     controller: TextEditingController(
-                                        text: widget.userProfileData.city),
+                                        text: widget.userProfileData.firstName),
                                     onChanged: (value) {
                                       needUpdate = true;
-                                      widget.userProfileData.city = value;
+                                      widget.userProfileData.firstName = value;
                                     },
                                     onSubmitted: (value) {
-                                      widget.userProfileData.city = value;
+                                      widget.userProfileData.firstName = value;
                                       checkFields();
                                       setState(() {});
                                     },
@@ -546,484 +282,747 @@ class _ProfileMainPageScreenState extends State<ProfileMainPageScreen> {
                                     }
                                   },
                                 ),
-                              ),
-                              CustomInputDecoration().errorBox(cityErr),
-
-                              CustomInputDecoration().subtitleText(
-                                  LocaleKeys.user_contactPhoneNumber.tr(),
-                                  isFieldRequired: false),
-                              userPhoneNumber(),
-                              // CustomInputDecoration().errorBox(numberErr),
-
-                              CustomInputDecoration()
-                                  .subtitleText(LocaleKeys.user_education.tr()),
-                              FormField<String>(
-                                  builder: (FormFieldState<String> state) {
-                                return InputDecorator(
+              
+                                CustomInputDecoration().errorBox(firstNameErr),
+                                const SizedBox(height: 8),
+                                Focus(
+                                  child: TextField(
+                                    decoration: CustomInputDecoration(
+                                      hintText: LocaleKeys.user_lastName.tr(),
+                                    ).GetDecoration(Theme.of(context).colorScheme.primary),
+                                    controller: TextEditingController(
+                                        text: widget.userProfileData.lastName),
+                                    onChanged: (value) {
+                                      needUpdate = true;
+                                      widget.userProfileData.lastName = value;
+                                    },
+                                    onSubmitted: (value) {
+                                      widget.userProfileData.lastName = value;
+                                      checkFields();
+                                      setState(() {});
+                                    },
+                                  ),
+                                  onFocusChange: (hasFocus) {
+                                    if (!hasFocus) {
+                                      setState(() {});
+                                    }
+                                  },
+                                ),
+                                CustomInputDecoration().errorBox(lastNameErr),
+              
+                                Visibility(
+                                    visible:
+                                        (widget.userProfileData.gender == null),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        CustomInputDecoration().subtitleText(
+                                            LocaleKeys.user_gender_title.tr()),
+                                        _gender(context),
+                                      ],
+                                    )),
+              
+                                CustomInputDecoration()
+                                    .subtitleText(LocaleKeys.user_birthDate.tr()),
+                                BirthDate(
+                                  widget.userProfileData,
+                                  onPick: () {
+                                    checkFields();
+                                  },
+                                ),
+                                CustomInputDecoration().errorBox(birthDateErr),
+                                // religion
+                                CustomInputDecoration()
+                                    .subtitleText('religionSubtitle'.tr()),
+              
+                                FormField<String>(
+                                    builder: (FormFieldState<String> state) {
+                                  return InputDecorator(
+                                    decoration:
+                                        CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        dropdownColor: Colors.white,
+                                        value: widget
+                                                    .userProfileData.religionId !=
+                                                null
+                                            ? widget.userProfileData.religionId ==
+                                                    1
+                                                ? 'Islam'
+                                                : widget.userProfileData
+                                                            .religionId ==
+                                                        2
+                                                    ? 'Christianity'
+                                                    : widget.userProfileData
+                                                                .religionId ==
+                                                            3
+                                                        ? 'Judaism'
+                                                        : 'Islam'
+                                            : 'Islam',
+                                        isDense: true,
+                                        onChanged: (val) {
+                                          setState(() {
+                                            switch (val) {
+                                              case 'Islam':
+                                                widget.userProfileData
+                                                    .religionId = 1;
+                                                break;
+                                              case 'Christianity':
+                                                widget.userProfileData
+                                                    .religionId = 2;
+                                                break;
+                                              case 'Judaism':
+                                                widget.userProfileData
+                                                    .religionId = 3;
+                                                break;
+                                            }
+                                          });
+                                        },
+                                        items: [
+                                          DropdownMenuItem<String>(
+                                            value: 'Islam',
+                                            child: Text('Islam'.tr()),
+                                          ),
+                                          DropdownMenuItem<String>(
+                                            value: 'Christianity',
+                                            child: Text('Christianity'.tr()),
+                                          ),
+                                          DropdownMenuItem<String>(
+                                            value: 'Judaism',
+                                            child: Text('Judaism'.tr()),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
+                                CustomInputDecoration().subtitleText(
+                                    LocaleKeys.user_nationality.tr(),
+                                    isFieldRequired: false),
+                                DropdownFormField<String>(
+                                  dropdownColor: Colors.white,
                                   decoration:
-                                      CustomInputDecoration().GetDecoration(),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: widget.userProfileData.education ??
-                                          "basicGeneral",
-                                      isDense: true,
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          widget.userProfileData.education =
-                                              newValue;
-                                          checkFields();
-                                          state.didChange(newValue);
-                                        });
-                                      },
-                                      items: educationList
-                                          .map((description, value) {
-                                            return MapEntry(
-                                                description,
-                                                DropdownMenuItem<String>(
-                                                  value: description,
-                                                  child: Text(value).tr(),
-                                                ));
-                                          })
-                                          .values
-                                          .toList(),
+                                      CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                  onSaved: (dynamic str) {},
+                                  onChanged: (dynamic item) {
+                                    widget.userProfileData.nationality = item;
+                                    checkFields();
+                                    setState(() {});
+                                  },
+                                  displayItemFn: (dynamic item) => Text(
+                                    translateNationName(widget
+                                            .userProfileData.nationality ??
+                                        LocaleKeys.nationalityState_notSelected
+                                            .tr()),
+                                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                                  ),
+                                  findFn: (dynamic str) async =>
+                                      getNationalityy(str),
+                                  dropdownItemFn: (dynamic item,
+                                          int position,
+                                          bool focused,
+                                          bool selected,
+                                          Function() onTap) =>
+                                      ListTile(
+                                    title: Text(translateNationName(item), style: const TextStyle(color: Colors.black),),
+                                    tileColor: focused
+                                        ? const Color.fromARGB(20, 0, 0, 0)
+                                        : Colors.transparent,
+                                    onTap: onTap,
+                                  ),
+                                ),
+                                // CustomInputDecoration().errorBox(nationalityErr),
+              
+                                CustomInputDecoration()
+                                    .subtitleText(LocaleKeys.user_country.tr()),
+                                DropdownFormField<String>(
+                                  dropdownColor: Colors.white,
+                                  decoration:
+                                      CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                  onSaved: (dynamic str) {},
+                                  onChanged: (dynamic item) {
+                                    widget.userProfileData.country = "$item";
+                                    checkFields();
+                                    setState(() {});
+                                  },
+                                  displayItemFn: (dynamic str) => Text(
+                                    translateCountryName(
+                                        widget.userProfileData.country ?? ""),
+                                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                                  ),
+                                  findFn: (dynamic str) async => getCountry(str),
+                                  dropdownItemFn: (dynamic item,
+                                          int position,
+                                          bool focused,
+                                          bool selected,
+                                          Function() onTap) =>
+                                      ListTile(
+                                    title: Text(translateCountryName(item), style: const TextStyle(color: Colors.black),),
+                                    tileColor: focused
+                                        ? const Color.fromARGB(20, 0, 0, 0)
+                                        : Colors.transparent,
+                                    onTap: onTap,
+                                  ),
+                                ),
+                                CustomInputDecoration().errorBox(countryErr),
+              
+                                CustomInputDecoration()
+                                    .subtitleText(LocaleKeys.user_city.tr()),
+                                Visibility(
+                                  visible:
+                                      widget.userProfileData.country == "Россия",
+                                  child: DropdownFormField<Map<String, dynamic>>(
+                                    decoration:
+                                        CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                    onSaved: (dynamic str) {},
+                                    onChanged: (dynamic item) {
+                                      debugPrint(
+                                          "${item["name"]!}, ${item["region"]!}");
+                                      widget.userProfileData.city =
+                                          "${item["name"]!}, ${item["region"]!}";
+                                      checkFields();
+                                      setState(() {});
+                                    },
+                                    displayItemFn: (dynamic item) => Text(
+                                      widget.userProfileData.city ?? "",
+                                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                                    ),
+                                    findFn: (dynamic str) async =>
+                                        NetworkService().DadataRequest(str),
+                                    dropdownItemFn: (dynamic item,
+                                            int position,
+                                            bool focused,
+                                            bool selected,
+                                            Function() onTap) =>
+                                        ListTile(
+                                      title: Text(item['name'] ?? ' '),
+                                      subtitle: Text(
+                                        item['region'] ?? '',
+                                      ),
+                                      tileColor: focused
+                                          ? const Color.fromARGB(20, 0, 0, 0)
+                                          : Colors.transparent,
+                                      onTap: onTap,
                                     ),
                                   ),
-                                );
-                              }),
-
-                              CustomInputDecoration().subtitleText(
-                                  LocaleKeys.user_placeOfStudy.tr(),
-                                  isFieldRequired: false),
-
-                              Focus(
-                                child: TextField(
-                                  decoration: CustomInputDecoration(
-                                          hintText:
-                                              LocaleKeys.user_placeOfStudy.tr())
-                                      .GetDecoration(),
-                                  controller: TextEditingController(
-                                      text:
-                                          widget.userProfileData.placeOfStudy),
-                                  onChanged: (value) {
-                                    needUpdate = true;
-                                    widget.userProfileData.placeOfStudy = value;
-                                  },
-                                  onSubmitted: (value) {
-                                    widget.userProfileData.placeOfStudy = value;
-                                    checkFields();
-                                    setState(() {});
-                                  },
                                 ),
-                                onFocusChange: (hasFocus) {
-                                  if (!hasFocus) {
-                                    setState(() {});
-                                  }
-                                },
-                              ),
-
-                              CustomInputDecoration().subtitleText(
-                                  LocaleKeys.user_placeOfWork.tr()),
-
-                              Focus(
-                                child: TextField(
-                                  decoration: CustomInputDecoration(
-                                    hintText: LocaleKeys.user_placeOfWork.tr(),
-                                  ).GetDecoration(),
-                                  controller: TextEditingController(
-                                      text: widget.userProfileData.placeOfWork),
-                                  onChanged: (value) {
-                                    widget.userProfileData.placeOfWork = value;
-                                    needUpdate = true;
-                                  },
-                                  onSubmitted: (value) {
-                                    widget.userProfileData.placeOfWork = value;
-                                    checkFields();
-                                    setState(() {});
-                                  },
+                                Visibility(
+                                  visible:
+                                      widget.userProfileData.country != "Россия",
+                                  child: Focus(
+                                    child: TextField(
+                                      decoration: CustomInputDecoration(
+                                              hintText: LocaleKeys.user_city.tr())
+                                          .GetDecoration(Theme.of(context).colorScheme.primary),
+                                      controller: TextEditingController(
+                                          text: widget.userProfileData.city),
+                                      onChanged: (value) {
+                                        needUpdate = true;
+                                        widget.userProfileData.city = value;
+                                      },
+                                      onSubmitted: (value) {
+                                        widget.userProfileData.city = value;
+                                        checkFields();
+                                        setState(() {});
+                                      },
+                                    ),
+                                    onFocusChange: (hasFocus) {
+                                      if (!hasFocus) {
+                                        setState(() {});
+                                      }
+                                    },
+                                  ),
                                 ),
-                                onFocusChange: (hasFocus) {
-                                  if (!hasFocus) {
-                                    setState(() {});
-                                  }
-                                },
-                              ),
-                              CustomInputDecoration().errorBox(placeOfWorkErr),
-
-                              CustomInputDecoration().subtitleText(
-                                  LocaleKeys.user_workPosition.tr(),
-                                  isFieldRequired: false),
-
-                              Focus(
-                                child: TextField(
-                                  decoration: CustomInputDecoration(
-                                    hintText: LocaleKeys.user_workPosition.tr(),
-                                  ).GetDecoration(),
-                                  controller: TextEditingController(
-                                      text:
-                                          widget.userProfileData.workPosition),
-                                  onChanged: (value) {
-                                    needUpdate = true;
-                                    widget.userProfileData.workPosition = value;
-                                  },
-                                  onSubmitted: (value) {
-                                    widget.userProfileData.workPosition = value;
-                                    checkFields();
-                                    setState(() {});
-                                  },
-                                ),
-                                onFocusChange: (hasFocus) {
-                                  if (!hasFocus) {
-                                    setState(() {});
-                                  }
-                                },
-                              ),
-
-                              CustomInputDecoration().subtitleText(
-                                  LocaleKeys.user_maritalStatus.tr()),
-                              FormField<String>(
-                                  builder: (FormFieldState<String> state) {
-                                if (familyState['married'] != null) {
-                                  widget.userProfileData.gender == "female"
-                                      ? familyState.remove('married')
-                                      : null;
-                                }
-
-                                return InputDecorator(
-                                  decoration:
-                                      CustomInputDecoration().GetDecoration(),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                        value: widget.userProfileData
-                                                .maritalStatus ??
-                                            "notMarried",
+                                CustomInputDecoration().errorBox(cityErr),
+              
+                                CustomInputDecoration().subtitleText(
+                                    LocaleKeys.user_contactPhoneNumber.tr(),
+                                    isFieldRequired: false),
+                                userPhoneNumber(),
+                                // CustomInputDecoration().errorBox(numberErr),
+              
+                                CustomInputDecoration()
+                                    .subtitleText(LocaleKeys.user_education.tr()),
+                                FormField<String>(
+                                    builder: (FormFieldState<String> state) {
+                                  return InputDecorator(
+                                    decoration:
+                                        CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        dropdownColor: Colors.white,
+                                        value: widget.userProfileData.education ??
+                                            "basicGeneral",
                                         isDense: true,
                                         onChanged: (newValue) {
                                           setState(() {
-                                            widget.userProfileData
-                                                .maritalStatus = newValue;
+                                            widget.userProfileData.education =
+                                                newValue;
                                             checkFields();
                                             state.didChange(newValue);
                                           });
                                         },
-                                        items: familyState
+                                        items: educationList
                                             .map((description, value) {
                                               return MapEntry(
                                                   description,
                                                   DropdownMenuItem<String>(
                                                     value: description,
-                                                    child: Text(value).tr(),
+                                                    child: Text(value, style: const TextStyle(color: Colors.black),).tr(),
                                                   ));
                                             })
                                             .values
-                                            .toList()),
-                                  ),
-                                );
-                              }),
-                              CustomInputDecoration().errorBox(maritalErr),
-
-                              CustomInputDecoration().subtitleText(
-                                  LocaleKeys.user_faith.tr(),
-                                  isFieldRequired: false),
-                              FormField<String>(
-                                  builder: (FormFieldState<String> state) {
-                                return InputDecorator(
-                                  decoration:
-                                      CustomInputDecoration().GetDecoration(),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value:
-                                          widget.userProfileData.typeReligion ??
-                                              "notSelected",
-                                      isDense: true,
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          if (newValue == "notSelected") {
-                                            widget.userProfileData
-                                                .typeReligion = null;
-                                          } else {
-                                            widget.userProfileData
-                                                .typeReligion = newValue;
-                                          }
-                                          checkFields();
-                                          state.didChange(newValue);
-                                        });
-                                      },
-                                      items: faithState
-                                          .map((description, value) {
-                                            return MapEntry(
-                                                description,
-                                                DropdownMenuItem<String>(
-                                                  value: description,
-                                                  child: Text(value).tr(),
-                                                ));
-                                          })
-                                          .values
-                                          .toList(),
-                                    ),
-                                  ),
-                                );
-                              }),
-                              // CustomInputDecoration().errorBox(typeReligionErr),
-
-                              CustomInputDecoration()
-                                  .subtitleText(LocaleKeys.user_canons.tr()),
-
-                              FormField<String>(
-                                  builder: (FormFieldState<String> state) {
-                                return InputDecorator(
-                                  decoration:
-                                      CustomInputDecoration().GetDecoration(),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: widget.userProfileData
-                                              .observeIslamCanons ??
-                                          "observingIslamCanons",
-                                      isDense: true,
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          widget.userProfileData
-                                              .observeIslamCanons = newValue;
-                                          checkFields();
-                                          state.didChange(newValue);
-                                        });
-                                      },
-                                      items: widget.userProfileData.gender ==
-                                              "male"
-                                          ? observantOfTheCanonsMaleState
-                                              .map((description, value) {
-                                                return MapEntry(
-                                                    description,
-                                                    DropdownMenuItem<String>(
-                                                      value: description,
-                                                      child: Text(value).tr(),
-                                                    ));
-                                              })
-                                              .values
-                                              .toList()
-                                          : observantOfTheCanonsFemaleState
-                                              .map((description, value) {
-                                                return MapEntry(
-                                                    description,
-                                                    DropdownMenuItem<String>(
-                                                      value: description,
-                                                      child: Text(value).tr(),
-                                                    ));
-                                              })
-                                              .values
-                                              .toList(),
-                                    ),
-                                  ),
-                                );
-                              }),
-                              CustomInputDecoration().errorBox(canonsErr),
-
-                              CustomInputDecoration().subtitleText(
-                                  LocaleKeys.user_haveChildren_title.tr()),
-                              FormField<bool>(
-                                  builder: (FormFieldState<bool> state) {
-                                return InputDecorator(
-                                  decoration:
-                                      CustomInputDecoration().GetDecoration(),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<bool>(
-                                      value:
-                                          widget.userProfileData.haveChildren!,
-                                      isDense: true,
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          widget.userProfileData.haveChildren =
-                                              newValue;
-                                          checkFields();
-                                          state.didChange(newValue);
-                                        });
-                                      },
-                                      items: chldrnState
-                                          .map((description, value) {
-                                            return MapEntry(
-                                                description,
-                                                DropdownMenuItem<bool>(
-                                                  value: description,
-                                                  child: Text(value).tr(),
-                                                ));
-                                          })
-                                          .values
-                                          .toList(),
-                                    ),
-                                  ),
-                                );
-                              }),
-                              CustomInputDecoration().errorBox(childrenErr),
-
-                              CustomInputDecoration().subtitleText(
-                                  LocaleKeys.user_badHabits.tr(),
-                                  isFieldRequired: false),
-                              Visibility(
-                                visible: widget._isBadHabitsCheckboxOn == false,
-                                child: CustomizableMultiselectField(
-                                  decoration:
-                                      CustomInputDecoration().GetDecoration(),
-                                  customizableMultiselectWidgetOptions:
-                                      CustomizableMultiselectWidgetOptions(
-                                    hintText: Text(
-                                        LocaleKeys.common_chooseOptions.tr(),
-                                        style: const TextStyle(
-                                            color: Colors.grey)),
-                                    chipShape: RoundedRectangleBorder(
-                                      side: const BorderSide(
-                                          color: Colors.red, width: 1),
-                                      borderRadius: BorderRadius.circular(16.0),
-                                    ),
-                                  ),
-                                  customizableMultiselectDialogOptions:
-                                      CustomizableMultiselectDialogOptions(
-                                          okButtonLabel:
-                                              LocaleKeys.common_confirm.tr(),
-                                          cancelButtonLabel:
-                                              LocaleKeys.common_cancel.tr(),
-                                          enableSearchBar: false),
-                                  dataSourceList: [
-                                    DataSource<String>(
-                                      dataList: GlobalStrings.getBadHabits(),
-                                      valueList:
-                                          widget.userProfileData.badHabits ??
-                                              [],
-                                      options: DataSourceOptions(
-                                        valueKey: 'value',
-                                        labelKey: 'label',
+                                            .toList(),
                                       ),
                                     ),
-                                  ],
-                                  onChanged: ((List<List<dynamic>> value) {
-                                    widget.userProfileData.badHabits = [];
-                                    for (int i = 0; i < value[0].length; i++) {
-                                      widget.userProfileData.badHabits!
-                                          .add(value[0][i]);
-                                    }
-                                    checkFields();
-                                  }),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Checkbox(
-                                    value: widget._isBadHabitsCheckboxOn,
+                                  );
+                                }),
+              
+                                CustomInputDecoration().subtitleText(
+                                    LocaleKeys.user_placeOfStudy.tr(),
+                                    isFieldRequired: false),
+              
+                                Focus(
+                                  child: TextField(
+                                    decoration: CustomInputDecoration(
+                                            hintText:
+                                                LocaleKeys.user_placeOfStudy.tr())
+                                        .GetDecoration(Theme.of(context).colorScheme.primary),
+                                    controller: TextEditingController(
+                                        text:
+                                            widget.userProfileData.placeOfStudy),
                                     onChanged: (value) {
-                                      widget._isBadHabitsCheckboxOn =
-                                          widget._isBadHabitsCheckboxOn ==
-                                              false;
-                                      widget.userProfileData.badHabits = [];
+                                      needUpdate = true;
+                                      widget.userProfileData.placeOfStudy = value;
+                                    },
+                                    onSubmitted: (value) {
+                                      widget.userProfileData.placeOfStudy = value;
                                       checkFields();
+                                      setState(() {});
                                     },
                                   ),
-                                  Text(LocaleKeys.badHabbits_missing.tr()),
-                                ],
-                              ),
-
-                              CustomInputDecoration()
-                                  .subtitleText(LocaleKeys.user_aboutMe.tr()),
-                              Focus(
-                                child: TextField(
-                                  maxLength: 1500,
-                                  maxLines: 10,
-                                  minLines: 1,
-                                  decoration: CustomInputDecoration(
-                                    hintText:
-                                        widget.userProfileData.about ?? "",
-                                  ).GetDecoration(),
-                                  controller: TextEditingController(
-                                      text: widget.userProfileData.about),
-                                  onChanged: (value) {
-                                    needUpdate = true;
-                                    widget.userProfileData.about = value;
-                                  },
-                                  onSubmitted: (value) {
-                                    widget.userProfileData.about = value;
-                                    checkFields();
-                                    setState(() {});
+                                  onFocusChange: (hasFocus) {
+                                    if (!hasFocus) {
+                                      setState(() {});
+                                    }
                                   },
                                 ),
-                                onFocusChange: (hasFocus) {
-                                  if (!hasFocus) {
-                                    setState(() {});
-                                  }
-                                },
-                              ),
-
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    LocaleKeys.user_interests.tr(),
-                                    textDirection: TextDirection.ltr,
-                                    textAlign: TextAlign.left,
-                                    style: GoogleFonts.rubik(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 20,
-                                      color:
-                                          const Color.fromARGB(255, 33, 33, 33),
-                                    ),
+              
+                                CustomInputDecoration().subtitleText(
+                                    LocaleKeys.user_placeOfWork.tr()),
+              
+                                Focus(
+                                  child: TextField(
+                                    decoration: CustomInputDecoration(
+                                      hintText: LocaleKeys.user_placeOfWork.tr(),
+                                    ).GetDecoration(Theme.of(context).colorScheme.primary),
+                                    controller: TextEditingController(
+                                        text: widget.userProfileData.placeOfWork),
+                                    onChanged: (value) {
+                                      widget.userProfileData.placeOfWork = value;
+                                      needUpdate = true;
+                                    },
+                                    onSubmitted: (value) {
+                                      widget.userProfileData.placeOfWork = value;
+                                      checkFields();
+                                      setState(() {});
+                                    },
                                   ),
-                                  RichText(
-                                    textAlign: TextAlign.end,
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                            text: LocaleKeys.common_change.tr(),
-                                            style: GoogleFonts.rubik(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                              color: const Color.fromARGB(
-                                                  255, 00, 0xCF, 0x91),
-                                            ),
-                                            recognizer: TapGestureRecognizer()
-                                              ..onTap = () {
-                                                Navigator.push(
-                                                  context,
-                                                  PageRouteBuilder(
-                                                    pageBuilder: (_, __, ___) =>
-                                                        UpdateInterests(widget
-                                                            .userProfileData),
-                                                    transitionDuration:
-                                                        const Duration(
-                                                            seconds: 0),
-                                                  ),
-                                                ).then((_) => {
-                                                      setState(() {
-                                                        widget._getUserInfo();
-                                                      })
-                                                    });
-                                              }),
-                                      ],
+                                  onFocusChange: (hasFocus) {
+                                    if (!hasFocus) {
+                                      setState(() {});
+                                    }
+                                  },
+                                ),
+                                CustomInputDecoration().errorBox(placeOfWorkErr),
+              
+                                CustomInputDecoration().subtitleText(
+                                    LocaleKeys.user_workPosition.tr(),
+                                    isFieldRequired: false),
+              
+                                Focus(
+                                  child: TextField(
+                                    decoration: CustomInputDecoration(
+                                      hintText: LocaleKeys.user_workPosition.tr(),
+                                    ).GetDecoration(Theme.of(context).colorScheme.primary),
+                                    controller: TextEditingController(
+                                        text:
+                                            widget.userProfileData.workPosition),
+                                    onChanged: (value) {
+                                      needUpdate = true;
+                                      widget.userProfileData.workPosition = value;
+                                    },
+                                    onSubmitted: (value) {
+                                      widget.userProfileData.workPosition = value;
+                                      checkFields();
+                                      setState(() {});
+                                    },
+                                  ),
+                                  onFocusChange: (hasFocus) {
+                                    if (!hasFocus) {
+                                      setState(() {});
+                                    }
+                                  },
+                                ),
+              
+                                CustomInputDecoration().subtitleText(
+                                    LocaleKeys.user_maritalStatus.tr()),
+                                FormField<String>(
+                                    builder: (FormFieldState<String> state) {
+                                  if (familyState['married'] != null) {
+                                    widget.userProfileData.gender == "female"
+                                        ? familyState.remove('married')
+                                        : null;
+                                  }
+              
+                                  return InputDecorator(
+                                    decoration:
+                                        CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                          dropdownColor: Colors.white,
+                                          value: widget.userProfileData
+                                                  .maritalStatus ??
+                                              "notMarried",
+                                          isDense: true,
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              widget.userProfileData
+                                                  .maritalStatus = newValue;
+                                              checkFields();
+                                              state.didChange(newValue);
+                                            });
+                                          },
+                                          items: familyState
+                                              .map((description, value) {
+                                                return MapEntry(
+                                                    description,
+                                                    DropdownMenuItem<String>(
+                                                      value: description,
+                                                      child: Text(value, style: const TextStyle(color: Colors.black),).tr(),
+                                                    ));
+                                              })
+                                              .values
+                                              .toList()),
                                     ),
-                                  )
-                                ],
-                              ),
-                              _interestTags(context),
-                              // DonateButton(),
-                              const SizedBox(height: 24),
-                            ]))),
-                Positioned(
-                  bottom: 16,
-                  right: 16,
-                  child: Visibility(
-                    visible: needUpdate,
-                    child: FloatingActionButton(
-                      backgroundColor: const Color.fromRGBO(0, 0xcf, 0x91, 1),
-                      child: const Icon(
-                        Icons.save,
-                        color: Colors.white,
+                                  );
+                                }),
+                                CustomInputDecoration().errorBox(maritalErr),
+              
+                                CustomInputDecoration().subtitleText(
+                                    LocaleKeys.user_faith.tr(),
+                                    isFieldRequired: false),
+                                FormField<String>(
+                                    builder: (FormFieldState<String> state) {
+                                  return InputDecorator(
+                                    decoration:
+                                        CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        dropdownColor: Colors.white,
+                                        value:
+                                            widget.userProfileData.typeReligion ??
+                                                "notSelected",
+                                        isDense: true,
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            if (newValue == "notSelected") {
+                                              widget.userProfileData
+                                                  .typeReligion = null;
+                                            } else {
+                                              widget.userProfileData
+                                                  .typeReligion = newValue;
+                                            }
+                                            checkFields();
+                                            state.didChange(newValue);
+                                          });
+                                        },
+                                        items: faithState
+                                            .map((description, value) {
+                                              return MapEntry(
+                                                  description,
+                                                  DropdownMenuItem<String>(
+                                                    value: description,
+                                                    child: Text(value, style: const TextStyle(color: Colors.black),).tr(),
+                                                  ));
+                                            })
+                                            .values
+                                            .toList(),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                                // CustomInputDecoration().errorBox(typeReligionErr),
+              
+                                CustomInputDecoration()
+                                    .subtitleText(LocaleKeys.user_canons.tr()),
+              
+                                FormField<String>(
+                                    builder: (FormFieldState<String> state) {
+                                  return InputDecorator(
+                                    decoration:
+                                        CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        dropdownColor: Colors.white,
+                                        value: widget.userProfileData
+                                                .observeIslamCanons ??
+                                            "observingIslamCanons",
+                                        isDense: true,
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            widget.userProfileData
+                                                .observeIslamCanons = newValue;
+                                            checkFields();
+                                            state.didChange(newValue);
+                                          });
+                                        },
+                                        items: widget.userProfileData.gender ==
+                                                "male"
+                                            ? observantOfTheCanonsMaleState
+                                                .map((description, value) {
+                                                  return MapEntry(
+                                                      description,
+                                                      DropdownMenuItem<String>(
+                                                        value: description,
+                                                        child: Text(value, style: const TextStyle(color: Colors.black),).tr(),
+                                                      ));
+                                                })
+                                                .values
+                                                .toList()
+                                            : observantOfTheCanonsFemaleState
+                                                .map((description, value) {
+                                                  return MapEntry(
+                                                      description,
+                                                      DropdownMenuItem<String>(
+                                                        value: description,
+                                                        child: Text(value).tr(),
+                                                      ));
+                                                })
+                                                .values
+                                                .toList(),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                                CustomInputDecoration().errorBox(canonsErr),
+              
+                                CustomInputDecoration().subtitleText(
+                                    LocaleKeys.user_haveChildren_title.tr()),
+                                FormField<bool>(
+                                    builder: (FormFieldState<bool> state) {
+                                  return InputDecorator(
+                                    decoration:
+                                        CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<bool>(
+                                        dropdownColor: Colors.white,
+                                        value:
+                                            widget.userProfileData.haveChildren!,
+                                        isDense: true,
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            widget.userProfileData.haveChildren =
+                                                newValue;
+                                            checkFields();
+                                            state.didChange(newValue);
+                                          });
+                                        },
+                                        items: chldrnState
+                                            .map((description, value) {
+                                              return MapEntry(
+                                                  description,
+                                                  DropdownMenuItem<bool>(
+                                                    value: description,
+                                                    child: Text(value, style: const TextStyle(color: Colors.black),).tr(),
+                                                  ));
+                                            })
+                                            .values
+                                            .toList(),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                                CustomInputDecoration().errorBox(childrenErr),
+              
+                                CustomInputDecoration().subtitleText(
+                                    LocaleKeys.user_badHabits.tr(),
+                                    isFieldRequired: false),
+                                Visibility(
+                                  visible: widget._isBadHabitsCheckboxOn == false,
+                                  child: CustomizableMultiselectField(
+                                    decoration:
+                                        CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                                    customizableMultiselectWidgetOptions:
+                                        CustomizableMultiselectWidgetOptions(
+                                      hintText: Text(
+                                          LocaleKeys.common_chooseOptions.tr(),
+                                          style: const TextStyle(
+                                              color: Colors.grey)),
+                                      chipShape: RoundedRectangleBorder(
+                                        side:  BorderSide(
+                                            color: Theme.of(context).colorScheme.primary, width: 1),
+                                        borderRadius: BorderRadius.circular(16.0),
+                                      ),chipColor: Theme.of(context).colorScheme.primary
+                                    ),
+                                    customizableMultiselectDialogOptions:
+                                        CustomizableMultiselectDialogOptions(
+
+                                            okButtonLabel:
+                                                LocaleKeys.common_confirm.tr(),
+                                            cancelButtonLabel:
+                                                LocaleKeys.common_cancel.tr(),
+                                            enableSearchBar: false),
+                                    dataSourceList: [
+                                      DataSource<String>(
+                                        dataList: GlobalStrings.getBadHabits(),
+                                        valueList:
+                                            widget.userProfileData.badHabits ??
+                                                [],
+                                        options: DataSourceOptions(
+                                          valueKey: 'value',
+                                          labelKey: 'label',
+                                        ),
+                                      ),
+                                    ],
+                                    onChanged: ((List<List<dynamic>> value) {
+                                      widget.userProfileData.badHabits = [];
+                                      for (int i = 0; i < value[0].length; i++) {
+                                        widget.userProfileData.badHabits!
+                                            .add(value[0][i]);
+                                      }
+                                      checkFields();
+                                    }),
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Checkbox(
+                                        shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(2.0),
+                                      ),
+                                      side: MaterialStateBorderSide.resolveWith(
+                                          (states) => const BorderSide(width: 1.0, color: Colors.grey),
+                                      ),
+                                      value: widget._isBadHabitsCheckboxOn,
+                                      onChanged: (value) {
+                                        widget._isBadHabitsCheckboxOn =
+                                            widget._isBadHabitsCheckboxOn ==
+                                                false;
+                                        widget.userProfileData.badHabits = [];
+                                        checkFields();
+                                      },
+                                    ),
+                                    Text(LocaleKeys.badHabbits_missing.tr(), style: const TextStyle(color: Colors.black),),
+                                  ],
+                                ),
+              
+                                CustomInputDecoration()
+                                    .subtitleText(LocaleKeys.user_aboutMe.tr()),
+                                Focus(
+                                  child: TextField(
+                                    maxLength: 1500,
+                                    maxLines: 10,
+                                    minLines: 1,
+                                    decoration: CustomInputDecoration(
+                                      hintText:
+                                          widget.userProfileData.about ?? "",
+                                    ).GetDecoration(Theme.of(context).colorScheme.primary),
+                                    controller: TextEditingController(
+                                        text: widget.userProfileData.about),
+                                    onChanged: (value) {
+                                      needUpdate = true;
+                                      widget.userProfileData.about = value;
+                                    },
+                                    onSubmitted: (value) {
+                                      widget.userProfileData.about = value;
+                                      checkFields();
+                                      setState(() {});
+                                    },
+                                  ),
+                                  onFocusChange: (hasFocus) {
+                                    if (!hasFocus) {
+                                      setState(() {});
+                                    }
+                                  },
+                                ),
+              
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      LocaleKeys.user_interests.tr(),
+                                      textDirection: TextDirection.ltr,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 20,
+                                        color:
+                                            const Color.fromARGB(255, 33, 33, 33),
+                                      ),
+                                    ),
+                                    RichText(
+                                      textAlign: TextAlign.end,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                              text: LocaleKeys.common_change.tr(),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                                color: Theme.of(context).colorScheme.secondary,
+                                              ),
+                                              recognizer: TapGestureRecognizer()
+                                                ..onTap = () {
+                                                  Navigator.push(
+                                                    context,
+                                                    PageRouteBuilder(
+                                                      pageBuilder: (_, __, ___) =>
+                                                          UpdateInterests(widget
+                                                              .userProfileData),
+                                                      transitionDuration:
+                                                          const Duration(
+                                                              seconds: 0),
+                                                    ),
+                                                  ).then((_) => {
+                                                        setState(() {
+                                                          widget._getUserInfo();
+                                                        })
+                                                      });
+                                                }),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                _interestTags(context),
+                                // DonateButton(),
+                                const SizedBox(height: 24),
+                              ]))),
+                  Positioned(
+                    bottom: 16,
+                    right: 16,
+                    child: Visibility(
+                      visible: needUpdate,
+                      child: FloatingActionButton(
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        child: const Icon(
+                          Icons.save,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          updateUserData();
+                        },
                       ),
-                      onPressed: () {
-                        updateUserData();
-                      },
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           },
         ));
@@ -1055,9 +1054,10 @@ class _ProfileMainPageScreenState extends State<ProfileMainPageScreen> {
         padding: const EdgeInsets.all(0),
         child: ChoiceChip(
           selected: true,
+          checkmarkColor: Colors.black,
           label: Text(
             showTagLabelCurrentLocale(tagList[i]),
-            style: GoogleFonts.rubik(
+            style: const TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 16,
             ),

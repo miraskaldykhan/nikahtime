@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:photo_view/photo_view.dart';
 
 import 'package:photo_view/photo_view_gallery.dart';
@@ -11,6 +12,7 @@ import 'package:untitled/components/widgets/video_player.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class ImageGalleryViewerScreen extends StatefulWidget {
   late List<String> galleryItems;
@@ -28,9 +30,24 @@ class ImageGalleryViewerScreen extends StatefulWidget {
 }
 
 class _ImageGalleryViewerScreenState extends State<ImageGalleryViewerScreen> {
+  late PageController controller;
+  int currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = PageController(initialPage: widget.startPage);
+    currentPage = widget.startPage;
+
+    controller.addListener(() {
+      setState(() {
+        currentPage = controller.page?.round() ?? 0;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    PageController controller = PageController(initialPage: widget.startPage);
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -47,15 +64,14 @@ class _ImageGalleryViewerScreenState extends State<ImageGalleryViewerScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1.0,
-                    color: const Color.fromARGB(255, 218, 216, 215),
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                  border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                  borderRadius: BorderRadius.circular(8)
                 ),
                 child: IconButton(
-                    iconSize: 18.0,
+                    iconSize: 20.0,
                     color: Colors.white,
                     padding: const EdgeInsets.all(0),
                     icon: const Icon(Icons.arrow_back_ios_sharp),
@@ -64,12 +80,11 @@ class _ImageGalleryViewerScreenState extends State<ImageGalleryViewerScreen> {
                     }),
               ),
               Container(
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1.0,
-                    color: const Color.fromARGB(255, 218, 216, 215),
-                  ),
-                  borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                  border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: buildPopupMenuButton(),
               )
@@ -77,76 +92,144 @@ class _ImageGalleryViewerScreenState extends State<ImageGalleryViewerScreen> {
           ),
         ),
       ),
-      body: Center(
-        child: PhotoViewGallery.builder(
-          scrollPhysics: const BouncingScrollPhysics(),
-          loadingBuilder:
-              (BuildContext context, ImageChunkEvent? loadingProgress) {
-            return const Center(
-              child: SizedBox(
-                height: 64,
-                width: 64,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              ),
-            );
-          },
-          builder: (BuildContext context, int index) {
-            if (widget.galleryItems[index].contains(".avi") ||
-                widget.galleryItems[index].contains(".mp4") ||
-                widget.galleryItems[index].contains(".mov")) {
-              return PhotoViewGalleryPageOptions.customChild(
-                  child: VideoPlayerScreen(
-                widget.galleryItems[index],
-                photoOwnerId: 0,
-              ));
-            }
-            return PhotoViewGalleryPageOptions(
-              imageProvider: getImage(widget.galleryItems[index]),
-              initialScale: PhotoViewComputedScale.contained * 1,
-              minScale: PhotoViewComputedScale.contained * 1,
-              maxScale: PhotoViewComputedScale.covered * 2,
-            );
-          },
-          itemCount: widget.galleryItems.length,
-          pageController: controller,
-        ),
+      body: Column(
+        children: [
+          // Основная галерея
+          Expanded(
+            flex: 8,
+            child: PhotoViewGallery.builder(
+              scrollPhysics: const BouncingScrollPhysics(),
+              loadingBuilder:
+                  (BuildContext context, ImageChunkEvent? loadingProgress) {
+                return const Center(
+                  child: SizedBox(
+                    height: 64,
+                    width: 64,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                );
+              },
+              builder: (BuildContext context, int index) {
+                if (widget.galleryItems[index].contains(".avi") ||
+                    widget.galleryItems[index].contains(".mp4") ||
+                    widget.galleryItems[index].contains(".mov")) {
+                  return PhotoViewGalleryPageOptions.customChild(
+                      child: VideoPlayerScreen(
+                    widget.galleryItems[index],
+                    photoOwnerId: 0,
+                  ));
+                }
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: getImage(widget.galleryItems[index]),
+                  initialScale: PhotoViewComputedScale.contained * 1,
+                  minScale: PhotoViewComputedScale.contained * 1,
+                  maxScale: PhotoViewComputedScale.covered * 2,
+                );
+              },
+              itemCount: widget.galleryItems.length,
+              pageController: controller,
+            ),
+          ),
+          // Горизонтальный список миниатюр
+          Container(
+            height: 68,
+            margin: const EdgeInsets.only( bottom: 20),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.galleryItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                bool isActive = index == currentPage;
+                
+                return GestureDetector(
+                  onTap: () {
+                    controller.jumpToPage(index);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Container(
+                      width: 68,
+                      margin: const EdgeInsets.only(left: 3),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: isActive ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+                          width: 2, // Толщина рамки
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ClipRRect(borderRadius: BorderRadius.circular(8) , child: displayImageOrVideoMiniature(widget.galleryItems[index], Theme.of(context).colorScheme.secondary)),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 20,)
+        ],
       ),
-      //body: Center(
-      //  child: PhotoViewGallery(
-      //      scrollPhysics: const BouncingScrollPhysics(),
-      //      loadingBuilder: (BuildContext context, ImageChunkEvent? loadingProgress) {
-      //        return const Center(
-      //          child: SizedBox(
-      //            height: 64,
-      //            width: 64,
-      //            child: CircularProgressIndicator(
-      //              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-      //            ),
-      //          ),
-      //        );
-      //      },
-      //      pageOptions: List.generate(widget.galleryItems.length, (index) {
-      //        if(widget.galleryItems[index].contains(".avi")
-      //        || widget.galleryItems[index].contains(".mp4")
-      //        || widget.galleryItems[index].contains(".mov"))
-      //        {
-      //          return  PhotoViewGalleryPageOptions.customChild(
-      //              child: VideoPlayerScreen(widget.galleryItems[index], photoOwnerId: 0,)
-      //          );
-      //        }
-      //        return PhotoViewGalleryPageOptions(
-      //          imageProvider: getImage(widget.galleryItems[index]),
-      //          initialScale: PhotoViewComputedScale.contained * 1,
-      //          minScale: PhotoViewComputedScale.contained * 1,
-      //          maxScale: PhotoViewComputedScale.covered * 2,
-      //        );
-      //      })
-      //  ),
-      //),
     );
   }
+
+
+
+Future<String?> getVideoThumbnail(String videoUrl) async {
+  try {
+    // Генерация миниатюры
+    final String? thumbnailPath = await VideoThumbnail.thumbnailFile(
+      video: videoUrl,
+      thumbnailPath: (await getTemporaryDirectory()).path,
+      imageFormat: ImageFormat.PNG,
+      maxHeight: 300, 
+      quality: 75,
+    );
+
+    // Проверяем, существует ли файл миниатюры
+    if (thumbnailPath != null && File(thumbnailPath).existsSync()) {
+      return thumbnailPath;
+    } else {
+      debugPrint("Thumbnail not generated or file does not exist.");
+      return null;
+    }
+  } catch (err) {
+    // Выводим ошибку в консоль для отладки
+    debugPrint("Error generating video thumbnail: $err");
+    return null;
+  }
+}
+
+FutureBuilder displayImageOrVideoMiniature(String url, Color color) {
+  if (url.contains(".mp4") || url.contains(".avi") || url.contains(".mov")) {
+    return FutureBuilder<String?>(
+      future: getVideoThumbnail(url),
+      builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData && snapshot.data != null) {
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.file(
+                File(snapshot.data!),
+                cacheHeight: 4000,
+                fit: BoxFit.cover,
+              ),
+            );
+          } else {
+            return Icon(
+              Icons.slow_motion_video_outlined,
+              color: color,
+              size: 60,
+            );
+          }
+        }
+        return Center(child: CircularProgressIndicator(color: color));
+      },
+    );
+  } else {
+    // Если это изображение, показываем его
+    return displayImageMiniature(url, Theme.of(context).colorScheme.secondary);
+  }
+}
+
 
   Widget buildPopupMenuButton() {
     if (widget.photoOwnerId != null) {
@@ -154,6 +237,7 @@ class _ImageGalleryViewerScreenState extends State<ImageGalleryViewerScreen> {
           icon: const Icon(
             Icons.more_vert,
             color: Colors.white,
+            size: 20,
           ),
           shape: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white, width: 2),
@@ -166,8 +250,7 @@ class _ImageGalleryViewerScreenState extends State<ImageGalleryViewerScreen> {
                         const Duration(seconds: 0),
                         () => SendClaim(
                             claimObjectId: widget.photoOwnerId!,
-                            type: ClaimType.photo
-                        ).ShowAlertDialog(this.context));
+                            type: ClaimType.photo).ShowAlertDialog(this.context));
                   },
                   child: Row(
                     children: [
@@ -185,6 +268,26 @@ class _ImageGalleryViewerScreenState extends State<ImageGalleryViewerScreen> {
     } else {
       return const SizedBox.shrink();
     }
+  }
+
+  Widget displayMiniature(String url, Color color) {
+    return FutureBuilder<Widget>(
+      future: getImageFromUrl(url),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: snapshot.data,
+            
+          );
+        }
+        return SizedBox(
+          width: 80,
+          height: 80,
+          child: Center(child: CircularProgressIndicator(color: color,)),
+        );
+      },
+    );
   }
 }
 
@@ -225,17 +328,17 @@ Widget displayPhotoOrVideo(BuildContext context, String url,
                   color: Colors.white,
                   size: 60,
                 )
-              : displayImageMiniature(url));
+              : displayImageMiniature(url, Theme.of(context).colorScheme.secondary));
 }
 
-FutureBuilder displayImageMiniature(String url) {
+FutureBuilder displayImageMiniature(String url, Color color) {
   return FutureBuilder<Widget>(
     future: getImageFromUrl(url),
     builder: (BuildContext context, AsyncSnapshot snapshot) {
       if (snapshot.hasData) {
         return snapshot.data;
       }
-      return const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator(color: color,));
     },
   );
 }
@@ -247,7 +350,7 @@ Future<Widget> getImageFromUrl(String url) async {
       final File imageFile = File(url);
       return Image.file(
         imageFile,
-        cacheHeight: 300,
+        cacheHeight: 4000,
         
       );
     }
@@ -260,7 +363,7 @@ Future<Widget> getImageFromUrl(String url) async {
 
     if (imageFile.existsSync() && (imageFile.lengthSync() != 0)) {
       return Image.file(imageFile,
-          cacheHeight: 700,
+          cacheHeight: 1400,
           //cacheWidth: 256,
           fit: BoxFit.cover,
          );
@@ -274,7 +377,7 @@ Future<Widget> getImageFromUrl(String url) async {
       return Image.network(
         url,
         
-        cacheHeight: 300,
+        cacheHeight: 1400,
         //cacheWidth: 256,
         fit: BoxFit.cover,
         loadingBuilder: (BuildContext context, Widget child,
@@ -286,6 +389,7 @@ Future<Widget> getImageFromUrl(String url) async {
                   ? loadingProgress.cumulativeBytesLoaded /
                       loadingProgress.expectedTotalBytes!
                   : null,
+                  color: Theme.of(context).colorScheme.secondary,
             ),
           );
         },
@@ -296,6 +400,31 @@ Future<Widget> getImageFromUrl(String url) async {
     debugPrint(url);
     return Container();
   }
+}
+Widget displayMedia(BuildContext context, String url,
+    {List<String>? items, int? initPage, int? photoOwnerId}) {
+  return SizedBox(
+    child: (url.contains(".mp4") || url.contains(".avi") || url.contains(".mov"))
+        ? const Icon(
+            Icons.slow_motion_video_outlined,
+            color: Colors.white,
+            size: 60,
+          )
+        : ClipRRect(
+            borderRadius: BorderRadius.circular(24.0),
+            child: Image.network(
+              url,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator());
+              },
+              errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.broken_image, size: 60),
+            ),
+          ),
+  );
 }
 
 late Directory appDir;

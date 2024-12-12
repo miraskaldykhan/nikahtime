@@ -2,6 +2,7 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:untitled/components/widgets/custom_input_decoration.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
 
@@ -20,20 +21,10 @@ Widget inputText(BuildContext context,{
       child: show ? Container(
         decoration: const BoxDecoration(
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              offset: Offset(
-                0.0,
-                -5.0,
-              ),
-              blurRadius: 2.0,
-              spreadRadius: 0.0,
-            ),
-          ],
         ),
         child: Container(
-          padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
+          color: Theme.of(context).scaffoldBackgroundColor,
+          padding: const EdgeInsets.only(top: 8, left: 16, right: 16),
           child: Row(
             children: [
               Flexible(
@@ -55,13 +46,15 @@ Widget inputText(BuildContext context,{
                         hintText: LocaleKeys.news_addComment.tr(),
                         Icon: GestureDetector(
                           onTap: () => onSubmitAction(),
-                          child: const Icon(
-                            Icons.send,
-                            size: 20,
+                          child: SvgPicture.asset(
+                            'assets/icons/send.svg',
+                            width: 20,
+                            height: 20,
+                            fit: BoxFit.none,
                             color: Color.fromARGB(255, 117, 116, 115),
                           ),
                         )
-                    ).GetDecoration(),
+                    ).GetDecoration(Theme.of(context).colorScheme.primary),
                   ),
                 ),
               ),

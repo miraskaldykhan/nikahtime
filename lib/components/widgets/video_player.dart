@@ -76,7 +76,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
           LocaleKeys.common_videoWaitBox,
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center,
-          style: GoogleFonts.rubik(
+          style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
             color: Colors.white,

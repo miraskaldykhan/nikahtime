@@ -9,10 +9,28 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:mytracker_sdk/mytracker_sdk.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled/Screens/Chat/Stories/editor/cubit/createdAtCubit.dart';
+import 'package:untitled/Screens/Chat/Stories/create/cubit/send_stories/send_stories_cubit.dart';
+import 'package:untitled/Screens/Chat/Stories/editor/cubit/delete/delete_stories_cubit.dart';
+import 'package:untitled/Screens/Chat/Stories/editor/cubit/get_my_stories/get_my_stories_cubit.dart';
+import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/get_friends_stories/get_friend_stories_cubit.dart';
+import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/get_stories_viewers/stories_viewers_cubit.dart';
+import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/like_story/like_story_cubit.dart';
+import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/show_story/show_story_cubit.dart';
+import 'package:untitled/Screens/Contacts/cubit/fetch_followers/fetch_followers_cubit.dart';
+import 'package:untitled/Screens/Contacts/cubit/fetch_friends/fetch_friends_cubit.dart';
+import 'package:untitled/Screens/Contacts/cubit/fetch_registered_contacts/fetch_registered_contacts_cubit.dart';
+import 'package:untitled/Screens/Contacts/cubit/fetch_unregistered_contacts/unregistered_contacts_cubit.dart';
+import 'package:untitled/Screens/Contacts/cubit/move_follower_to_friends/follower_to_friend_cubit.dart';
+import 'package:untitled/Screens/Contacts/cubit/move_friend_to_follower/friend_to_follower_cubit.dart';
+import 'package:untitled/Screens/Contacts/cubit/send_friends_request/send_friends_request_cubit.dart';
 import 'package:untitled/Screens/Profile/bloc/profile_bloc.dart';
+import 'package:untitled/Screens/Profile/profile_page.dart';
 import 'package:untitled/Screens/welcome.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
 import 'package:untitled/components/widgets/nikah_app_updater.dart';
@@ -20,8 +38,9 @@ import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/Screens/Registration/registration_create_profile.dart';
 import 'package:untitled/Screens/main_page.dart';
 import 'package:untitled/my_tracker_params.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'Screens/Chat/story_page.dart';
+import 'Screens/Chat/Stories/look_stories/story_page.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -99,7 +118,7 @@ void main() async {
                   purchaseDetails.verificationData.localVerificationData;
               await NetworkService()
                   .verifyPaymentByApplePay(receiptData: receiptData);
-            // ignore: deprecated_member_use
+              // ignore: deprecated_member_use
             } on DioError catch (error) {
               debugPrint(error.toString());
               return;
@@ -131,15 +150,12 @@ void main() async {
   runApp(
     EasyLocalization(
         supportedLocales: const [Locale('en'), Locale('ru')],
-        path:
-            'assets/translations',
+        path: 'assets/translations',
         fallbackLocale: const Locale('en'),
-        child: MyApp(token, response),
-        
-        
-        
-        
-        ),
+        child: ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+          child: MyApp(token, response),
+        )),
   );
 }
 
@@ -147,10 +163,17 @@ Future<void> _messageHandler(RemoteMessage message) async {
   print('background message ${message.notification!.body}');
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   MyApp(this.token, this.response, {super.key});
+
   String token;
   var response;
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   Map<int, Color> colorCodes = {
     50: const Color.fromRGBO(00, 0xcf, 0x91, .1),
     100: const Color.fromRGBO(00, 0xcf, 0x91, .2),
@@ -164,47 +187,225 @@ class MyApp extends StatelessWidget {
     900: const Color.fromRGBO(00, 0xcf, 0x91, 1),
   };
 
+  late DateTime installationDate;
+
+  bool showRatingPopup = false;
+
+  @override
+  void initState() {
+    super.initState();
+    checkRatingPopup();
+  }
+
+  Future<void> checkRatingPopup() async {
+    final prefs = await SharedPreferences.getInstance();
+    final installationTimestamp = prefs.getInt('installation_date');
+
+    if (installationTimestamp == null) {
+      // Сохраняем текущую дату как дату установки при первом запуске
+      prefs.setInt('installation_date', DateTime.now().millisecondsSinceEpoch);
+      prefs.setInt('rating_popup_day', 3);
+      return;
+    }
+
+    installationDate =
+        DateTime.fromMillisecondsSinceEpoch(installationTimestamp);
+    int daysToPopup = prefs.getInt('rating_popup_day') ?? 3;
+    final daysSinceInstallation =
+        DateTime.now().difference(installationDate).inDays;
+
+    // Проверка необходимости показа всплывающего окна
+    if (daysSinceInstallation >= daysToPopup) {
+      setState(() => showRatingPopup = true);
+    }
+  }
+
+  Future<void> updateNextPopupDay() async {
+    final prefs = await SharedPreferences.getInstance();
+    int currentPopupDay = prefs.getInt('rating_popup_day') ?? 3;
+    int nextPopupDay;
+
+    if (currentPopupDay == 3) {
+      nextPopupDay = 7;
+    } else if (currentPopupDay == 7) {
+      nextPopupDay = 30;
+    } else {
+      nextPopupDay = 0; // Прекращаем показывать окна
+    }
+
+    prefs.setInt('rating_popup_day', nextPopupDay);
+  }
+
+  Future<void> launchAppStore() async {
+    const appStoreUrl = "https://apps.apple.com/kz/app/nikah-time/id1593398215";
+    const googlePlayUrl =
+        "https://play.google.com/store/apps/details?id=ru.nikahtime";
+
+    final url = Theme.of(context).platform == TargetPlatform.iOS
+        ? appStoreUrl
+        : googlePlayUrl;
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not open store URL';
+    }
+  }
+
+  void showRatingDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            "Уважаемый(ая) пользователь!",
+            style: TextStyle(
+              color: Color(
+                0xff212121,
+              ),
+              fontSize: 18,
+            ),
+          ),
+          content: Text(
+            "Команда разработчиков выражает благодарность за использование приложения «NikahTime»! Оцените нашу работу в «App Store» или «Google Play» для улучшения приложения.",
+            style: TextStyle(
+              color: Color(
+                0xff212121,
+              ),
+              fontSize: 18,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                updateNextPopupDay();
+                Navigator.pop(context);
+              },
+              child: Text(
+                "Оценить позже",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                launchAppStore();
+                Navigator.pop(context);
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.secondary,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text(
+                  "Оценить сейчас",
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    if (showRatingPopup) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => showRatingDialog());
+    }
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (BuildContext context) => ProfileBloc(),
         ),
+        BlocProvider(
+          create: (BuildContext context) => SendStoriesCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => GetMyStoriesCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => DeleteStoriesCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => GetFriendStoriesCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => TextCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => StoriesViewersCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => ShowStoryCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => LikeStoryCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => FetchRegisteredContactsCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => UnregisteredContactsCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => FetchFriendsCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => FetchFollowersCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => FollowerToFriendCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => SendFriendsRequestCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => FriendToFollowerCubit(),
+        ),
       ],
-      child: MaterialApp(
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        locale: context.locale,
-        title: 'Nikah Time',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            primarySwatch: MaterialColor(0xFF00CF91, colorCodes),
-            primaryColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
-            fontFamily: 'Rubik'),
-        home: buildAppBody(context),
-        navigatorKey: navigatorKey,
-        routes: {
-          '/entering': (context) => const WelcomeScreen(),
-        },
+      child: ScreenUtilInit(
+        minTextAdapt: true,
+        splitScreenMode: true,
+        child: MaterialApp(
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          title: 'Nikah Time',
+          debugShowCheckedModeBanner: false,
+          theme: themeProvider.currentTheme,
+          home: buildAppBody(context),
+          navigatorKey: navigatorKey,
+          routes: {
+            '/entering': (context) => const WelcomeScreen(),
+          },
+        ),
       ),
     );
   }
 
   Widget buildAppBody(BuildContext context) {
-    if (token == "empty") {
+    if (widget.token == "empty") {
       return const AppBody(
         initialScreen: AppBodyScreen.welcome,
       );
     }
 
-    if (response.statusCode != 200) {
+    if (widget.response.statusCode != 200) {
       return const AppBody(initialScreen: AppBodyScreen.welcome);
     }
-    print(response.body);
+    print(widget.response.body);
     UserProfileData userProfileData = UserProfileData();
-    userProfileData.accessToken = token;
-    userProfileData.jsonToData(jsonDecode(response.body)[0]);
+    userProfileData.accessToken = widget.token;
+    userProfileData.jsonToData(jsonDecode(widget.response.body)[0]);
 
     return Builder(builder: (context) {
       context

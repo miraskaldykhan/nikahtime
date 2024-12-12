@@ -56,6 +56,7 @@ class _UpdateInterestsState extends State<UpdateInterests> {
       body:  Container (
         margin: const EdgeInsets.only(left: 16, right: 16),
         width: double.infinity,
+        color: Theme.of(context).scaffoldBackgroundColor,
         //margin: EdgeInsets.only(top: 104),
         child: Column(
           children: <Widget>[
@@ -172,10 +173,10 @@ class _UpdateInterestsState extends State<UpdateInterests> {
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                focusedBorder: const OutlineInputBorder(
+                focusedBorder:  OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color.fromARGB(255, 0, 207, 145),
-                    width: 1,
+                    color: Theme.of(context).colorScheme.secondary,
+                    width: 2,
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
@@ -335,7 +336,7 @@ class _RegisterButton extends StatelessWidget{
         child:
         ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               elevation: 0,
               fixedSize: Size(double.infinity, 56),
               shape: RoundedRectangleBorder(

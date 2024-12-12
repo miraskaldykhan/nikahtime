@@ -1,8 +1,10 @@
 import 'package:customizable_multiselect_field/customizable_multiselect_flutter.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_plus/dropdown_plus.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -41,6 +43,7 @@ class _RegistrationCreateProfileScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const _CustomAppBar(),
       body: ChangeNotifierProvider<GenderProvider>(
           create: (context) => GenderProvider(),
@@ -79,19 +82,22 @@ class _RegistrationCreateProfileScreenState
                             PhotoPlace(widget.userProfileData, () {}),
                             CustomInputDecoration().errorBox(photoEmpty),
                             // CustomInputDecoration().subtitleText("Имя"),
-                            TextField(
-                              decoration: CustomInputDecoration(
-                                hintText: (widget.userProfileData.firstName == null)
-                                    ? LocaleKeys.user_firstName.tr()
-                                    : widget.userProfileData.firstName!,
-                              ).GetDecoration(),
-                              controller: _firstNameTextController,
-                              onChanged: (value) {
-                                if (firstNameEmpty == true) {
-                                  firstNameEmpty = false;
-                                  setState(() {});
-                                }
-                              },
+                            Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: TextField(
+                                decoration: CustomInputDecoration(
+                                  hintText: (widget.userProfileData.firstName == null)
+                                      ? LocaleKeys.user_firstName.tr()
+                                      : widget.userProfileData.firstName!,
+                                ).GetDecoration(Theme.of(context).colorScheme.secondary),
+                                controller: _firstNameTextController,
+                                onChanged: (value) {
+                                  if (firstNameEmpty == true) {
+                                    firstNameEmpty = false;
+                                    setState(() {});
+                                  }
+                                },
+                              ),
                             ),
                             CustomInputDecoration().errorBox(firstNameEmpty),
 
@@ -103,7 +109,7 @@ class _RegistrationCreateProfileScreenState
                                 hintText: (widget.userProfileData.lastName == null)
                                     ? LocaleKeys.user_lastName.tr()
                                     : widget.userProfileData.lastName!,
-                              ).GetDecoration(),
+                              ).GetDecoration(Theme.of(context).colorScheme.secondary),
                               controller: _lastNameTextController,
                               onChanged: (value) {
                                 if (lastNameEmpty == true) {
@@ -121,45 +127,43 @@ class _RegistrationCreateProfileScreenState
 
                             CustomInputDecoration()
                                 .subtitleText(LocaleKeys.user_nationality.tr(), isFieldRequired: false),
-                            DropdownFormField<String>(
-                              decoration: CustomInputDecoration().GetDecoration(),
-                              onSaved: (dynamic str) {},
-                              onChanged: (dynamic item) {
-                                widget.userProfileData.nationality = item;
-                                updateUserData();
-                              },
-                              displayItemFn: (dynamic item) => Text(
-                                translateNationName(widget
-                                        .userProfileData.nationality ??
-                                    LocaleKeys.nationalityState_notSelected.tr()),
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                              findFn: (dynamic str) async => getNationalityy(str),
-                              dropdownItemFn: (dynamic item,
-                                      int position,
-                                      bool focused,
-                                      bool selected,
-                                      Function() onTap) =>
-                                  ListTile(
-                                title: Text(translateNationName(item)),
-                                tileColor: focused
-                                    ? const Color.fromARGB(20, 0, 0, 0)
-                                    : Colors.transparent,
-                                onTap: onTap,
-                              ),
-                            ),
+                          DropdownFormField<String>( dropdownColor: Colors.white, 
+  decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
+  onSaved: (dynamic str) {},
+  onChanged: (dynamic item) {
+    widget.userProfileData.nationality = item;
+    updateUserData();
+  },
+  displayItemFn: (dynamic item) => Text(
+    translateNationName(
+      widget.userProfileData.nationality ?? LocaleKeys.nationalityState_notSelected.tr(),
+    ),
+    style: const TextStyle(
+      fontWeight: FontWeight.w400,
+      fontSize: 14 ,
+      color: Color.fromARGB(255, 33, 33, 33),
+    ),
+  ),
+  findFn: (dynamic str) async => getNationalityy(str),
+  dropdownItemFn: (dynamic item, int position, bool focused, bool selected, Function() onTap) =>
+    ListTile(
+      title: Text(translateNationName(item), style:  TextStyle(fontSize:16,color:Colors.black)),
+      tileColor: focused ? const Color.fromARGB(20, 0, 0, 0) : Colors.transparent,
+      onTap: onTap,
+    ),
+),
+
 
                             // CustomInputDecoration().errorBox(nationalityEmpty),
 
-                            CustomInputDecoration()
-                                .subtitleText(LocaleKeys.user_birthDate.tr()),
+                              CustomInputDecoration().subtitleText(LocaleKeys.user_birthDate.tr()),
                             BirthDate(widget.userProfileData),
                             CustomInputDecoration().errorBox(birthDateEmpty),
 
                             CustomInputDecoration()
                                 .subtitleText(LocaleKeys.user_country.tr()),
-                            DropdownFormField<String>(
-                              decoration: CustomInputDecoration().GetDecoration(),
+                            DropdownFormField<String>( dropdownColor: Colors.white, 
+                              decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
                               onSaved: (dynamic str) {
                                 widget.userProfileData.country = "$str";
                               },
@@ -170,7 +174,7 @@ class _RegistrationCreateProfileScreenState
                               displayItemFn: (dynamic str) => Text(
                                 translateCountryName(
                                     widget.userProfileData.country ?? ""),
-                                style: const TextStyle(fontSize: 16),
+                                style: const TextStyle(fontSize:16,color:Colors.black),
                               ),
                               findFn: (dynamic str) async => getCountry(str),
                               dropdownItemFn: (dynamic item,
@@ -179,7 +183,7 @@ class _RegistrationCreateProfileScreenState
                                       bool selected,
                                       Function() onTap) =>
                                   ListTile(
-                                title: Text(translateCountryName(item)),
+                                title: Text(translateCountryName(item), style:  TextStyle(fontSize:16,color:Colors.black),),
                                 tileColor: focused
                                     ? const Color.fromARGB(20, 0, 0, 0)
                                     : Colors.transparent,
@@ -193,7 +197,7 @@ class _RegistrationCreateProfileScreenState
                             Visibility(
                               visible: widget.userProfileData.country == "Россия",
                               child: DropdownFormField<Map<String, dynamic>>(
-                                decoration: CustomInputDecoration().GetDecoration(),
+                                decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
                                 onSaved: (dynamic str) {},
                                 onChanged: (dynamic item) {
                                   widget.userProfileData.city =
@@ -203,7 +207,7 @@ class _RegistrationCreateProfileScreenState
                                     //Text("${item["name"]!}, ${item["region"]!}",
                                     Text(
                                   widget.userProfileData.city ??= "",
-                                  style: const TextStyle(fontSize: 16),
+                                  style: const TextStyle(color:Colors.black),
                                 ),
                                 findFn: (dynamic str) async =>
                                     NetworkService().DadataRequest(str),
@@ -229,7 +233,7 @@ class _RegistrationCreateProfileScreenState
                               child: TextField(
                                 decoration: CustomInputDecoration(
                                   hintText: widget.userProfileData.city ?? "",
-                                ).GetDecoration(),
+                                ).GetDecoration(Theme.of(context).colorScheme.secondary),
                                 controller: _nonRussianCountryController,
                                 onChanged: (value) {
                                   widget.userProfileData.city =
@@ -277,9 +281,9 @@ class _RegistrationCreateProfileScreenState
                             InputDecorator(
                               decoration: CustomInputDecoration(
                                       hintText: LocaleKeys.user_education.tr())
-                                  .GetDecoration(),
+                                  .GetDecoration(Theme.of(context).colorScheme.secondary),
                               child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
+                                child:  DropdownButton<String>(dropdownColor: Colors.white,
                                   hint: Text(
                                       (widget.userProfileData.education == null)
                                           ? LocaleKeys
@@ -321,7 +325,7 @@ class _RegistrationCreateProfileScreenState
                                     (widget.userProfileData.placeOfStudy == null)
                                         ? ""
                                         : widget.userProfileData.placeOfStudy!,
-                              ).GetDecoration(),
+                              ).GetDecoration(Theme.of(context).colorScheme.secondary),
                               controller: _studyPlaceTextController,
                             ),
                             // CustomInputDecoration().errorBox(placeOfStudy),
@@ -334,7 +338,7 @@ class _RegistrationCreateProfileScreenState
                                     (widget.userProfileData.placeOfWork != null)
                                         ? widget.userProfileData.placeOfWork!
                                         : "",
-                              ).GetDecoration(),
+                              ).GetDecoration(Theme.of(context).colorScheme.secondary),
                               controller: _workPlaceTextController,
                             ),
                             CustomInputDecoration().errorBox(placeOfWorkEmpty),
@@ -347,7 +351,7 @@ class _RegistrationCreateProfileScreenState
                                     (widget.userProfileData.workPosition != null)
                                         ? widget.userProfileData.workPosition!
                                         : "",
-                              ).GetDecoration(),
+                              ).GetDecoration(Theme.of(context).colorScheme.secondary),
                               controller: _workPositionTextController,
                             ),
                             // CustomInputDecoration().errorBox(workPosition),
@@ -355,9 +359,10 @@ class _RegistrationCreateProfileScreenState
                             CustomInputDecoration()
                                 .subtitleText(LocaleKeys.user_maritalStatus.tr()),
                             InputDecorator(
-                              decoration: CustomInputDecoration().GetDecoration(),
+                              decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
                               child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
+                                child:  DropdownButton<String>(dropdownColor: Colors.white,
+                                 
                                   hint: Text(
                                       (widget.userProfileData.maritalStatus == null)
                                           ? LocaleKeys.common_setMaritalStatus.tr()
@@ -392,9 +397,9 @@ class _RegistrationCreateProfileScreenState
                             CustomInputDecoration()
                                 .subtitleText(LocaleKeys.user_faith.tr(), isFieldRequired: false),
                             InputDecorator(
-                              decoration: CustomInputDecoration().GetDecoration(),
+                              decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
                               child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
+                                child:  DropdownButton<String>(dropdownColor: Colors.white,
                                   hint: Text((widget.userProfileData.typeReligion ==
                                           null)
                                       ? LocaleKeys.user_faith.tr()
@@ -434,9 +439,9 @@ class _RegistrationCreateProfileScreenState
                             CustomInputDecoration()
                                 .subtitleText(LocaleKeys.user_canons.tr()),
                             InputDecorator(
-                              decoration: CustomInputDecoration().GetDecoration(),
+                              decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
                               child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
+                                child:  DropdownButton<String>(dropdownColor: Colors.white,
                                   hint: Text((widget.userProfileData
                                                   .observeIslamCanons ==
                                               null)
@@ -492,9 +497,9 @@ class _RegistrationCreateProfileScreenState
                             FormField<String>(
                                 builder: (FormFieldState<String> state) {
                               return InputDecorator(
-                                decoration: CustomInputDecoration().GetDecoration(),
+                                decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
                                 child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
+                                  child:  DropdownButton<String>(dropdownColor: Colors.white,
                                     hint: widget.userProfileData.haveChildren ==
                                             null
                                         ? Text(
@@ -534,12 +539,13 @@ class _RegistrationCreateProfileScreenState
                             Visibility(
                               visible: isBadHabitsSwitchOn == false,
                               child: CustomizableMultiselectField(
-                                decoration: CustomInputDecoration().GetDecoration(),
+                                decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
                                 customizableMultiselectWidgetOptions:
                                     CustomizableMultiselectWidgetOptions(
+                                      chipColor: Theme.of(context).colorScheme.secondary,
                                   chipShape: RoundedRectangleBorder(
-                                    side: const BorderSide(color: Colors.red, width: 1),
-                                    borderRadius: BorderRadius.circular(16.0),
+                                    side:  BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1),
+                                    borderRadius: BorderRadius.circular(12.0),
                                   ),
                                   hintText:
                                       Text(LocaleKeys.common_chooseOptions.tr()),
@@ -549,6 +555,7 @@ class _RegistrationCreateProfileScreenState
                                         okButtonLabel: LocaleKeys.common_confirm.tr(),
                                         cancelButtonLabel: LocaleKeys.common_cancel.tr(),
                                         enableSearchBar: false),
+
                                 dataSourceList: [
                                   DataSource<String>(
                                     dataList: GlobalStrings.getBadHabits(),
@@ -589,7 +596,7 @@ class _RegistrationCreateProfileScreenState
                                 child: ElevatedButton(
                                   
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor:const Color.fromARGB(255, 00, 0xcf, 0x91), 
+                                      backgroundColor: Theme.of(context).colorScheme.secondary, 
                                       fixedSize: const Size(double.infinity, 56),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12.0),
@@ -599,7 +606,7 @@ class _RegistrationCreateProfileScreenState
                                       LocaleKeys.common_confirm.tr(),
                                       textDirection: TextDirection.ltr,
                                       textAlign: TextAlign.left,
-                                      style: GoogleFonts.rubik(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16,
                                         color: const Color.fromARGB(255, 255, 255, 255),
@@ -867,7 +874,7 @@ class _RegistrationCreateProfileScreenState
                   maxLength: 13,
                   ignoreBlank: false,
                   autoValidateMode: AutovalidateMode.disabled,
-                  selectorTextStyle: const TextStyle(color: Colors.black),
+                  selectorTextStyle: const TextStyle(fontSize:16,color:Colors.black),
                   initialValue: number,
                   textFieldController: controller,
                   keyboardType: const TextInputType.numberWithOptions(
@@ -899,6 +906,7 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return PreferredSize(
         preferredSize: Size.fromHeight(barHeight + getStatusbarHeight(context)),
         child: AppBar(
+          surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
           systemOverlayStyle: const SystemUiOverlayStyle(
               systemNavigationBarColor: Colors.white,
               statusBarColor: Color.fromARGB(255, 0xf5, 0xf5, 0xf5),
@@ -917,22 +925,30 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Transform.scale(
-                  scale: 0.7,
-                  child: IconButton(
-                      splashRadius: 34.0,
-                      iconSize: 32.0,
-                      padding: const EdgeInsets.all(0),
-                      icon: Image.asset("assets/icons/arrow_back.png"),
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const WelcomeScreen(),
-                          ),
-                          (route) => false,
-                        );
-                      }),
+                  scale: 1,
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+              border: GradientBoxBorder(gradient: LinearGradient(colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2)
+            ),
+                    child: IconButton(
+                        splashRadius: 34.0,
+                        iconSize: 40.0,
+                        padding: const EdgeInsets.all(0),
+                        icon: SvgPicture.asset("assets/icons/back.svg"),
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const WelcomeScreen(),
+                            ),
+                            (route) => false,
+                          );
+                        }),
+                  ),
                 ),
               ],
             ),
@@ -954,7 +970,7 @@ class _Gender extends StatefulWidget {
 }
 
 class _GenderState extends State<_Gender> {
-  Color activeColor = const Color.fromARGB(255, 00, 207, 145);
+
   Color passiveColor = Colors.white;
 
   bool isMale = false;
@@ -967,10 +983,10 @@ class _GenderState extends State<_Gender> {
       alignment: Alignment.topCenter,
       child: Container(
           height: 60,
-          padding: const EdgeInsets.all(3.5),
-          width: MediaQuery.of(context).size.width * 0.9,
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 00, 207, 145),
+          padding: EdgeInsets.all(3),
+          width: MediaQuery.of(context).size.width * 1,
+          decoration:  BoxDecoration(
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.all(Radius.circular(15)),
           ),
           child: Row(
@@ -990,22 +1006,17 @@ class _GenderState extends State<_Gender> {
                         decoration: BoxDecoration(
                             color: (isMale == isFemale)
                                 ? passiveColor
-                                : (isMale == true ? activeColor : passiveColor),
+                                : (isMale == true ? Theme.of(context).colorScheme.secondary : passiveColor),
                             borderRadius: const BorderRadius.only(
                                 bottomLeft: Radius.circular(12),
                                 topLeft: Radius.circular(12))),
                         child: Text(LocaleKeys.user_gender.tr(gender: "male"),
-                            style: TextStyle(
-                              color: (isMale == isFemale)
-                                  ? activeColor
-                                  : (isMale == true
-                                      ? passiveColor
-                                      : activeColor),
-                              fontSize: 17,
-                            )),
+                            style: const TextStyle(color:Colors.black)
+                                
+                            ),
                       ))),
               const VerticalDivider(
-                width: 4,
+                width: 1,
               ),
               Expanded(
                   child: InkWell(
@@ -1023,20 +1034,15 @@ class _GenderState extends State<_Gender> {
                             color: (isMale == isFemale)
                                 ? passiveColor
                                 : (isFemale == true
-                                    ? activeColor
+                                    ? Theme.of(context).colorScheme.secondary
                                     : passiveColor),
                             borderRadius: const BorderRadius.only(
                                 bottomRight: Radius.circular(12),
                                 topRight: Radius.circular(12))),
                         child: Text(LocaleKeys.user_gender.tr(gender: "female"),
-                            style: TextStyle(
-                                color: (isMale == isFemale)
-                                    ? activeColor
-                                    : (isFemale == true
-                                        ? passiveColor
-                                        : activeColor),
-                                fontSize: 17)),
-                      ))),
+                            style: const TextStyle(fontSize:16,color:Colors.black)
+                                  ,
+                      )))),
             ],
           )),
     );

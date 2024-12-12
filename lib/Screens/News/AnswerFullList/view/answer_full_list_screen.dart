@@ -53,7 +53,7 @@ class CommentaryAnswersState extends State<CommentaryAnswers> {
               if(state.answerState == CommentariesState.preload)
               {
                 context.read<AnswerFullListBloc>().add(LoadAnswers(id: widget.itemID));
-                return answersWaitBox();
+                return answersWaitBox(Theme.of(context).primaryColor);
               }
 
               return bodyWidget(context, state);
@@ -77,7 +77,7 @@ class CommentaryAnswersState extends State<CommentaryAnswers> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   LocaleKeys.news_commentReply.tr(),//"Ответы к комментарию",
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 24,
                     //height: 1.4,

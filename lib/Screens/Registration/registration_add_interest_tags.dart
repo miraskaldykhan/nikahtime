@@ -138,10 +138,10 @@ class _RegistrationAddInterestTagsScreenState extends State<RegistrationAddInter
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                focusedBorder: const OutlineInputBorder(
+                focusedBorder:  OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color.fromARGB(255, 0, 207, 145),
-                    width: 1,
+                    color: Theme.of(context).colorScheme.secondary,
+                    width: 2,
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
@@ -280,7 +280,7 @@ class _RegisterButton extends StatelessWidget{
         child:
         ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               elevation: 0,
               fixedSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
   const CustomAppBar ({Key? key}) : super (key:key);
@@ -16,41 +18,37 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
   Widget build(BuildContext context) {
     return PreferredSize(
         preferredSize: Size.fromHeight(barHeight + getStatusbarHeight(context)),
-        child: AppBar(
-          systemOverlayStyle: const SystemUiOverlayStyle(
-              systemNavigationBarColor: Colors.white,
-              statusBarColor: Color.fromARGB(255, 0xf5, 0xf5, 0xf5),
-              statusBarBrightness: Brightness.light,
-              statusBarIconBrightness: Brightness.dark,
-              systemNavigationBarIconBrightness: Brightness.dark
-          ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          flexibleSpace: Container(
-            height: barHeight + getStatusbarHeight(context),
-            padding: EdgeInsets.only(top: getStatusbarHeight(context), left: 8),
-            color: Colors.transparent,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-            Transform.scale(
-              scale: 0.7,
-              child: IconButton(
-                  splashRadius: 34.0,
-                  iconSize: 32.0,
-                  padding: const EdgeInsets.all(0),
-                  icon: Image.asset("assets/icons/arrow_back.png"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }
+        child:AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: (){
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child:  SvgPicture.asset(
+                  'assets/icons/back.svg',
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
-              ],
-            ),
-          ),
+            const SizedBox(width: 10,),
+            
+          ],
         )
+      ),
     );
   }
 

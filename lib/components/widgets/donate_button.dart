@@ -20,8 +20,8 @@ class DonateButton extends StatelessWidget
         height: 40,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
-          side: const BorderSide(
-              width: 1, color: Color.fromARGB(255, 0, 207, 145)),
+          side:  BorderSide(
+              width: 2, color: Theme.of(context).colorScheme.secondary),
         ),
         child: Column(
           children: [
@@ -29,14 +29,14 @@ class DonateButton extends StatelessWidget
               height: 2,
             ),
             Text(
-              LocaleKeys.profileScreen_settings_donate_msg
+              LocaleKeys.profileScreen_settings_donate_msg_header
                   .tr(), //"2202 2032 5291 7218",
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.left,
-              style: GoogleFonts.rubik(
+              style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 16,
-                color: Color.fromARGB(255, 0, 207, 145),
+                color: Theme.of(context).colorScheme.secondary,
               ),
             ),
             const SizedBox(
@@ -45,9 +45,9 @@ class DonateButton extends StatelessWidget
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                 Icon(
                   Icons.credit_card_rounded,
-                  color: Color.fromARGB(255, 0, 207, 145),
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
                 SizedBox(
                   width: 4,
@@ -56,10 +56,10 @@ class DonateButton extends StatelessWidget
                   "2202 2032 5291 7218", //,
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.left,
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 20,
-                    color: Color.fromARGB(255, 0, 207, 145),
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               ],
@@ -92,7 +92,7 @@ class DonateButton extends StatelessWidget
     );
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text(LocaleKeys.profileScreen_settings_donate_msg.tr()),
+      title: Text(LocaleKeys.profileScreen_settings_donate_msg_header.tr()),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -145,7 +145,7 @@ class DonateButton extends StatelessWidget
                 TextSpan(
                   text:
                   LocaleKeys.profileScreen_settings_paymentRules.tr(),
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16,
                     color: const Color.fromARGB(255, 00, 207, 145),
@@ -177,7 +177,7 @@ class DonateButton extends StatelessWidget
                 TextSpan(
                   text:
                   LocaleKeys.profileScreen_settings_refundRules.tr(),
-                  style: GoogleFonts.rubik(
+                  style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16,
                     color: const Color.fromARGB(255, 00, 207, 145),
@@ -226,7 +226,7 @@ class DonateButton extends StatelessWidget
     );
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text(LocaleKeys.profileScreen_settings_donate_msg.tr()),
+      title: Text(LocaleKeys.profileScreen_settings_donate_msg_header.tr()),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -234,7 +234,7 @@ class DonateButton extends StatelessWidget
             keyboardType: TextInputType.number,
             decoration: CustomInputDecoration(
               hintText: "0 ₽",
-            ).GetDecoration(),
+            ).GetDecoration(Theme.of(context).colorScheme.primary),
             controller: controller,
           ),
         ],

@@ -12,17 +12,19 @@ class ChatWithUserInitial extends ChatWithUserState {
   final ChatWithLastMessage? chatData;
   final bool answerBoxVisible;
   final bool editBoxVisible;
+  final int? editMessageId;
   final String answerText;
   final String editText;
+
   const ChatWithUserInitial({
     this.pageState = PageState.preload,
     this.messages = const [],
     this.chatData,
     this.answerBoxVisible = false,
     this.editBoxVisible = false,
+    this.editMessageId,
     this.answerText = '',
     this.editText = '',
-    
   });
 
   ChatWithUserInitial copyThis({
@@ -31,6 +33,7 @@ class ChatWithUserInitial extends ChatWithUserState {
     ChatWithLastMessage? chatData,
     bool? answerBoxVisible,
     bool? editBoxVisible,
+    int? editMessageId,
     String? answerText,
     String? editText,
   }) {
@@ -38,6 +41,7 @@ class ChatWithUserInitial extends ChatWithUserState {
       pageState: pageState ?? this.pageState,
       messages: messages ?? this.messages,
       chatData: chatData ?? this.chatData,
+      editMessageId: editMessageId ?? this.editMessageId,
       answerBoxVisible: answerBoxVisible ?? this.answerBoxVisible,
       editBoxVisible: editBoxVisible ?? this.editBoxVisible,
       answerText: answerText ?? this.answerText,

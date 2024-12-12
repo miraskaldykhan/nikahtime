@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Entering/entering_by_selected_type.dart';
@@ -34,46 +35,47 @@ class _EnteringScreenState extends State<EnteringScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+   return Scaffold(
       appBar: const CustomAppBar(),
-      body: Container(
-        margin: const EdgeInsets.only(left: 16, right: 16),
-        width: double.infinity,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomInputDecoration().titleText(LocaleKeys.entering_main_header.tr()),
-                      const SizedBox(height: 8),
-
-                      Container(
-                          width: double.infinity,
-                          child:
-                          ElevatedButton(
-                            
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color.fromARGB(255, 00, 0xcf, 0x91),
-                                fixedSize: Size(double.infinity, 56),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(left: 16, right: 16),
+            width: double.infinity,
+            //margin: EdgeInsets.only(top: 104),
+            child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const Header(),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).colorScheme.secondary  ,
+                              elevation: 0,
+                              fixedSize: const Size(double.infinity, 56),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
                               ),
-
-                              child: Text(
-                                LocaleKeys.entering_checkType_number.tr(),
-                                textDirection: TextDirection.ltr,
-                                textAlign: TextAlign.left,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
+                            ),
+                            child: Text(
+                              LocaleKeys.registration_type_phone_by.tr(),
+                              textDirection: TextDirection.ltr,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                                color: Colors.white,
                               ),
-                              onPressed:(){
+                            ),
+                            onPressed:(){
                                 Navigator.push(
                                   context,
                                   PageRouteBuilder(
@@ -85,30 +87,31 @@ class _EnteringScreenState extends State<EnteringScreen> {
                                     transitionDuration: const Duration(seconds: 0),
                                   ),
                                 );
-                              }
-                          )
-                      ),
-                      const SizedBox(height: 16,),
-                      Container(
-                        width: double.infinity,
-                        child:
-                        MaterialButton(
-                            height: 64,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                              side: BorderSide(width: 1, color: Color.fromARGB(255, 218, 216, 215)),
+                              })),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: MaterialButton(
+                          height: 56,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            side: BorderSide(
+                                width: 2,
+                                color:  Theme.of(context).colorScheme.secondary ),
+                          ),
+                          child: Text(
+                            LocaleKeys.registration_type_email_by.tr(),
+                            textDirection: TextDirection.ltr,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                              color:  Theme.of(context).colorScheme.secondary ,
                             ),
-                            child: Text(
-                              LocaleKeys.entering_checkType_email.tr(),
-                              textDirection: TextDirection.ltr,
-                              textAlign: TextAlign.left,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                                color: Color.fromARGB(255, 0, 207, 145),
-                              ),
-                            ),
-                            onPressed:(){
+                          ),
+                          onPressed:(){
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(
@@ -121,34 +124,68 @@ class _EnteringScreenState extends State<EnteringScreen> {
                                 ),
                               );
                               setState(() {});
-                            }
-                        ),
-                      ),
-                      const SizedBox(height: 16,),
-
-                      const _RegisterBy(),
-                      const SizedBox(height: 44),
-                      Row(children: <Widget>[
-                        Expanded(
-                          child: Container(
-                              margin:
-                                  const EdgeInsets.only(left: 10.0, right: 15.0),
-                              child: const Divider(
-                                  height: 1, color: Color.fromRGBO(0, 0, 0, 23))),
-                        ),
-                        Text(LocaleKeys.entering_main_divider.tr()),
-                        Expanded(
-                          child: Container(
-                              margin:
-                                  const EdgeInsets.only(left: 15.0, right: 10.0),
-                              child: const Divider(
-                                  height: 1, color: Color.fromRGBO(0, 0, 0, 23))),
-                        ),
-                      ]),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                            }),
+                    ),
+                    const SizedBox(height: 20),
+                    const _OrLoginOption(),
+                    const SizedBox(height: 20),
+                   Container(
+            width: double.infinity,
+            child: Row(
+              children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () async { 
+                _sendGoogleSignInLoginRequest();
+              },
+              child: Container(
+                height: 52,
+                 decoration: BoxDecoration(
+                      border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                      borderRadius: BorderRadius.circular(10)
+                 ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/icons/google.png', width: 20,),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Google',
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16), // Расстояние между кнопками
+          Expanded(
+            child: GestureDetector(
+              onTap: () async { 
+                _sendAppleSignInLoginRequest();
+              },
+              child: Container(
+                height: 52,
+                 decoration: BoxDecoration(
+                      border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
+                      borderRadius: BorderRadius.circular(10)
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/icons/apple.png', width: 20,),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Apple',
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          
+                          
                           // Container(
                           //     height: 48,
                           //     width: 48,
@@ -158,64 +195,7 @@ class _EnteringScreenState extends State<EnteringScreen> {
                           //         width: 1,
                           //       ),
                           //       borderRadius:
-                          //           const BorderRadius.all(Radius.circular(10)),
-                          //     ),
-                          //     child: IconButton(
-                          //       icon: const FaIcon(FontAwesomeIcons.facebook),
-                          //       color: Colors.green,
-                          //       onPressed: () {
-                          //         ;
-                          //       },
-                          //     )),
-                          Container(
-                              height: 48,
-                              width: 48,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: const Color.fromARGB(255, 218, 216, 215),
-                                  width: 1,
-                                ),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                              ),
-                              child: IconButton(
-                                icon: const FaIcon(FontAwesomeIcons.google),
-                                color: Color.fromRGBO(00, 0xcf, 0x91, 1),
-                                onPressed: () async {
-                                  _sendGoogleSignInLoginRequest();
-                                },
-                              )),
-                          const SizedBox(
-                            width: 16,
-                          ),
-                          Container(
-                              height: 48,
-                              width: 48,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: const Color.fromARGB(255, 218, 216, 215),
-                                  width: 1,
-                                ),
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                              ),
-                              child: IconButton(
-                                icon: const FaIcon(FontAwesomeIcons.apple),
-                                color: Color.fromRGBO(00, 0xcf, 0x91, 1),
-                                onPressed: () async {
-                                  _sendAppleSignInLoginRequest();
-                                },
-                              )),
-                          // Container(
-                          //     height: 48,
-                          //     width: 48,
-                          //     decoration: BoxDecoration(
-                          //       border: Border.all(
-                          //         color: const Color.fromARGB(255, 218, 216, 215),
-                          //         width: 1,
-                          //       ),
-                          //       borderRadius:
-                          //           const BorderRadius.all(Radius.circular(10)),
+                          //       const BorderRadius.all(Radius.circular(10)),
                           //     ),
                           //     child: IconButton(
                           //       icon: const FaIcon(FontAwesomeIcons.instagram),
@@ -243,20 +223,26 @@ class _EnteringScreenState extends State<EnteringScreen> {
                           //     )),
                         ],
                       ),
-                      const SizedBox(height: 24),
-                    ]
-                )
-              )
+                    ),
+                    const SizedBox(height: 16),
+                    
+                  ]
+              ),
             ),
-
-            const SizedBox(height: 16),
-            PolicyAgreement(),
-            const SizedBox(height: 16),
-          ],
-        ),
+          ),
+          const Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Column(
+                        children: [
+                          PolicyAgreement(),
+                          SizedBox(height: 20,)
+                        ],
+                      ))
+        ],
       ),
     );
   }
+
 
   _sendAppleSignInLoginRequest() async {
     try {
@@ -422,7 +408,7 @@ class _RegisterBy extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 14,
-              color: const Color.fromARGB(255, 00, 0xCF, 0x91),
+              color:  Theme.of(context).colorScheme.secondary,
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
@@ -440,4 +426,44 @@ class _RegisterBy extends StatelessWidget {
       ),
     );
   }
+}
+
+
+class _OrLoginOption extends StatelessWidget {
+    const _OrLoginOption ({Key? key}) : super (key:key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+   return  Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Expanded(
+                child: Divider(
+                  thickness: 1, 
+                  color: Colors.black, 
+                  indent: 0, 
+                  endIndent: 10, 
+                ),
+              ),
+              Text(
+                LocaleKeys.common_selectOptions.tr(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black
+                ),
+              ),
+              const Expanded(
+                child: Divider(
+                  thickness: 1,
+                  color: Colors.black,
+                  indent: 10,
+                  endIndent: 0,
+                ),
+              ),
+            ],
+          );
+  }
+  
 }
