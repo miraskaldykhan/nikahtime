@@ -288,6 +288,11 @@
     "Judaism": "Judaism",
     "religionSubtitle": "Religious  affiliation",
     "contacts": "Contacts",
+    "contact": {
+        "not_registered": "There are no registered contacts",
+        "access_denied": "Access is denied",
+        "error": "An error has occurred"
+    },
     "faithState": {
         "observantMuslim": "Ready to move",
         "nonObservantMuslim": "Not ready to move",

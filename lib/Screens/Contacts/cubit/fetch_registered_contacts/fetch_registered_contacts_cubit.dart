@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Contacts/models/contacts.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
+import 'package:untitled/generated/locale_keys.g.dart';
 
 part 'fetch_registered_contacts_state.dart';
 
@@ -24,7 +26,8 @@ class FetchRegisteredContactsCubit extends Cubit<FetchRegisteredContactsState> {
       var response = await NetworkService()
           .getRegisteredContacts(accessToken: accessToken!);
       if (response.isEmpty) {
-        emit(FetchRegisteredContactsError(message: "Not registered contacts"));
+        emit(FetchRegisteredContactsError(
+            message: LocaleKeys.contactNotRegistered.tr()));
       } else {
         emit(
           FetchRegisteredContactsSuccess(registeredContacts: response),

@@ -61,7 +61,8 @@ class _RegistrationPinScreenState extends State<RegistrationPinScreen> {
                   CustomInputDecoration()
                       .titleText(LocaleKeys.registration_PIN_header.tr()),
                   SizedBox(height: 8),
-                  _SubHeader(widget._messageStr, widget._validatorType),
+                  _SubHeader(widget._messageStr, widget._validatorType,
+                      widget.registerType),
                   SizedBox(height: 32),
                   _PIN_Entering(
                     registerType: widget.registerType,
@@ -193,10 +194,12 @@ class _RegistrationPinScreenState extends State<RegistrationPinScreen> {
 }
 
 class _SubHeader extends StatelessWidget {
-  _SubHeader(this._messageStr, this._validator, {Key? key}) : super(key: key);
+  _SubHeader(this._messageStr, this._validator, this._registerType, {Key? key})
+      : super(key: key);
 
   String _messageStr = "";
   String _validator = "";
+  String _registerType = "";
 
   @override
   Widget build(BuildContext context) {
@@ -205,8 +208,11 @@ class _SubHeader extends StatelessWidget {
       textDirection: TextDirection.ltr,
       text: TextSpan(
         //text: 'Код отправлен на $_messageStr:\n $_validator',
-        text: LocaleKeys.registration_PIN_message
-            .tr(args: [_messageStr, _validator]),
+        text: LocaleKeys.registration_PIN_message.tr(args: [
+          _registerType == 'phone' ? "Звонок" : "Код",
+          _messageStr,
+          _validator
+        ]),
         style: const TextStyle(
             fontWeight: FontWeight.w400,
             fontSize: 14,

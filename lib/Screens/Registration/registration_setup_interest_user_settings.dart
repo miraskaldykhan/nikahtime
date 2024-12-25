@@ -75,7 +75,7 @@ class _RegistrationSetupInterestUserSettingsScreenState extends State<Registrati
                             },
                             displayItemFn: (dynamic str) =>
                                 Text(translateCountryName(userFilter.country ?? ""),
-                                  style: const TextStyle(fontSize: 16),
+                                  style: const TextStyle(fontSize: 16, color: Colors.black),
                                 ),
                             findFn: (dynamic str) async => getCountry(str),
                             dropdownItemFn: (dynamic item, int position, bool focused,

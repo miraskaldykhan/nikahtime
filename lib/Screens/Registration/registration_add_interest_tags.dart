@@ -125,6 +125,7 @@ class _RegistrationAddInterestTagsScreenState extends State<RegistrationAddInter
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(8.0),
                 hintText: LocaleKeys.registration_interest_addNew.tr(),
+                hintStyle: TextStyle(color: Colors.grey),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: (){

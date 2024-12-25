@@ -112,6 +112,11 @@ class ChatWithLastMessage extends Chat {
     isOnline = json["isOnline"];
     avatar = UserProfileImage.fromJson(json["avatar"]);
   }
+
+  @override
+  String toString() {
+    return 'ChatWithLastMessage{userID: $userID, isAuthUserBlockChat: $isAuthUserBlockChat, lastMessage: $lastMessage, lastMessageType: $lastMessageType, lastMessageTime: $lastMessageTime, lastTimeOnline: $lastTimeOnline, isAuthUserMessage: $isAuthUserMessage, numberNotSeenMessages: $numberNotSeenMessages}';
+  }
 }
 
 @JsonSerializable()

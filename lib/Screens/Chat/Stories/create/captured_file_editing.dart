@@ -143,14 +143,14 @@ class _CapturedPhotoOrVideoPageState extends State<CapturedPhotoOrVideoPage> {
                         child: SvgPicture.asset("assets/icons/arrow_left.svg"),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: _addText,
-                      child: SvgPicture.asset(
-                        "assets/icons/text_icon.svg",
-                        width: 24.w,
-                        height: 24.h,
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: _addText,
+                    //   child: SvgPicture.asset(
+                    //     "assets/icons/text_icon.svg",
+                    //     width: 24.w,
+                    //     height: 24.h,
+                    //   ),
+                    // ),
                     InkWell(
                       onTap: () {
                         _showPublishDialog();

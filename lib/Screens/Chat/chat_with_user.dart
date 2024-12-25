@@ -922,17 +922,19 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                           ),
                         ),
                         Visibility(
-                            visible: message.isAuthUsermessage == true,
-                            child: Row(
-                              children: [
-                                const SizedBox(
-                                  width: 2,
-                                ),
-                                Container(
-                                    child: messageStatusMark(message,
-                                        Theme.of(context).colorScheme.primary)),
-                              ],
-                            ))
+                          visible: message.isAuthUsermessage == true,
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              Container(
+                                child: messageStatusMark(message,
+                                    Theme.of(context).colorScheme.primary),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   )
@@ -961,7 +963,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     Dio dio = Dio();
     try {
       Response response = await dio.put(
-        'https://dev.nikahtime.ru/api/chats/messages/$messageId',
+        'https://www.nikahtime.ru/api/chats/messages/$messageId',
         options: Options(
           headers: {
             'accept': 'application/json',
@@ -993,7 +995,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     Dio dio = Dio();
     try {
       Response response = await dio.delete(
-        'https://dev.nikahtime.ru/api/chats/messages/$messageId',
+        'https://www.nikahtime.ru/api/chats/messages/$messageId',
         options: Options(
           headers: {
             'accept': 'application/json',

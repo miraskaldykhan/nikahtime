@@ -27,7 +27,7 @@ class FetchFriendsCubit extends Cubit<FetchFriendsState> {
         emit(FetchFriendsSuccess(friendsProfile: response));
       } else {
         emit(
-          FetchFriendsError(message: "No one"),
+          FetchFriendsError(message: "Ни одного"),
         );
       }
     } catch (e) {

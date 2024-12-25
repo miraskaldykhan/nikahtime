@@ -1,6 +1,6 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const app_locale = 'app_locale';
   static const usersScreen_tittle = 'usersScreen.tittle';
   static const usersScreen_loading = 'usersScreen.loading';
@@ -33,6 +33,9 @@ abstract class  LocaleKeys {
   static const user_country = 'user.country';
   static const user_city = 'user.city';
   static const contacts = 'contacts';
+  static const contactNotRegistered = 'contact.not_registered';
+  static const contactAccessDenied = 'contact.access_denied';
+  static const contactError = 'contact.error';
   static const user_contactPhoneNumber = 'user.contactPhoneNumber';
   static const user_placeOfWork = 'user.placeOfWork';
   static const user_workPosition = 'user.workPosition';
@@ -49,7 +52,8 @@ abstract class  LocaleKeys {
   static const user_photos = 'user.photos';
   static const user = 'user';
   static const filters_tittle = 'filters.tittle';
-  static const filters_complicatedFilterTittle = 'filters.complicatedFilterTittle';
+  static const filters_complicatedFilterTittle =
+      'filters.complicatedFilterTittle';
   static const filters_reset = 'filters.reset';
   static const filters_isOnline = 'filters.isOnline';
   static const filters_simpleFilter = 'filters.simpleFilter';
@@ -62,69 +66,120 @@ abstract class  LocaleKeys {
   static const filters_find = 'filters.find';
   static const filters = 'filters';
   static const profileScreen_title = 'profileScreen.title';
-  static const profileScreen_generalInformation = 'profileScreen.generalInformation';
+  static const profileScreen_generalInformation =
+      'profileScreen.generalInformation';
   static const profileScreen_settings_header = 'profileScreen.settings.header';
-  static const profileScreen_settings_subscription_header = 'profileScreen.settings.subscription.header';
-  static const profileScreen_settings_subscription_type_header = 'profileScreen.settings.subscription.type.header';
-  static const profileScreen_settings_subscription_type_no = 'profileScreen.settings.subscription.type.no';
-  static const profileScreen_settings_subscription_type_unlimited = 'profileScreen.settings.subscription.type.unlimited';
-  static const profileScreen_settings_subscription_type_trial = 'profileScreen.settings.subscription.type.trial';
-  static const profileScreen_settings_subscription_type_1_month = 'profileScreen.settings.subscription.type.1_month';
-  static const profileScreen_settings_subscription_type_3_months = 'profileScreen.settings.subscription.type.3_months';
-  static const profileScreen_settings_subscription_type_6_months = 'profileScreen.settings.subscription.type.6_months';
-  static const profileScreen_settings_subscription_type = 'profileScreen.settings.subscription.type';
-  static const profileScreen_settings_subscription_subscribe = 'profileScreen.settings.subscription.subscribe';
-  static const profileScreen_settings_subscription_expires = 'profileScreen.settings.subscription.expires';
-  static const profileScreen_settings_subscription = 'profileScreen.settings.subscription';
-  static const profileScreen_settings_language_header = 'profileScreen.settings.language.header';
-  static const profileScreen_settings_language_text = 'profileScreen.settings.language.text';
-  static const profileScreen_settings_theme_header = 'profileScreen.settings.theme.header';
-  static const profileScreen_settings_theme_tiffani = 'profileScreen.settings.theme.tiffani';
-  static const profileScreen_settings_theme_pinkClouds = 'profileScreen.settings.theme.pinkClouds';
+  static const profileScreen_settings_subscription_header =
+      'profileScreen.settings.subscription.header';
+  static const profileScreen_settings_subscription_type_header =
+      'profileScreen.settings.subscription.type.header';
+  static const profileScreen_settings_subscription_type_no =
+      'profileScreen.settings.subscription.type.no';
+  static const profileScreen_settings_subscription_type_unlimited =
+      'profileScreen.settings.subscription.type.unlimited';
+  static const profileScreen_settings_subscription_type_trial =
+      'profileScreen.settings.subscription.type.trial';
+  static const profileScreen_settings_subscription_type_1_month =
+      'profileScreen.settings.subscription.type.1_month';
+  static const profileScreen_settings_subscription_type_3_months =
+      'profileScreen.settings.subscription.type.3_months';
+  static const profileScreen_settings_subscription_type_6_months =
+      'profileScreen.settings.subscription.type.6_months';
+  static const profileScreen_settings_subscription_type =
+      'profileScreen.settings.subscription.type';
+  static const profileScreen_settings_subscription_subscribe =
+      'profileScreen.settings.subscription.subscribe';
+  static const profileScreen_settings_subscription_expires =
+      'profileScreen.settings.subscription.expires';
+  static const profileScreen_settings_subscription =
+      'profileScreen.settings.subscription';
+  static const profileScreen_settings_language_header =
+      'profileScreen.settings.language.header';
+  static const profileScreen_settings_language_text =
+      'profileScreen.settings.language.text';
+  static const profileScreen_settings_theme_header =
+      'profileScreen.settings.theme.header';
+  static const profileScreen_settings_theme_tiffani =
+      'profileScreen.settings.theme.tiffani';
+  static const profileScreen_settings_theme_pinkClouds =
+      'profileScreen.settings.theme.pinkClouds';
   static const profileScreen_settings_common = 'profileScreen.settings.common';
-  static const profileScreen_settings_privacy = 'profileScreen.settings.privacy';
-  static const profileScreen_settings_agreement = 'profileScreen.settings.agreement';
-  static const profileScreen_settings_useTerms = 'profileScreen.settings.useTerms';
-  static const profileScreen_settings_paymentRules = 'profileScreen.settings.paymentRules';
-  static const profileScreen_settings_refundRules = 'profileScreen.settings.refundRules';
-  static const profileScreen_settings_tariffs = 'profileScreen.settings.tariffs';
+  static const profileScreen_settings_privacy =
+      'profileScreen.settings.privacy';
+  static const profileScreen_settings_agreement =
+      'profileScreen.settings.agreement';
+  static const profileScreen_settings_useTerms =
+      'profileScreen.settings.useTerms';
+  static const profileScreen_settings_paymentRules =
+      'profileScreen.settings.paymentRules';
+  static const profileScreen_settings_refundRules =
+      'profileScreen.settings.refundRules';
+  static const profileScreen_settings_tariffs =
+      'profileScreen.settings.tariffs';
   static const profileScreen_settings_refund = 'profileScreen.settings.refund';
   static const profileScreen_settings_help = 'profileScreen.settings.help';
-  static const profileScreen_settings_error_header = 'profileScreen.settings.error.header';
-  static const profileScreen_settings_error_text = 'profileScreen.settings.error.text';
+  static const profileScreen_settings_error_header =
+      'profileScreen.settings.error.header';
+  static const profileScreen_settings_error_text =
+      'profileScreen.settings.error.text';
   static const profileScreen_settings_error = 'profileScreen.settings.error';
   static const profileScreen_settings_e = 'profileScreen.settings.error';
   static const profileScreen_settings_mail = 'profileScreen.settings.mail';
-  static const profileScreen_settings_connectToDevs = 'profileScreen.settings.connectToDevs';
-  static const profileScreen_settings_deleteAccount = 'profileScreen.settings.deleteAccount';
-  static const profileScreen_settings_deleteAccountAlert_cancel = 'profileScreen.settings.deleteAccountAlert.cancel';
-  static const profileScreen_settings_deleteAccountAlert_header = 'profileScreen.settings.deleteAccountAlert.header';
-  static const profileScreen_settings_deleteAccountAlert_confirm = 'profileScreen.settings.deleteAccountAlert.confirm';
-  static const profileScreen_settings_deleteAccountAlert_msg = 'profileScreen.settings.deleteAccountAlert.msg';
-  static const profileScreen_settings_deleteAccountAlert = 'profileScreen.settings.deleteAccountAlert';
+  static const profileScreen_settings_connectToDevs =
+      'profileScreen.settings.connectToDevs';
+  static const profileScreen_settings_deleteAccount =
+      'profileScreen.settings.deleteAccount';
+  static const profileScreen_settings_deleteAccountAlert_cancel =
+      'profileScreen.settings.deleteAccountAlert.cancel';
+  static const profileScreen_settings_deleteAccountAlert_header =
+      'profileScreen.settings.deleteAccountAlert.header';
+  static const profileScreen_settings_deleteAccountAlert_confirm =
+      'profileScreen.settings.deleteAccountAlert.confirm';
+  static const profileScreen_settings_deleteAccountAlert_msg =
+      'profileScreen.settings.deleteAccountAlert.msg';
+  static const profileScreen_settings_deleteAccountAlert =
+      'profileScreen.settings.deleteAccountAlert';
   static const profileScreen_settings_exit = 'profileScreen.settings.exit';
-  static const profileScreen_settings_change_photo = 'profileScreen.settings.change_photo';
+  static const profileScreen_settings_change_photo =
+      'profileScreen.settings.change_photo';
   static const profileScreen_settings_about = 'profileScreen.settings.about';
-  static const profileScreen_settings_directors = 'profileScreen.settings.directors';
-  static const profileScreen_settings_associateDirectors = 'profileScreen.settings.associateDirectors';
-  static const profileScreen_settings_psychologists = 'profileScreen.settings.psychologists';
-  static const profileScreen_settings_hazrats = 'profileScreen.settings.hazrats';
-  static const profileScreen_settings_curators = 'profileScreen.settings.curators';
-  static const profileScreen_settings_psychologist_single = 'profileScreen.settings.psychologist_single';
-  static const profileScreen_settings_shariaJudge = 'profileScreen.settings.shariaJudge';
+  static const profileScreen_settings_directors =
+      'profileScreen.settings.directors';
+  static const profileScreen_settings_associateDirectors =
+      'profileScreen.settings.associateDirectors';
+  static const profileScreen_settings_psychologists =
+      'profileScreen.settings.psychologists';
+  static const profileScreen_settings_hazrats =
+      'profileScreen.settings.hazrats';
+  static const profileScreen_settings_curators =
+      'profileScreen.settings.curators';
+  static const profileScreen_settings_psychologist_single =
+      'profileScreen.settings.psychologist_single';
+  static const profileScreen_settings_shariaJudge =
+      'profileScreen.settings.shariaJudge';
   static const profileScreen_settings_link = 'profileScreen.settings.link';
-  static const profileScreen_settings_link_second = 'profileScreen.settings.link_second';
+  static const profileScreen_settings_link_second =
+      'profileScreen.settings.link_second';
   static const profileScreen_settings_price = 'profileScreen.settings.price';
-  static const profileScreen_settings_donate_msg_header = 'profileScreen.settings.donate_msg.header';
-  static const profileScreen_settings_donate_msg_text = 'profileScreen.settings.donate_msg.text';
-  static const profileScreen_settings_donate_msg_text2 = 'profileScreen.settings.donate_msg.text2';
-  static const profileScreen_settings_donate_msg_support_btn = 'profileScreen.settings.donate_msg.support_btn';
-  static const profileScreen_settings_donate_msg_later_btn = 'profileScreen.settings.donate_msg.later_btn';
-  static const profileScreen_settings_text_copied = 'profileScreen.settings.text_copied';
-  static const profileScreen_settings_phone_copied = 'profileScreen.settings.phone_copied';
+  static const profileScreen_settings_donate_msg_header =
+      'profileScreen.settings.donate_msg.header';
+  static const profileScreen_settings_donate_msg_text =
+      'profileScreen.settings.donate_msg.text';
+  static const profileScreen_settings_donate_msg_text2 =
+      'profileScreen.settings.donate_msg.text2';
+  static const profileScreen_settings_donate_msg_support_btn =
+      'profileScreen.settings.donate_msg.support_btn';
+  static const profileScreen_settings_donate_msg_later_btn =
+      'profileScreen.settings.donate_msg.later_btn';
+  static const profileScreen_settings_text_copied =
+      'profileScreen.settings.text_copied';
+  static const profileScreen_settings_phone_copied =
+      'profileScreen.settings.phone_copied';
   static const profileScreen_settings = 'profileScreen.settings';
-  static const profileScreen_settings_family_consultation = 'profileScreen.settings.family_consultation';
-  static const profileScreen_settings_notifications = 'profileScreen.settings.notifications';
+  static const profileScreen_settings_family_consultation =
+      'profileScreen.settings.family_consultation';
+  static const profileScreen_settings_notifications =
+      'profileScreen.settings.notifications';
   static const paymentScreen_tittle = 'paymentScreen.tittle';
   static const tariffs_header = 'tariffs.header';
   static const tariffs_description = 'tariffs.description';
@@ -142,38 +197,62 @@ abstract class  LocaleKeys {
   static const paymentScreen_paymentDone = 'paymentScreen.paymentDone';
   static const paymentScreen_daysCount = 'paymentScreen.daysCount';
   static const paymentScreen_monthsCount = 'paymentScreen.monthsCount';
-  static const paymentScreen_tariffDescription = 'paymentScreen.tariffDescription';
+  static const paymentScreen_tariffDescription =
+      'paymentScreen.tariffDescription';
   static const paymentScreen_feature1 = 'paymentScreen.feature1';
   static const paymentScreen_feature2 = 'paymentScreen.feature2';
   static const paymentScreen_feature3 = 'paymentScreen.feature3';
   static const paymentScreen_feature4 = 'paymentScreen.feature4';
   static const paymentScreen_continue = 'paymentScreen.continue';
   static const paymentScreen_paymentMethod = 'paymentScreen.paymentMethod';
-  static const paymentScreen_paymentMethodCard = 'paymentScreen.paymentMethodCard';
-  static const paymentScreen_emailForReceiptTitle = 'paymentScreen.emailForReceiptTitle';
-  static const paymentScreen_emailForReceiptError_emailRequired = 'paymentScreen.emailForReceiptError.emailRequired';
-  static const paymentScreen_emailForReceiptError_emailInvalid = 'paymentScreen.emailForReceiptError.emailInvalid';
-  static const paymentScreen_emailForReceiptError = 'paymentScreen.emailForReceiptError';
+  static const paymentScreen_paymentMethodCard =
+      'paymentScreen.paymentMethodCard';
+  static const paymentScreen_emailForReceiptTitle =
+      'paymentScreen.emailForReceiptTitle';
+  static const paymentScreen_emailForReceiptError_emailRequired =
+      'paymentScreen.emailForReceiptError.emailRequired';
+  static const paymentScreen_emailForReceiptError_emailInvalid =
+      'paymentScreen.emailForReceiptError.emailInvalid';
+  static const paymentScreen_emailForReceiptError =
+      'paymentScreen.emailForReceiptError';
   static const paymentScreen_error_title = 'paymentScreen.error.title';
-  static const paymentScreen_error_closeButton = 'paymentScreen.error.closeButton';
+  static const paymentScreen_error_closeButton =
+      'paymentScreen.error.closeButton';
   static const paymentScreen_error_unknown = 'paymentScreen.error.unknown';
-  static const paymentScreen_error_clientInvalid = 'paymentScreen.error.clientInvalid';
-  static const paymentScreen_error_paymentCancelled = 'paymentScreen.error.paymentCancelled';
-  static const paymentScreen_error_paymentInvalid = 'paymentScreen.error.paymentInvalid';
-  static const paymentScreen_error_paymentNotAllowed = 'paymentScreen.error.paymentNotAllowed';
-  static const paymentScreen_error_storeProductNotAvailable = 'paymentScreen.error.storeProductNotAvailable';
-  static const paymentScreen_error_cloudServicePermissionDenied = 'paymentScreen.error.cloudServicePermissionDenied';
-  static const paymentScreen_error_cloudServiceNetworkConnectionFailed = 'paymentScreen.error.cloudServiceNetworkConnectionFailed';
-  static const paymentScreen_error_cloudServiceRevoked = 'paymentScreen.error.cloudServiceRevoked';
-  static const paymentScreen_error_privacyAcknowledgementRequired = 'paymentScreen.error.privacyAcknowledgementRequired';
-  static const paymentScreen_error_unauthorizedRequestData = 'paymentScreen.error.unauthorizedRequestData';
-  static const paymentScreen_error_invalidOfferIdentifier = 'paymentScreen.error.invalidOfferIdentifier';
-  static const paymentScreen_error_invalidSignature = 'paymentScreen.error.invalidSignature';
-  static const paymentScreen_error_missingOfferParams = 'paymentScreen.error.missingOfferParams';
-  static const paymentScreen_error_invalidOfferPrice = 'paymentScreen.error.invalidOfferPrice';
-  static const paymentScreen_error_verifyError = 'paymentScreen.error.verifyError';
-  static const paymentScreen_error_verifyAppStoreError = 'paymentScreen.error.verifyAppStoreError';
-  static const paymentScreen_error_duplicateProductObject = 'paymentScreen.error.duplicateProductObject';
+  static const paymentScreen_error_clientInvalid =
+      'paymentScreen.error.clientInvalid';
+  static const paymentScreen_error_paymentCancelled =
+      'paymentScreen.error.paymentCancelled';
+  static const paymentScreen_error_paymentInvalid =
+      'paymentScreen.error.paymentInvalid';
+  static const paymentScreen_error_paymentNotAllowed =
+      'paymentScreen.error.paymentNotAllowed';
+  static const paymentScreen_error_storeProductNotAvailable =
+      'paymentScreen.error.storeProductNotAvailable';
+  static const paymentScreen_error_cloudServicePermissionDenied =
+      'paymentScreen.error.cloudServicePermissionDenied';
+  static const paymentScreen_error_cloudServiceNetworkConnectionFailed =
+      'paymentScreen.error.cloudServiceNetworkConnectionFailed';
+  static const paymentScreen_error_cloudServiceRevoked =
+      'paymentScreen.error.cloudServiceRevoked';
+  static const paymentScreen_error_privacyAcknowledgementRequired =
+      'paymentScreen.error.privacyAcknowledgementRequired';
+  static const paymentScreen_error_unauthorizedRequestData =
+      'paymentScreen.error.unauthorizedRequestData';
+  static const paymentScreen_error_invalidOfferIdentifier =
+      'paymentScreen.error.invalidOfferIdentifier';
+  static const paymentScreen_error_invalidSignature =
+      'paymentScreen.error.invalidSignature';
+  static const paymentScreen_error_missingOfferParams =
+      'paymentScreen.error.missingOfferParams';
+  static const paymentScreen_error_invalidOfferPrice =
+      'paymentScreen.error.invalidOfferPrice';
+  static const paymentScreen_error_verifyError =
+      'paymentScreen.error.verifyError';
+  static const paymentScreen_error_verifyAppStoreError =
+      'paymentScreen.error.verifyAppStoreError';
+  static const paymentScreen_error_duplicateProductObject =
+      'paymentScreen.error.duplicateProductObject';
   static const paymentScreen_error = 'paymentScreen.error';
   static const paymentScreen = 'paymentScreen';
   static const common_online = 'common.online';
@@ -199,19 +278,26 @@ abstract class  LocaleKeys {
   static const common_vizited_q = 'common.vizited_q';
   static const common_vizited = 'common.vizited';
   static const common_usingPhoneNumberHint = 'common.usingPhoneNumberHint';
-  static const common_payment_alert_titleForView = 'common.payment.alert.titleForView';
-  static const common_payment_alert_titleForAction = 'common.payment.alert.titleForAction';
+  static const common_payment_alert_titleForView =
+      'common.payment.alert.titleForView';
+  static const common_payment_alert_titleForAction =
+      'common.payment.alert.titleForAction';
   static const common_payment_alert_detail = 'common.payment.alert.detail';
-  static const common_payment_alert_moreButton = 'common.payment.alert.moreButton';
-  static const common_payment_alert_notNowButton = 'common.payment.alert.notNowButton';
+  static const common_payment_alert_moreButton =
+      'common.payment.alert.moreButton';
+  static const common_payment_alert_notNowButton =
+      'common.payment.alert.notNowButton';
   static const common_payment_alert = 'common.payment.alert';
   static const common_payment = 'common.payment';
   static const common_fieldNotRequired = 'common.fieldNotRequired';
   static const common = 'common';
   static const educationList_basicGeneral = 'educationList.basicGeneral';
-  static const educationList_secondaryGeneral = 'educationList.secondaryGeneral';
-  static const educationList_secondaryVocational = 'educationList.secondaryVocational';
-  static const educationList_higherBachelorOrSpecialist = 'educationList.higherBachelorOrSpecialist';
+  static const educationList_secondaryGeneral =
+      'educationList.secondaryGeneral';
+  static const educationList_secondaryVocational =
+      'educationList.secondaryVocational';
+  static const educationList_higherBachelorOrSpecialist =
+      'educationList.higherBachelorOrSpecialist';
   static const educationList_higherMaster = 'educationList.higherMaster';
   static const educationList_academicDegree = 'educationList.academicDegree';
   static const educationList = 'educationList';
@@ -221,11 +307,16 @@ abstract class  LocaleKeys {
   static const familyState_married = 'familyState.married';
   static const familyState_divorced = 'familyState.divorced';
   static const familyState = 'familyState';
-  static const observantOfTheCanonsFemaleState_observingIslamCanons = 'observantOfTheCanonsFemaleState.observingIslamCanons';
-  static const observantOfTheCanonsFemaleState_nonObservingIslamCanons = 'observantOfTheCanonsFemaleState.nonObservingIslamCanons';
-  static const observantOfTheCanonsFemaleState = 'observantOfTheCanonsFemaleState';
-  static const observantOfTheCanonsMaleState_observingIslamCanons = 'observantOfTheCanonsMaleState.observingIslamCanons';
-  static const observantOfTheCanonsMaleState_nonObservingIslamCanons = 'observantOfTheCanonsMaleState.nonObservingIslamCanons';
+  static const observantOfTheCanonsFemaleState_observingIslamCanons =
+      'observantOfTheCanonsFemaleState.observingIslamCanons';
+  static const observantOfTheCanonsFemaleState_nonObservingIslamCanons =
+      'observantOfTheCanonsFemaleState.nonObservingIslamCanons';
+  static const observantOfTheCanonsFemaleState =
+      'observantOfTheCanonsFemaleState';
+  static const observantOfTheCanonsMaleState_observingIslamCanons =
+      'observantOfTheCanonsMaleState.observingIslamCanons';
+  static const observantOfTheCanonsMaleState_nonObservingIslamCanons =
+      'observantOfTheCanonsMaleState.nonObservingIslamCanons';
   static const observantOfTheCanonsMaleState = 'observantOfTheCanonsMaleState';
   static const faithState_observantMuslim = 'faithState.observantMuslim';
   static const faithState_nonObservantMuslim = 'faithState.nonObservantMuslim';
@@ -279,8 +370,10 @@ abstract class  LocaleKeys {
   static const chat_main_hour = 'chat.main.hour';
   static const chat_main_day = 'chat.main.day';
   static const chat_main_now = 'chat.main.now';
-  static const chat_main_lastTimeOnline_prefix = 'chat.main.lastTimeOnline.prefix';
-  static const chat_main_lastTimeOnline_postfix = 'chat.main.lastTimeOnline.postfix';
+  static const chat_main_lastTimeOnline_prefix =
+      'chat.main.lastTimeOnline.prefix';
+  static const chat_main_lastTimeOnline_postfix =
+      'chat.main.lastTimeOnline.postfix';
   static const chat_main_lastTimeOnline = 'chat.main.lastTimeOnline';
   static const chat_main = 'chat.main';
   static const chat_del_cancel = 'chat.del.cancel';
@@ -308,21 +401,31 @@ abstract class  LocaleKeys {
   static const chat_report = 'chat.report';
   static const chat = 'chat';
   static const welcome_screen_createAcc = 'welcome_screen.createAcc';
-  static const welcome_screen_ageConfirmed_question = 'welcome_screen.ageConfirmed.question';
-  static const welcome_screen_ageConfirmed_bad = 'welcome_screen.ageConfirmed.bad';
-  static const welcome_screen_ageConfirmed_good = 'welcome_screen.ageConfirmed.good';
-  static const welcome_screen_ageConfirmed_action = 'welcome_screen.ageConfirmed.action';
+  static const welcome_screen_ageConfirmed_question =
+      'welcome_screen.ageConfirmed.question';
+  static const welcome_screen_ageConfirmed_bad =
+      'welcome_screen.ageConfirmed.bad';
+  static const welcome_screen_ageConfirmed_good =
+      'welcome_screen.ageConfirmed.good';
+  static const welcome_screen_ageConfirmed_action =
+      'welcome_screen.ageConfirmed.action';
   static const welcome_screen_ageConfirmed = 'welcome_screen.ageConfirmed';
   static const welcome_screen_alreadyLogged = 'welcome_screen.alreadyLogged';
   static const welcome_screen_authorize = 'welcome_screen.authorize';
-  static const welcome_screen_carousel_item1_header = 'welcome_screen.carousel.item1.header';
-  static const welcome_screen_carousel_item1_text = 'welcome_screen.carousel.item1.text';
+  static const welcome_screen_carousel_item1_header =
+      'welcome_screen.carousel.item1.header';
+  static const welcome_screen_carousel_item1_text =
+      'welcome_screen.carousel.item1.text';
   static const welcome_screen_carousel_item1 = 'welcome_screen.carousel.item1';
-  static const welcome_screen_carousel_item2_header = 'welcome_screen.carousel.item2.header';
-  static const welcome_screen_carousel_item2_text = 'welcome_screen.carousel.item2.text';
+  static const welcome_screen_carousel_item2_header =
+      'welcome_screen.carousel.item2.header';
+  static const welcome_screen_carousel_item2_text =
+      'welcome_screen.carousel.item2.text';
   static const welcome_screen_carousel_item2 = 'welcome_screen.carousel.item2';
-  static const welcome_screen_carousel_item3_header = 'welcome_screen.carousel.item3.header';
-  static const welcome_screen_carousel_item3_text = 'welcome_screen.carousel.item3.text';
+  static const welcome_screen_carousel_item3_header =
+      'welcome_screen.carousel.item3.header';
+  static const welcome_screen_carousel_item3_text =
+      'welcome_screen.carousel.item3.text';
   static const welcome_screen_carousel_item3 = 'welcome_screen.carousel.item3';
   static const welcome_screen_carousel = 'welcome_screen.carousel';
   static const welcome_screen = 'welcome_screen';
@@ -335,21 +438,30 @@ abstract class  LocaleKeys {
   static const registration_sendCode = 'registration.sendCode';
   static const registration_type_message = 'registration.type.message';
   static const registration_type_phone_by = 'registration.type.phone.by';
-  static const registration_type_phone_header = 'registration.type.phone.header';
+  static const registration_type_phone_header =
+      'registration.type.phone.header';
   static const registration_type_phone_text = 'registration.type.phone.text';
-  static const registration_type_phone_hintPass = 'registration.type.phone.hintPass';
-  static const registration_type_phone_hintSecPass = 'registration.type.phone.hintSecPass';
+  static const registration_type_phone_hintPass =
+      'registration.type.phone.hintPass';
+  static const registration_type_phone_hintSecPass =
+      'registration.type.phone.hintSecPass';
   static const registration_type_phone_error = 'registration.type.phone.error';
-  static const registration_type_phone_nextScreenMessage = 'registration.type.phone.nextScreenMessage';
+  static const registration_type_phone_nextScreenMessage =
+      'registration.type.phone.nextScreenMessage';
   static const registration_type_phone = 'registration.type.phone';
   static const registration_type_email_by = 'registration.type.email.by';
-  static const registration_type_email_header = 'registration.type.email.header';
+  static const registration_type_email_header =
+      'registration.type.email.header';
   static const registration_type_email_text = 'registration.type.email.text';
-  static const registration_type_email_hintMail = 'registration.type.email.hintMail';
-  static const registration_type_email_hintPass = 'registration.type.email.hintPass';
-  static const registration_type_email_hintSecPass = 'registration.type.email.hintSecPass';
+  static const registration_type_email_hintMail =
+      'registration.type.email.hintMail';
+  static const registration_type_email_hintPass =
+      'registration.type.email.hintPass';
+  static const registration_type_email_hintSecPass =
+      'registration.type.email.hintSecPass';
   static const registration_type_email_error = 'registration.type.email.error';
-  static const registration_type_email_nextScreenMessage = 'registration.type.email.nextScreenMessage';
+  static const registration_type_email_nextScreenMessage =
+      'registration.type.email.nextScreenMessage';
   static const registration_type_email = 'registration.type.email';
   static const registration_type = 'registration.type';
   static const registration_PIN_header = 'registration.PIN.header';
@@ -364,10 +476,12 @@ abstract class  LocaleKeys {
   static const registration_error_maxLength = 'registration.error.maxLength';
   static const registration_error = 'registration.error';
   static const registration_profile_header = 'registration.profile.header';
-  static const registration_profile_educationHint = 'registration.profile.educationHint';
+  static const registration_profile_educationHint =
+      'registration.profile.educationHint';
   static const registration_profile = 'registration.profile';
   static const registration_interest_header = 'registration.interest.header';
-  static const registration_interest_subheader = 'registration.interest.subheader';
+  static const registration_interest_subheader =
+      'registration.interest.subheader';
   static const registration_interest_addNew = 'registration.interest.addNew';
   static const registration_interest = 'registration.interest';
   static const registration_about_header = 'registration.about.header';
@@ -387,15 +501,21 @@ abstract class  LocaleKeys {
   static const entering_main_hintRecPass = 'entering.main.hintRecPass';
   static const entering_main_enter = 'entering.main.enter';
   static const entering_main = 'entering.main';
-  static const entering_recoveryBy_email_hint = 'entering.recoveryBy.email.hint';
+  static const entering_recoveryBy_email_hint =
+      'entering.recoveryBy.email.hint';
   static const entering_recoveryBy_email_get = 'entering.recoveryBy.email.get';
-  static const entering_recoveryBy_email_header = 'entering.recoveryBy.email.header';
+  static const entering_recoveryBy_email_header =
+      'entering.recoveryBy.email.header';
   static const entering_recoveryBy_email_msg = 'entering.recoveryBy.email.msg';
   static const entering_recoveryBy_email = 'entering.recoveryBy.email';
-  static const entering_recoveryBy_number_hint = 'entering.recoveryBy.number.hint';
-  static const entering_recoveryBy_number_get = 'entering.recoveryBy.number.get';
-  static const entering_recoveryBy_number_header = 'entering.recoveryBy.number.header';
-  static const entering_recoveryBy_number_msg = 'entering.recoveryBy.number.msg';
+  static const entering_recoveryBy_number_hint =
+      'entering.recoveryBy.number.hint';
+  static const entering_recoveryBy_number_get =
+      'entering.recoveryBy.number.get';
+  static const entering_recoveryBy_number_header =
+      'entering.recoveryBy.number.header';
+  static const entering_recoveryBy_number_msg =
+      'entering.recoveryBy.number.msg';
   static const entering_recoveryBy_number = 'entering.recoveryBy.number';
   static const entering_recoveryBy_error = 'entering.recoveryBy.error';
   static const entering_recoveryBy = 'entering.recoveryBy';
@@ -468,5 +588,4 @@ abstract class  LocaleKeys {
   static var usersScreen_favorites_youFavorite;
 
   static var usersScreen_favorites_whoVisitedMe;
-
 }

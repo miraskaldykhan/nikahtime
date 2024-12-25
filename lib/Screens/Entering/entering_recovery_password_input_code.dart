@@ -9,27 +9,29 @@ import 'package:easy_localization/easy_localization.dart' as localized;
 import 'package:untitled/generated/locale_keys.g.dart';
 
 class EnteringSelectRecoveryPasswordInputCodeScreen extends StatefulWidget {
-  EnteringSelectRecoveryPasswordInputCodeScreen(this.connectionType, this.value);
+  EnteringSelectRecoveryPasswordInputCodeScreen(
+      this.connectionType, this.value);
 
   String connectionType = '';
   String value = '';
 
   @override
-  State<EnteringSelectRecoveryPasswordInputCodeScreen> createState() => _EnteringSelectRecoveryPasswordInputCodeScreenState();
+  State<EnteringSelectRecoveryPasswordInputCodeScreen> createState() =>
+      _EnteringSelectRecoveryPasswordInputCodeScreenState();
 }
 
-class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<EnteringSelectRecoveryPasswordInputCodeScreen> {
-
+class _EnteringSelectRecoveryPasswordInputCodeScreenState
+    extends State<EnteringSelectRecoveryPasswordInputCodeScreen> {
   final TextEditingController _verifyCodeController = TextEditingController();
   bool _isLoadingComplete = true;
   bool error = false;
   String errMessage = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
-
-      body:  Container (
+      body: Container(
         margin: const EdgeInsets.only(left: 16, right: 16),
         width: double.infinity,
         //margin: EdgeInsets.only(top: 104),
@@ -42,76 +44,81 @@ class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<Entering
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _Header(),
-                          SizedBox(height: 8),
-                          _Message((widget.connectionType == "phoneNumber") ? LocaleKeys.entering_code_number.tr() : LocaleKeys.entering_code_email.tr(), widget.value),
-                          SizedBox(height: 32),
-                          TextField(
-                            controller: _verifyCodeController,
-                            onChanged: (val){error = false;},
-                            decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 218, 216, 215),
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                              ),
-                              hintText: LocaleKeys.entering_code_hint.tr(),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).colorScheme.secondary,
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                              ),
-                            ),
+                  _Header(),
+                  SizedBox(height: 8),
+                  _Message(
+                    (widget.connectionType == "phoneNumber")
+                        ? LocaleKeys.entering_code_number.tr()
+                        : LocaleKeys.entering_code_email.tr(),
+                    widget.value,
+                    (widget.connectionType == "phoneNumber"),
+                  ),
+                  SizedBox(height: 32),
+                  TextField(
+                    controller: _verifyCodeController,
+                    onChanged: (val) {
+                      error = false;
+                    },
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color.fromARGB(255, 218, 216, 215),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      hintText: LocaleKeys.entering_code_hint.tr(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                      visible: error,
+                      child: Text(
+                        errMessage,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: Colors.red,
+                        ),
+                      )),
+                  SizedBox(height: 8),
+                  RichText(
+                    textAlign: TextAlign.start,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: LocaleKeys.entering_code_again.tr(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
-                          Visibility(
-                              visible: error,
-                              child: Text(
-                                errMessage,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12,
-                                  color: Colors.red,
-                                ),
-                              )
-                          ),
-                          SizedBox(height: 8),
-                          RichText(
-                            textAlign: TextAlign.start,
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: LocaleKeys.entering_code_again.tr(),
-                                  style:  TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                    color: Theme.of(context).colorScheme.secondary,
-                                  ),
-                                  recognizer: TapGestureRecognizer()..onTap = () async {
-                                    debugPrint("click");
-                                    var response = await NetworkService().RestoreAccountPasswordCode(widget.connectionType, widget.value);
-                                    if(response.statusCode != 200){
-                                      errMessage = LocaleKeys.entering_code_error.tr();
-                                      error = true;
-                                      setState(() {
-
-                                      });
-                                    }
-                                    debugPrint("${response.statusCode}");
-                                    debugPrint("${response.body}");
-                                  },
-                               ),
-                              ],
-                            ),
-                          )
-
-                        ]
-                    )
-                )
-            ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              debugPrint("click");
+                              var response = await NetworkService()
+                                  .RestoreAccountPasswordCode(
+                                      widget.connectionType, widget.value);
+                              if (response.statusCode != 200) {
+                                errMessage =
+                                    LocaleKeys.entering_code_error.tr();
+                                error = true;
+                                setState(() {});
+                              }
+                              debugPrint("${response.statusCode}");
+                              debugPrint("${response.body}");
+                            },
+                        ),
+                      ],
+                    ),
+                  )
+                ]))),
             _registerButton(),
             SizedBox(height: 16),
           ],
@@ -120,33 +127,31 @@ class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<Entering
     );
   }
 
-
-  Widget _registerButton(){
+  Widget _registerButton() {
     return SizedBox(
         width: double.infinity,
-        child:
-        MaterialButton(
+        child: MaterialButton(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
           height: 56,
           color: Theme.of(context).colorScheme.secondary,
           disabledColor: Theme.of(context).colorScheme.secondary,
-
           child: _enterButtonAction(),
-          onPressed: _isLoadingComplete ? () {
-            setState(() {
-              if (_isLoadingComplete) {
-                setState(() {
-                  _isLoadingComplete = false;
-                });
+          onPressed: _isLoadingComplete
+              ? () {
+                  setState(() {
+                    if (_isLoadingComplete) {
+                      setState(() {
+                        _isLoadingComplete = false;
+                      });
 
-                _sendLoginRequest();
-              }
-            }) ;
-          } : null,
-        )
-    );
+                      _sendLoginRequest();
+                    }
+                  });
+                }
+              : null,
+        ));
   }
 
   Widget _enterButtonAction() {
@@ -158,7 +163,7 @@ class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<Entering
         style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 16,
-          color: Color.fromARGB(255,255,255,255),
+          color: Color.fromARGB(255, 255, 255, 255),
         ),
       );
     } else {
@@ -169,43 +174,42 @@ class _EnteringSelectRecoveryPasswordInputCodeScreenState extends State<Entering
   }
 
   _sendLoginRequest() async {
-    if(_verifyCodeController.text == "" || _verifyCodeController.text == null){
+    if (_verifyCodeController.text == "" ||
+        _verifyCodeController.text == null) {
       errMessage = LocaleKeys.entering_code_hint.tr();
       error = true;
       _isLoadingComplete = true;
       return;
     }
 
-    var response = await NetworkService().RestoreAccountPasswordCodeVerify(widget.connectionType, widget.value, _verifyCodeController.text);
+    var response = await NetworkService().RestoreAccountPasswordCodeVerify(
+        widget.connectionType, widget.value, _verifyCodeController.text);
     _isLoadingComplete = true;
-    if(response.statusCode != 200){
+    if (response.statusCode != 200) {
       debugPrint("${widget.connectionType}");
       debugPrint("${widget.value}");
       debugPrint("${response.body}");
       errMessage = LocaleKeys.entering_code_error_uncorrect.tr();
       error = true;
-      setState(() {
-
-      });
+      setState(() {});
       return;
     }
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => EnteringRecoveryPasswordCreateNewScreen(widget.connectionType, widget.value, _verifyCodeController.text),
+        pageBuilder: (_, __, ___) => EnteringRecoveryPasswordCreateNewScreen(
+            widget.connectionType, widget.value, _verifyCodeController.text),
         transitionDuration: const Duration(seconds: 0),
       ),
     );
   }
-
-
 }
 
-class _Header extends StatelessWidget{
-  const _Header ({Key? key}) : super (key:key);
+class _Header extends StatelessWidget {
+  const _Header({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Text(
       LocaleKeys.entering_code_header.tr(),
       textDirection: TextDirection.ltr,
@@ -213,22 +217,25 @@ class _Header extends StatelessWidget{
       style: TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 24,
-        color: const Color.fromARGB(255,33,33,33),
+        color: const Color.fromARGB(255, 33, 33, 33),
       ),
     );
   }
 }
 
-class _Message extends StatelessWidget{
-  _Message (this.connectionType, this.value, {Key? key}) : super (key:key);
+class _Message extends StatelessWidget {
+  _Message(this.connectionType, this.value, this.isPhone, {Key? key})
+      : super(key: key);
 
   String connectionType = '';
   String value = '';
+  bool isPhone = false;
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Text(
-      LocaleKeys.entering_code_message.tr(args: [connectionType,value]),
+      LocaleKeys.entering_code_message
+          .tr(args: [isPhone ? "Звонок" : "Код", connectionType, value]),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.justify,
       style: TextStyle(
@@ -241,9 +248,8 @@ class _Message extends StatelessWidget{
   }
 }
 
-
-class _EmailAddress extends StatefulWidget{
-  _EmailAddress ({Key? key}) : super (key:key);
+class _EmailAddress extends StatefulWidget {
+  _EmailAddress({Key? key}) : super(key: key);
 
   @override
   State<_EmailAddress> createState() => _EmailAddressState();
@@ -251,7 +257,7 @@ class _EmailAddress extends StatefulWidget{
 
 class _EmailAddressState extends State<_EmailAddress> {
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return TextField(
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
@@ -272,7 +278,4 @@ class _EmailAddressState extends State<_EmailAddress> {
       ),
     );
   }
-
-
-
 }

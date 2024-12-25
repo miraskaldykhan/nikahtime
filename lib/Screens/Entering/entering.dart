@@ -32,10 +32,9 @@ class EnteringScreen extends StatefulWidget {
 }
 
 class _EnteringScreenState extends State<EnteringScreen> {
-
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
+    return Scaffold(
       appBar: const CustomAppBar(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,7 +57,8 @@ class _EnteringScreenState extends State<EnteringScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).colorScheme.secondary  ,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
                               elevation: 0,
                               fixedSize: const Size(double.infinity, 56),
                               shape: RoundedRectangleBorder(
@@ -75,19 +75,22 @@ class _EnteringScreenState extends State<EnteringScreen> {
                                 color: Colors.white,
                               ),
                             ),
-                            onPressed:(){
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (_, __, ___) => EnteringBySelectedTypeScreen(
-                                      LocaleKeys.entering_recoveryBy_number_hint.tr(),
-                                      r'^((\+7|7|8)+([0-9]){10})$',
-                                      "+7"
-                                    ),
-                                    transitionDuration: const Duration(seconds: 0),
-                                  ),
-                                );
-                              })),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder: (_, __, ___) =>
+                                      EnteringBySelectedTypeScreen(
+                                          LocaleKeys
+                                              .entering_recoveryBy_number_hint
+                                              .tr(),
+                                          r'^((\+7|7|8)+([0-9]){10})$',
+                                          "+7"),
+                                  transitionDuration:
+                                      const Duration(seconds: 0),
+                                ),
+                              );
+                            })),
                     const SizedBox(
                       height: 16,
                     ),
@@ -99,7 +102,7 @@ class _EnteringScreenState extends State<EnteringScreen> {
                             borderRadius: BorderRadius.circular(12.0),
                             side: BorderSide(
                                 width: 2,
-                                color:  Theme.of(context).colorScheme.secondary ),
+                                color: Theme.of(context).colorScheme.secondary),
                           ),
                           child: Text(
                             LocaleKeys.registration_type_email_by.tr(),
@@ -108,84 +111,108 @@ class _EnteringScreenState extends State<EnteringScreen> {
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 16,
-                              color:  Theme.of(context).colorScheme.secondary ,
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
                           ),
-                          onPressed:(){
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (_, __, ___) => EnteringBySelectedTypeScreen(
-                                    LocaleKeys.entering_recoveryBy_email_hint.tr(),
-                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-                                    ""
-                                  ),
-                                  transitionDuration: const Duration(seconds: 0),
-                                ),
-                              );
-                              setState(() {});
-                            }),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) =>
+                                    EnteringBySelectedTypeScreen(
+                                        LocaleKeys
+                                            .entering_recoveryBy_email_hint
+                                            .tr(),
+                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                                        ""),
+                                transitionDuration: const Duration(seconds: 0),
+                              ),
+                            );
+                            setState(() {});
+                          }),
                     ),
+                    const SizedBox(height: 10),
+                    _RegisterBy(),
                     const SizedBox(height: 20),
                     const _OrLoginOption(),
                     const SizedBox(height: 20),
-                   Container(
-            width: double.infinity,
-            child: Row(
-              children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () async { 
-                _sendGoogleSignInLoginRequest();
-              },
-              child: Container(
-                height: 52,
-                 decoration: BoxDecoration(
-                      border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
-                      borderRadius: BorderRadius.circular(10)
-                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/icons/google.png', width: 20,),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Google',
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16), // Расстояние между кнопками
-          Expanded(
-            child: GestureDetector(
-              onTap: () async { 
-                _sendAppleSignInLoginRequest();
-              },
-              child: Container(
-                height: 52,
-                 decoration: BoxDecoration(
-                      border: GradientBoxBorder (gradient:  LinearGradient(colors:[ Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2),
-                      borderRadius: BorderRadius.circular(10)
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/icons/apple.png', width: 20,),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Apple',
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          
-                          
+                    Container(
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                _sendGoogleSignInLoginRequest();
+                              },
+                              child: Container(
+                                height: 52,
+                                decoration: BoxDecoration(
+                                    border: GradientBoxBorder(
+                                        gradient: LinearGradient(colors: [
+                                          Theme.of(context).colorScheme.primary,
+                                          Theme.of(context)
+                                              .colorScheme
+                                              .secondary
+                                        ]),
+                                        width: 2),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/icons/google.png',
+                                      width: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      'Google',
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          // Расстояние между кнопками
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                _sendAppleSignInLoginRequest();
+                              },
+                              child: Container(
+                                height: 52,
+                                decoration: BoxDecoration(
+                                    border: GradientBoxBorder(
+                                        gradient: LinearGradient(colors: [
+                                          Theme.of(context).colorScheme.primary,
+                                          Theme.of(context)
+                                              .colorScheme
+                                              .secondary
+                                        ]),
+                                        width: 2),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/icons/apple.png',
+                                      width: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      'Apple',
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
                           // Container(
                           //     height: 48,
                           //     width: 48,
@@ -225,24 +252,23 @@ class _EnteringScreenState extends State<EnteringScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    
-                  ]
-              ),
+                  ]),
             ),
           ),
           const Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Column(
-                        children: [
-                          PolicyAgreement(),
-                          SizedBox(height: 20,)
-                        ],
-                      ))
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                children: [
+                  PolicyAgreement(),
+                  SizedBox(
+                    height: 20,
+                  )
+                ],
+              ))
         ],
       ),
     );
   }
-
 
   _sendAppleSignInLoginRequest() async {
     try {
@@ -293,19 +319,16 @@ class _EnteringScreenState extends State<EnteringScreen> {
 
   _sendGoogleSignInLoginRequest() async {
     try {
-
       String? clientId = null;
 
       if (Platform.isIOS) {
-        clientId = '1023685173404-go99snh3am30qgjgd8up1kld3mbr7ra8.apps.googleusercontent.com';
+        clientId =
+            '1023685173404-go99snh3am30qgjgd8up1kld3mbr7ra8.apps.googleusercontent.com';
       }
 
-      GoogleSignIn _googleSignIn = GoogleSignIn(
-          scopes: [
-            'email',
-          ],
-          clientId: clientId
-      );
+      GoogleSignIn _googleSignIn = GoogleSignIn(scopes: [
+        'email',
+      ], clientId: clientId);
 
       if (await _googleSignIn.isSignedIn()) {
         await _googleSignIn.signOut();
@@ -399,71 +422,69 @@ class _RegisterBy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      textAlign: TextAlign.start,
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: LocaleKeys.entering_main_hintRecPass.tr(),
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              color:  Theme.of(context).colorScheme.secondary,
+    return Align(
+      alignment: Alignment.centerRight,
+      child: RichText(
+        textAlign: TextAlign.end,
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: LocaleKeys.entering_main_hintRecPass.tr(),
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (_, __, ___) =>
+                          const EnteringSelectRecoveryPasswordTypeScreen(),
+                      transitionDuration: const Duration(seconds: 0),
+                    ),
+                  );
+                },
             ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (_, __, ___) =>
-                        const EnteringSelectRecoveryPasswordTypeScreen(),
-                    transitionDuration: const Duration(seconds: 0),
-                  ),
-                );
-              },
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-
 class _OrLoginOption extends StatelessWidget {
-    const _OrLoginOption ({Key? key}) : super (key:key);
+  const _OrLoginOption({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-   return  Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Expanded(
-                child: Divider(
-                  thickness: 1, 
-                  color: Colors.black, 
-                  indent: 0, 
-                  endIndent: 10, 
-                ),
-              ),
-              Text(
-                LocaleKeys.common_selectOptions.tr(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black
-                ),
-              ),
-              const Expanded(
-                child: Divider(
-                  thickness: 1,
-                  color: Colors.black,
-                  indent: 10,
-                  endIndent: 0,
-                ),
-              ),
-            ],
-          );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        const Expanded(
+          child: Divider(
+            thickness: 1,
+            color: Colors.black,
+            indent: 0,
+            endIndent: 10,
+          ),
+        ),
+        Text(
+          LocaleKeys.common_selectOptions.tr(),
+          style: const TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+        ),
+        const Expanded(
+          child: Divider(
+            thickness: 1,
+            color: Colors.black,
+            indent: 10,
+            endIndent: 0,
+          ),
+        ),
+      ],
+    );
   }
-  
 }

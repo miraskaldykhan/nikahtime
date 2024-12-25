@@ -11,33 +11,35 @@ class EnteringSelectRecoveryPasswordTypeScreen extends StatefulWidget {
   const EnteringSelectRecoveryPasswordTypeScreen();
 
   @override
-  State<EnteringSelectRecoveryPasswordTypeScreen> createState() => _EnteringSelectRecoveryPasswordTypeScreenState();
+  State<EnteringSelectRecoveryPasswordTypeScreen> createState() =>
+      _EnteringSelectRecoveryPasswordTypeScreenState();
 }
 
-class _EnteringSelectRecoveryPasswordTypeScreenState extends State<EnteringSelectRecoveryPasswordTypeScreen> {
+class _EnteringSelectRecoveryPasswordTypeScreenState
+    extends State<EnteringSelectRecoveryPasswordTypeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
-      body:  Container (
+      body: Container(
         margin: const EdgeInsets.only(left: 16, right: 16),
         width: double.infinity,
         //margin: EdgeInsets.only(top: 104),
         child: Column(
           children: [
             Header(),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             Container(
                 width: double.infinity,
-                child:
-                ElevatedButton(
+                child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       fixedSize: Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
-
                     child: Text(
                       LocaleKeys.entering_checkType_number.tr(),
                       textDirection: TextDirection.ltr,
@@ -48,26 +50,27 @@ class _EnteringSelectRecoveryPasswordTypeScreenState extends State<EnteringSelec
                         color: Colors.white,
                       ),
                     ),
-                    onPressed:(){
+                    onPressed: () {
                       Navigator.push(
                         context,
                         PageRouteBuilder(
-                          pageBuilder: (_, __, ___) => const EnteringRecoveryPasswordByPhoneNumberScreen(),
+                          pageBuilder: (_, __, ___) =>
+                              const EnteringRecoveryPasswordByPhoneNumberScreen(),
                           transitionDuration: const Duration(seconds: 0),
                         ),
                       );
-                    }
-                )
+                    })),
+            SizedBox(
+              height: 16,
             ),
-            SizedBox(height: 16,),
             Container(
               width: double.infinity,
-              child:
-              MaterialButton(
+              child: MaterialButton(
                   height: 64,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
-                    side: BorderSide(width: 1, color: Color.fromARGB(255, 218, 216, 215)),
+                    side: BorderSide(
+                        width: 1, color: Color.fromARGB(255, 218, 216, 215)),
                   ),
                   child: Text(
                     LocaleKeys.entering_checkType_email.tr(),
@@ -79,48 +82,39 @@ class _EnteringSelectRecoveryPasswordTypeScreenState extends State<EnteringSelec
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-                  onPressed:(){
+                  onPressed: () {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const EnteringRecoveryPasswordByEmailScreen(),
+                        pageBuilder: (_, __, ___) =>
+                            const EnteringRecoveryPasswordByEmailScreen(),
                         transitionDuration: const Duration(seconds: 0),
                       ),
                     );
                     setState(() {});
-                  }
-              ),
+                  }),
             ),
-
           ],
         ),
       ),
-
-
-
-
     );
   }
 }
 
-class Header extends StatelessWidget{
-  const Header ({Key? key}) : super (key:key);
+class Header extends StatelessWidget {
+  const Header({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Text(
-      LocaleKeys.entering_checkType_header.tr(),
+      LocaleKeys.entering_main_header.tr(),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.left,
       style: TextStyle(
         fontWeight: FontWeight.w700,
         fontSize: 24,
-        color: const Color.fromARGB(255,33,33,33),
+        color: const Color.fromARGB(255, 33, 33, 33),
       ),
     );
   }
 }
-
-
-
-

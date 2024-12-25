@@ -53,6 +53,8 @@
 	<string>Allow access to record video</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow access to download and save photos and videos</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+    <false/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

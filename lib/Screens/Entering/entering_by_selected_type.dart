@@ -143,6 +143,7 @@ class _EnteringBySelectedTypeScreenState extends State<EnteringBySelectedTypeScr
 
   Widget _emailAddressField() {
     return TextField(
+      keyboardType: TextInputType.emailAddress,
       onChanged: (value) {
         setState(() {
           _isError = false;

@@ -25,7 +25,7 @@ class UnregisteredContactsCubit extends Cubit<UnregisteredContactsState> {
           .getNotRegisteredContacts(accessToken: accessToken!);
       if (response.isEmpty) {
         emit(UnregisteredContactsError(
-            errorMessage: "Not un registered contacts"));
+            errorMessage: "Нет нерегистрированных контактов"));
       } else {
         emit(
           UnregisteredContactsSuccess(unregisteredContacts: response),

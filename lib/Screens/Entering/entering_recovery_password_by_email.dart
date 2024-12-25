@@ -59,6 +59,7 @@ class _EnteringRecoveryPasswordByEmailScreenState extends State<EnteringRecovery
                                 ),
                                 borderRadius: BorderRadius.all(Radius.circular(10)),
                               ),
+                              hintStyle: TextStyle(color: Colors.grey), // добавлен хинт стайл
                               hintText: LocaleKeys.entering_recoveryBy_email_hint.tr(),
                               focusedBorder:  OutlineInputBorder(
                                 borderSide: BorderSide(

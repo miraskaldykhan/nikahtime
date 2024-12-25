@@ -65,9 +65,9 @@ class _RegistrationInfoAboutUserScreenState
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      hintStyle: const TextStyle(height: 1.4),
+                      hintStyle: const TextStyle(height: 1.4, color: Colors.grey),
                       hintText: LocaleKeys.registration_about_example.tr(),
-                      focusedBorder:  OutlineInputBorder(
+                      focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.secondary,
                           width: 1,
@@ -111,10 +111,11 @@ class _RegisterButton extends StatefulWidget {
   _RegisterButton(this.userProfileData, {Key? key}) : super(key: key);
 
   UserProfileData userProfileData;
+
   Future<void> _putNewUserInfo() async {
     debugPrint("UPDATE USER PROFILE START");
     var response = await http.put(
-      Uri.parse("https://dev.nikahtime.ru/api/account/user/update"),
+      Uri.parse("https://www.nikahtime.ru/api/account/user/update"),
       headers: {
         'accept': 'application/json',
         'content-type': 'application/json',
@@ -167,7 +168,7 @@ class _RegisterButtonState extends State<_RegisterButton> {
         width: double.infinity,
         child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor:  Theme.of(context).colorScheme.secondary,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               elevation: 0,
               fixedSize: const Size(double.infinity, 56),
               shape: RoundedRectangleBorder(
@@ -196,7 +197,7 @@ class _RegisterButtonState extends State<_RegisterButton> {
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                   Theme.of(context).colorScheme.secondary,
+                                  Theme.of(context).colorScheme.secondary,
                               elevation: 0,
                               fixedSize: const Size(double.infinity, 56),
                               shape: RoundedRectangleBorder(

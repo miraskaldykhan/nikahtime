@@ -48,7 +48,7 @@ class NetworkService {
     _dio.options.headers["accept"] = "application/json";
   }
 
-  final String baseUrl = "https://dev.nikahtime.ru/api";
+  final String baseUrl = "https://www.nikahtime.ru/api";
 
 //LOGIN
   final String login = "/login";
@@ -670,7 +670,7 @@ class NetworkService {
     await getAccessToken();
     var data = json.encode({"message": message});
     var response = await http.put(
-        Uri.parse('https://dev.nikahtime.ru/api/chats/messages/$messageId'),
+        Uri.parse('${baseUrl}/chats/messages/$messageId'),
         body: data,
         headers: {
           'Accept': 'application/json',
@@ -1111,7 +1111,7 @@ class NetworkService {
       "file": await MultipartFile.fromFile(filePath),
     });
     var response =
-        await _dio.post("https://dev.nikahtime.ru/api/storeStory/file",
+        await _dio.post("$baseUrl/storeStory/file",
             data: formData,
             options: Options(
               headers: {
@@ -1126,7 +1126,7 @@ class NetworkService {
       String fileUrl = response.data['fileURL'];
 
       var resForAddStory =
-          await _dio.post("https://dev.nikahtime.ru/api/stories/store",
+          await _dio.post("$baseUrl/stories/store",
               data: {
                 "type": isVideo ? "video" : "image",
                 "content": fileUrl,
@@ -1159,7 +1159,7 @@ class NetworkService {
     });
     log("STORY ID : $id");
     var response = await _dio.post(
-      "https://dev.nikahtime.ru/api/stories/showStory",
+      "$baseUrl/stories/showStory",
       data: formData,
       options: Options(
         headers: {
@@ -1180,7 +1180,7 @@ class NetworkService {
     required String accessToken,
   }) async {
     var response = await _dio.get(
-      "https://dev.nikahtime.ru/api/stories/getFriendsStories",
+      "$baseUrl/stories/getFriendsStories",
       options: Options(
         headers: {
           'accept': 'application/json',
@@ -1200,7 +1200,7 @@ class NetworkService {
     required int id,
   }) async {
     var response = await _dio.get(
-      "https://dev.nikahtime.ru/api/stories/showStoryViewers/$id",
+      "$baseUrl/stories/showStoryViewers/$id",
       options: Options(
         headers: {
           'accept': 'application/json',
@@ -1216,7 +1216,7 @@ class NetworkService {
     required String accessToken,
   }) async {
     var response = await _dio.get(
-      "https://dev.nikahtime.ru/api/stories/getMyStories",
+      "$baseUrl/stories/getMyStories",
       options: Options(
         headers: {
           'accept': 'application/json',
@@ -1234,7 +1234,7 @@ class NetworkService {
     required int id,
   }) async {
     var response = await _dio.delete(
-      "https://dev.nikahtime.ru/api/stories/deleteStory/$id",
+      "$baseUrl/stories/deleteStory/$id",
       options: Options(
         headers: {
           'accept': 'application/json',
@@ -1257,7 +1257,7 @@ class NetworkService {
       "story_id": id,
     });
     var response = await _dio.post(
-      "https://dev.nikahtime.ru/api/stories/like",
+      "$baseUrl/stories/like",
       data: formData,
       options: Options(
         headers: {
@@ -1296,7 +1296,7 @@ class NetworkService {
       if (formattedContacts.isNotEmpty) {
         FormData formData = FormData.fromMap(data);
         var response = await _dio.post(
-          "https://dev.nikahtime.ru/api/contacts/getRegistered",
+          "$baseUrl/contacts/getRegistered",
           data: formData,
           options: Options(
             headers: {
@@ -1351,7 +1351,7 @@ class NetworkService {
         // log("Request Data: ${jsonEncode(data)}");
 
         var response = await _dio.post(
-          "https://dev.nikahtime.ru/api/contacts/getUnregistered",
+          "$baseUrl/contacts/getUnregistered",
           data: jsonEncode(data),
           options: Options(
             headers: {
@@ -1380,7 +1380,7 @@ class NetworkService {
     required String accessToken,
   }) async {
     var response = await _dio.get(
-      "https://dev.nikahtime.ru/api/friends/getFriendList",
+      "$baseUrl/friends/getFriendList",
       options: Options(
         headers: {
           'accept': 'application/json',
@@ -1397,7 +1397,7 @@ class NetworkService {
     required String accessToken,
   }) async {
     var response = await _dio.get(
-      "https://dev.nikahtime.ru/api/friends/getFollowerList",
+      "$baseUrl/friends/getFollowerList",
       options: Options(
         headers: {
           'accept': 'application/json',
@@ -1415,7 +1415,7 @@ class NetworkService {
     required int id,
   }) async {
     var response = await _dio.post(
-      "https://dev.nikahtime.ru/api/friends/moveFollowerToFriend",
+      "$baseUrl/friends/moveFollowerToFriend",
       data: {
         "follower_id": id,
       },
@@ -1440,7 +1440,7 @@ class NetworkService {
     required int userId,
   }) async {
     var response = await _dio.post(
-      "https://dev.nikahtime.ru/api/friends/sendFriendRequest",
+      "$baseUrl/friends/sendFriendRequest",
       data: {
         "target_user_id": userId,
       },
@@ -1465,7 +1465,7 @@ class NetworkService {
     required int userId,
   }) async {
     var response = await _dio.post(
-      "https://dev.nikahtime.ru/api/friends/moveFriendToFollower",
+      "$baseUrl/friends/moveFriendToFollower",
       data: {
         "friend_id": userId,
       },

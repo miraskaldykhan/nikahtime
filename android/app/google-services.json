@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "1023685173404",
     "project_id": "nikah-time-332406",
-    "storage_bucket": "nikah-time-332406.appspot.com"
+    "storage_bucket": "nikah-time-332406.firebasestorage.app"
   },
   "client": [
     {
@@ -39,10 +39,11 @@
               "client_type": 3
             },
             {
-              "client_id": "1023685173404-m22mjqv6tavb3vhhg29apgkq89k9fag7.apps.googleusercontent.com",
+              "client_id": "1023685173404-go99snh3am30qgjgd8up1kld3mbr7ra8.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "ru.nikahtime"
+                "bundle_id": "ru.nikahtime",
+                "app_store_id": "1593398215"
               }
             }
           ]

@@ -39,6 +39,7 @@ class _RegistrationCreateProfileScreenState
     extends State<RegistrationCreateProfileScreen> {
   bool isBadHabitsSwitchOn = false;
   bool genderMale = true;
+
 //==============================================================================
   @override
   Widget build(BuildContext context) {
@@ -70,7 +71,7 @@ class _RegistrationCreateProfileScreenState
                   //SizedBox(height: 16),
                   Expanded(
                     child: SingleChildScrollView(
-                        child: Column(
+                      child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -86,10 +87,12 @@ class _RegistrationCreateProfileScreenState
                               margin: EdgeInsets.only(top: 10),
                               child: TextField(
                                 decoration: CustomInputDecoration(
-                                  hintText: (widget.userProfileData.firstName == null)
-                                      ? LocaleKeys.user_firstName.tr()
-                                      : widget.userProfileData.firstName!,
-                                ).GetDecoration(Theme.of(context).colorScheme.secondary),
+                                  hintText:
+                                      (widget.userProfileData.firstName == null)
+                                          ? LocaleKeys.user_firstName.tr()
+                                          : widget.userProfileData.firstName!,
+                                ).GetDecoration(
+                                    Theme.of(context).colorScheme.secondary),
                                 controller: _firstNameTextController,
                                 onChanged: (value) {
                                   if (firstNameEmpty == true) {
@@ -106,10 +109,12 @@ class _RegistrationCreateProfileScreenState
                             ),
                             TextField(
                               decoration: CustomInputDecoration(
-                                hintText: (widget.userProfileData.lastName == null)
-                                    ? LocaleKeys.user_lastName.tr()
-                                    : widget.userProfileData.lastName!,
-                              ).GetDecoration(Theme.of(context).colorScheme.secondary),
+                                hintText:
+                                    (widget.userProfileData.lastName == null)
+                                        ? LocaleKeys.user_lastName.tr()
+                                        : widget.userProfileData.lastName!,
+                              ).GetDecoration(
+                                  Theme.of(context).colorScheme.secondary),
                               controller: _lastNameTextController,
                               onChanged: (value) {
                                 if (lastNameEmpty == true) {
@@ -120,50 +125,66 @@ class _RegistrationCreateProfileScreenState
                             ),
                             CustomInputDecoration().errorBox(lastNameEmpty),
 
-                            CustomInputDecoration()
-                                .subtitleText(LocaleKeys.user_gender_title.tr()),
+                            CustomInputDecoration().subtitleText(
+                                LocaleKeys.user_gender_title.tr()),
                             _Gender(widget.userProfileData, provider),
                             CustomInputDecoration().errorBox(genderEmpty),
 
-                            CustomInputDecoration()
-                                .subtitleText(LocaleKeys.user_nationality.tr(), isFieldRequired: false),
-                          DropdownFormField<String>( dropdownColor: Colors.white, 
-  decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
-  onSaved: (dynamic str) {},
-  onChanged: (dynamic item) {
-    widget.userProfileData.nationality = item;
-    updateUserData();
-  },
-  displayItemFn: (dynamic item) => Text(
-    translateNationName(
-      widget.userProfileData.nationality ?? LocaleKeys.nationalityState_notSelected.tr(),
-    ),
-    style: const TextStyle(
-      fontWeight: FontWeight.w400,
-      fontSize: 14 ,
-      color: Color.fromARGB(255, 33, 33, 33),
-    ),
-  ),
-  findFn: (dynamic str) async => getNationalityy(str),
-  dropdownItemFn: (dynamic item, int position, bool focused, bool selected, Function() onTap) =>
-    ListTile(
-      title: Text(translateNationName(item), style:  TextStyle(fontSize:16,color:Colors.black)),
-      tileColor: focused ? const Color.fromARGB(20, 0, 0, 0) : Colors.transparent,
-      onTap: onTap,
-    ),
-),
-
+                            CustomInputDecoration().subtitleText(
+                                LocaleKeys.user_nationality.tr(),
+                                isFieldRequired: false),
+                            DropdownFormField<String>(
+                              dropdownColor: Colors.white,
+                              decoration: CustomInputDecoration().GetDecoration(
+                                  Theme.of(context).colorScheme.secondary),
+                              onSaved: (dynamic str) {},
+                              onChanged: (dynamic item) {
+                                widget.userProfileData.nationality = item;
+                                updateUserData();
+                              },
+                              displayItemFn: (dynamic item) => Text(
+                                translateNationName(
+                                  widget.userProfileData.nationality ??
+                                      LocaleKeys.nationalityState_notSelected
+                                          .tr(),
+                                ),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 33, 33, 33),
+                                ),
+                              ),
+                              findFn: (dynamic str) async =>
+                                  getNationalityy(str),
+                              dropdownItemFn: (dynamic item,
+                                      int position,
+                                      bool focused,
+                                      bool selected,
+                                      Function() onTap) =>
+                                  ListTile(
+                                title: Text(translateNationName(item),
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black)),
+                                tileColor: focused
+                                    ? const Color.fromARGB(20, 0, 0, 0)
+                                    : Colors.transparent,
+                                onTap: onTap,
+                              ),
+                            ),
 
                             // CustomInputDecoration().errorBox(nationalityEmpty),
 
-                              CustomInputDecoration().subtitleText(LocaleKeys.user_birthDate.tr()),
+                            CustomInputDecoration()
+                                .subtitleText(LocaleKeys.user_birthDate.tr()),
                             BirthDate(widget.userProfileData),
                             CustomInputDecoration().errorBox(birthDateEmpty),
 
                             CustomInputDecoration()
                                 .subtitleText(LocaleKeys.user_country.tr()),
-                            DropdownFormField<String>( dropdownColor: Colors.white, 
-                              decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
+                            DropdownFormField<String>(
+                              dropdownColor: Colors.white,
+                              decoration: CustomInputDecoration().GetDecoration(
+                                  Theme.of(context).colorScheme.secondary),
                               onSaved: (dynamic str) {
                                 widget.userProfileData.country = "$str";
                               },
@@ -174,7 +195,8 @@ class _RegistrationCreateProfileScreenState
                               displayItemFn: (dynamic str) => Text(
                                 translateCountryName(
                                     widget.userProfileData.country ?? ""),
-                                style: const TextStyle(fontSize:16,color:Colors.black),
+                                style: const TextStyle(
+                                    fontSize: 16, color: Colors.black),
                               ),
                               findFn: (dynamic str) async => getCountry(str),
                               dropdownItemFn: (dynamic item,
@@ -183,7 +205,11 @@ class _RegistrationCreateProfileScreenState
                                       bool selected,
                                       Function() onTap) =>
                                   ListTile(
-                                title: Text(translateCountryName(item), style:  TextStyle(fontSize:16,color:Colors.black),),
+                                title: Text(
+                                  translateCountryName(item),
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.black),
+                                ),
                                 tileColor: focused
                                     ? const Color.fromARGB(20, 0, 0, 0)
                                     : Colors.transparent,
@@ -195,9 +221,13 @@ class _RegistrationCreateProfileScreenState
                             CustomInputDecoration()
                                 .subtitleText(LocaleKeys.user_city.tr()),
                             Visibility(
-                              visible: widget.userProfileData.country == "Россия",
+                              visible:
+                                  widget.userProfileData.country == "Россия",
                               child: DropdownFormField<Map<String, dynamic>>(
-                                decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
+                                decoration: CustomInputDecoration()
+                                    .GetDecoration(Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                                 onSaved: (dynamic str) {},
                                 onChanged: (dynamic item) {
                                   widget.userProfileData.city =
@@ -207,7 +237,7 @@ class _RegistrationCreateProfileScreenState
                                     //Text("${item["name"]!}, ${item["region"]!}",
                                     Text(
                                   widget.userProfileData.city ??= "",
-                                  style: const TextStyle(color:Colors.black),
+                                  style: const TextStyle(color: Colors.black),
                                 ),
                                 findFn: (dynamic str) async =>
                                     NetworkService().DadataRequest(str),
@@ -229,11 +259,13 @@ class _RegistrationCreateProfileScreenState
                               ),
                             ),
                             Visibility(
-                              visible: widget.userProfileData.country != "Россия",
+                              visible:
+                                  widget.userProfileData.country != "Россия",
                               child: TextField(
                                 decoration: CustomInputDecoration(
                                   hintText: widget.userProfileData.city ?? "",
-                                ).GetDecoration(Theme.of(context).colorScheme.secondary),
+                                ).GetDecoration(
+                                    Theme.of(context).colorScheme.secondary),
                                 controller: _nonRussianCountryController,
                                 onChanged: (value) {
                                   widget.userProfileData.city =
@@ -253,13 +285,14 @@ class _RegistrationCreateProfileScreenState
                               child: Row(
                                 children: [
                                   CustomInputDecoration().subtitleText(
-                                      LocaleKeys.user_contactPhoneNumber.tr(), isFieldRequired: false),
+                                      LocaleKeys.user_contactPhoneNumber.tr(),
+                                      isFieldRequired: false),
                                   IconButton(
                                     padding: const EdgeInsets.only(top: 16),
                                     splashRadius: 1,
                                     iconSize: 14,
-                                    icon:
-                                        const Icon(Icons.star_border_purple500_outlined),
+                                    icon: const Icon(
+                                        Icons.star_border_purple500_outlined),
                                     onPressed: () {
                                       showModalBottomSheet(
                                           context: context,
@@ -273,7 +306,8 @@ class _RegistrationCreateProfileScreenState
                                 ],
                               ),
                             ),
-                            userPhoneNumber(), //PhoneNumberField(widget.userProfileData),
+                            userPhoneNumber(),
+                            //PhoneNumberField(widget.userProfileData),
                             // CustomInputDecoration().errorBox(phoneNumberEmpty),
 
                             CustomInputDecoration()
@@ -281,18 +315,26 @@ class _RegistrationCreateProfileScreenState
                             InputDecorator(
                               decoration: CustomInputDecoration(
                                       hintText: LocaleKeys.user_education.tr())
-                                  .GetDecoration(Theme.of(context).colorScheme.secondary),
+                                  .GetDecoration(
+                                      Theme.of(context).colorScheme.secondary),
                               child: DropdownButtonHideUnderline(
-                                child:  DropdownButton<String>(dropdownColor: Colors.white,
+                                child: DropdownButton<String>(
+                                  dropdownColor: Colors.white,
                                   hint: Text(
-                                      (widget.userProfileData.education == null)
-                                          ? LocaleKeys
-                                              .registration_profile_educationHint
-                                              .tr()
-                                          : educationList[
-                                                  widget.userProfileData.education!]
-                                              .toString()
-                                              .tr()),
+                                    (widget.userProfileData.education == null)
+                                        ? LocaleKeys
+                                            .registration_profile_educationHint
+                                            .tr()
+                                        : educationList[widget
+                                                .userProfileData.education!]
+                                            .toString()
+                                            .tr(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
                                   isDense: true,
                                   onChanged: (val) {
                                     setState(() {
@@ -317,15 +359,18 @@ class _RegistrationCreateProfileScreenState
                             ),
                             CustomInputDecoration().errorBox(educationEmpty),
 
-                            CustomInputDecoration()
-                                .subtitleText(LocaleKeys.user_placeOfStudy.tr(), isFieldRequired: false),
+                            CustomInputDecoration().subtitleText(
+                                LocaleKeys.user_placeOfStudy.tr(),
+                                isFieldRequired: false),
                             TextField(
                               decoration: CustomInputDecoration(
                                 hintText:
-                                    (widget.userProfileData.placeOfStudy == null)
+                                    (widget.userProfileData.placeOfStudy ==
+                                            null)
                                         ? ""
                                         : widget.userProfileData.placeOfStudy!,
-                              ).GetDecoration(Theme.of(context).colorScheme.secondary),
+                              ).GetDecoration(
+                                  Theme.of(context).colorScheme.secondary),
                               controller: _studyPlaceTextController,
                             ),
                             // CustomInputDecoration().errorBox(placeOfStudy),
@@ -338,37 +383,51 @@ class _RegistrationCreateProfileScreenState
                                     (widget.userProfileData.placeOfWork != null)
                                         ? widget.userProfileData.placeOfWork!
                                         : "",
-                              ).GetDecoration(Theme.of(context).colorScheme.secondary),
+                              ).GetDecoration(
+                                  Theme.of(context).colorScheme.secondary),
                               controller: _workPlaceTextController,
                             ),
                             CustomInputDecoration().errorBox(placeOfWorkEmpty),
 
-                            CustomInputDecoration()
-                                .subtitleText(LocaleKeys.user_workPosition.tr(), isFieldRequired: false),
+                            CustomInputDecoration().subtitleText(
+                                LocaleKeys.user_workPosition.tr(),
+                                isFieldRequired: false),
                             TextField(
                               decoration: CustomInputDecoration(
                                 hintText:
-                                    (widget.userProfileData.workPosition != null)
+                                    (widget.userProfileData.workPosition !=
+                                            null)
                                         ? widget.userProfileData.workPosition!
                                         : "",
-                              ).GetDecoration(Theme.of(context).colorScheme.secondary),
+                              ).GetDecoration(
+                                  Theme.of(context).colorScheme.secondary),
                               controller: _workPositionTextController,
                             ),
                             // CustomInputDecoration().errorBox(workPosition),
 
-                            CustomInputDecoration()
-                                .subtitleText(LocaleKeys.user_maritalStatus.tr()),
+                            CustomInputDecoration().subtitleText(
+                                LocaleKeys.user_maritalStatus.tr()),
                             InputDecorator(
-                              decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
+                              decoration: CustomInputDecoration().GetDecoration(
+                                  Theme.of(context).colorScheme.secondary),
                               child: DropdownButtonHideUnderline(
-                                child:  DropdownButton<String>(dropdownColor: Colors.white,
-                                 
+                                child: DropdownButton<String>(
+                                  dropdownColor: Colors.white,
+
                                   hint: Text(
-                                      (widget.userProfileData.maritalStatus == null)
-                                          ? LocaleKeys.common_setMaritalStatus.tr()
-                                          : familyState[widget
-                                                  .userProfileData.maritalStatus]!
-                                              .tr()),
+                                    (widget.userProfileData.maritalStatus ==
+                                            null)
+                                        ? LocaleKeys.common_setMaritalStatus
+                                            .tr()
+                                        : familyState[widget
+                                                .userProfileData.maritalStatus]!
+                                            .tr(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
                                   //const Text('Выберите Ваше семейное положение'),
                                   isDense: true,
                                   onChanged: (val) {
@@ -394,30 +453,41 @@ class _RegistrationCreateProfileScreenState
                             ),
                             CustomInputDecoration().errorBox(familyStateEmpty),
 
-                            CustomInputDecoration()
-                                .subtitleText(LocaleKeys.user_faith.tr(), isFieldRequired: false),
+                            CustomInputDecoration().subtitleText(
+                                LocaleKeys.user_faith.tr(),
+                                isFieldRequired: false),
                             InputDecorator(
-                              decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
+                              decoration: CustomInputDecoration().GetDecoration(
+                                  Theme.of(context).colorScheme.secondary),
                               child: DropdownButtonHideUnderline(
-                                child:  DropdownButton<String>(dropdownColor: Colors.white,
-                                  hint: Text((widget.userProfileData.typeReligion ==
-                                          null)
-                                      ? LocaleKeys.user_faith.tr()
-                                      : faithState[
-                                              widget.userProfileData.typeReligion]!
-                                          .tr()),
+                                child: DropdownButton<String>(
+                                  dropdownColor: Colors.white,
+                                  hint: Text(
+                                    (widget.userProfileData.typeReligion ==
+                                            null)
+                                        ? LocaleKeys.user_faith.tr()
+                                        : faithState[widget
+                                                .userProfileData.typeReligion]!
+                                            .tr(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
                                   //const Text('Выберите Ваше семейное положение'),
                                   isDense: true,
                                   onChanged: (val) {
                                     setState(() {
-                                       if (val == "notSelected") {
-                                         widget.userProfileData.typeReligion = null;
-                                         faithStateEmpty = true;
-                                       } else {
-                                         widget.userProfileData.typeReligion =
-                                             val;
-                                         faithStateEmpty = false;
-                                       }
+                                      if (val == "notSelected") {
+                                        widget.userProfileData.typeReligion =
+                                            null;
+                                        faithStateEmpty = true;
+                                      } else {
+                                        widget.userProfileData.typeReligion =
+                                            val;
+                                        faithStateEmpty = false;
+                                      }
                                     });
                                   },
                                   items: faithState
@@ -439,28 +509,36 @@ class _RegistrationCreateProfileScreenState
                             CustomInputDecoration()
                                 .subtitleText(LocaleKeys.user_canons.tr()),
                             InputDecorator(
-                              decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
+                              decoration: CustomInputDecoration().GetDecoration(
+                                  Theme.of(context).colorScheme.secondary),
                               child: DropdownButtonHideUnderline(
-                                child:  DropdownButton<String>(dropdownColor: Colors.white,
-                                  hint: Text((widget.userProfileData
-                                                  .observeIslamCanons ==
-                                              null)
-                                          ? LocaleKeys.user_canons.tr()
-                                          : provider.isMale
-                                              ? observantOfTheCanonsMaleState[widget
-                                                      .userProfileData
-                                                      .observeIslamCanons]!
-                                                  .tr()
-                                              : observantOfTheCanonsFemaleState[
-                                                  widget.userProfileData
-                                                      .observeIslamCanons]!)
-                                      .tr(),
+                                child: DropdownButton<String>(
+                                  dropdownColor: Colors.white,
+                                  hint: Text(
+                                    (widget.userProfileData
+                                                .observeIslamCanons ==
+                                            null)
+                                        ? LocaleKeys.user_canons.tr()
+                                        : provider.isMale
+                                            ? observantOfTheCanonsMaleState[
+                                                    widget.userProfileData
+                                                        .observeIslamCanons]!
+                                                .tr()
+                                            : observantOfTheCanonsFemaleState[
+                                                widget.userProfileData
+                                                    .observeIslamCanons]!,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ).tr(),
                                   //const Text('Выберите Ваше семейное положение'),
                                   isDense: true,
                                   onChanged: (val) {
                                     setState(() {
-                                      widget.userProfileData.observeIslamCanons =
-                                          val.toString();
+                                      widget.userProfileData
+                                          .observeIslamCanons = val.toString();
                                       canonsStateEmpty = false;
                                     });
                                   },
@@ -497,27 +575,54 @@ class _RegistrationCreateProfileScreenState
                             FormField<String>(
                                 builder: (FormFieldState<String> state) {
                               return InputDecorator(
-                                decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
+                                decoration: CustomInputDecoration()
+                                    .GetDecoration(Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                                 child: DropdownButtonHideUnderline(
-                                  child:  DropdownButton<String>(dropdownColor: Colors.white,
+                                  child: DropdownButton<String>(
+                                    dropdownColor: Colors.white,
                                     hint: widget.userProfileData.haveChildren ==
                                             null
                                         ? Text(
-                                            LocaleKeys.user_haveChildren_hint.tr())
-                                        : (widget.userProfileData.haveChildren ==
+                                            LocaleKeys.user_haveChildren_hint
+                                                .tr(),
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                          )
+                                        : (widget.userProfileData
+                                                    .haveChildren ==
                                                 true
                                             ? Text(
-                                                LocaleKeys.childrenState_yes.tr())
+                                                LocaleKeys.childrenState_yes
+                                                    .tr(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                              )
                                             : Text(
-                                                LocaleKeys.childrenState_no.tr())),
+                                                LocaleKeys.childrenState_no
+                                                    .tr(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                              )),
                                     isDense: true,
                                     onChanged: (newValue) {
                                       setState(() {
-                                        widget.userProfileData
-                                            .haveChildren = (newValue ==
-                                                LocaleKeys.childrenState_yes.tr())
-                                            ? true
-                                            : false;
+                                        widget.userProfileData.haveChildren =
+                                            (newValue ==
+                                                    LocaleKeys.childrenState_yes
+                                                        .tr())
+                                                ? true
+                                                : false;
                                         childrenStateEmpty = false;
                                         state.didChange(newValue);
                                       });
@@ -532,34 +637,52 @@ class _RegistrationCreateProfileScreenState
                                 ),
                               );
                             }),
-                            CustomInputDecoration().errorBox(childrenStateEmpty),
-
                             CustomInputDecoration()
-                                .subtitleText(LocaleKeys.user_badHabits.tr(), isFieldRequired: false),
+                                .errorBox(childrenStateEmpty),
+
+                            CustomInputDecoration().subtitleText(
+                                LocaleKeys.user_badHabits.tr(),
+                                isFieldRequired: false),
                             Visibility(
                               visible: isBadHabitsSwitchOn == false,
                               child: CustomizableMultiselectField(
-                                decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.secondary),
+                                decoration: CustomInputDecoration()
+                                    .GetDecoration(Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                                 customizableMultiselectWidgetOptions:
                                     CustomizableMultiselectWidgetOptions(
-                                      chipColor: Theme.of(context).colorScheme.secondary,
+                                  chipColor:
+                                      Theme.of(context).colorScheme.secondary,
                                   chipShape: RoundedRectangleBorder(
-                                    side:  BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1),
+                                    side: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        width: 1),
                                     borderRadius: BorderRadius.circular(12.0),
                                   ),
-                                  hintText:
-                                      Text(LocaleKeys.common_chooseOptions.tr()),
+                                  hintText: Text(
+                                    LocaleKeys.common_chooseOptions.tr(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
                                 ),
                                 customizableMultiselectDialogOptions:
                                     CustomizableMultiselectDialogOptions(
-                                        okButtonLabel: LocaleKeys.common_confirm.tr(),
-                                        cancelButtonLabel: LocaleKeys.common_cancel.tr(),
+                                        okButtonLabel:
+                                            LocaleKeys.common_confirm.tr(),
+                                        cancelButtonLabel:
+                                            LocaleKeys.common_cancel.tr(),
                                         enableSearchBar: false),
-
                                 dataSourceList: [
                                   DataSource<String>(
                                     dataList: GlobalStrings.getBadHabits(),
-                                    valueList: widget.userProfileData.badHabits ?? [],
+                                    valueList:
+                                        widget.userProfileData.badHabits ?? [],
                                     options: DataSourceOptions(
                                       valueKey: 'value',
                                       labelKey: 'label',
@@ -581,7 +704,8 @@ class _RegistrationCreateProfileScreenState
                               switchValue: isBadHabitsSwitchOn,
                               label: LocaleKeys.badHabbits_missing.tr(),
                               valueChanged: (value) {
-                                isBadHabitsSwitchOn = isBadHabitsSwitchOn == false;
+                                isBadHabitsSwitchOn =
+                                    isBadHabitsSwitchOn == false;
                                 if (isBadHabitsSwitchOn == true) {
                                   widget.userProfileData.badHabits = [];
                                   // widget.userProfileData.badHabits!.add("other");
@@ -594,12 +718,15 @@ class _RegistrationCreateProfileScreenState
                             SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
-                                  
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Theme.of(context).colorScheme.secondary, 
-                                      fixedSize: const Size(double.infinity, 56),
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      fixedSize:
+                                          const Size(double.infinity, 56),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12.0),
+                                        borderRadius:
+                                            BorderRadius.circular(12.0),
                                       ),
                                     ),
                                     child: Text(
@@ -609,7 +736,8 @@ class _RegistrationCreateProfileScreenState
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16,
-                                        color: const Color.fromARGB(255, 255, 255, 255),
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255),
                                       ),
                                     ),
                                     onPressed: () {
@@ -626,13 +754,13 @@ class _RegistrationCreateProfileScreenState
                                           pageBuilder: (_, __, ___) =>
                                               RegistrationAddInterestTagsScreen(
                                                   widget.userProfileData),
-                                          transitionDuration: const Duration(seconds: 0),
+                                          transitionDuration:
+                                              const Duration(seconds: 0),
                                         ),
                                       );
                                     })),
                             const SizedBox(height: 24),
-                          ]
-                      ),
+                          ]),
                     ),
                   ),
                 ],
@@ -699,6 +827,7 @@ class _RegistrationCreateProfileScreenState
     }
     return finded;
   }
+
 //==============================================================================
 
   bool updateUserData() {
@@ -724,7 +853,7 @@ class _RegistrationCreateProfileScreenState
 
     if (_workPlaceTextController.text != "") {
       widget.userProfileData.placeOfWork = _workPlaceTextController.text;
-    }else {
+    } else {
       placeOfWorkEmpty = true;
     }
 
@@ -864,7 +993,8 @@ class _RegistrationCreateProfileScreenState
                   onInputValidated: (bool value) {
                     if (value == true) {
                       debugPrint(number.toString());
-                      widget.userProfileData.contactPhoneNumber = number.phoneNumber.toString();
+                      widget.userProfileData.contactPhoneNumber =
+                          number.phoneNumber.toString();
                     }
                   },
                   selectorConfig: const SelectorConfig(
@@ -874,7 +1004,8 @@ class _RegistrationCreateProfileScreenState
                   maxLength: 13,
                   ignoreBlank: false,
                   autoValidateMode: AutovalidateMode.disabled,
-                  selectorTextStyle: const TextStyle(fontSize:16,color:Colors.black),
+                  selectorTextStyle:
+                      const TextStyle(fontSize: 16, color: Colors.black),
                   initialValue: number,
                   textFieldController: controller,
                   keyboardType: const TextInputType.numberWithOptions(
@@ -897,6 +1028,7 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const _CustomAppBar({Key? key}) : super(key: key);
 
   final double barHeight = 72.0;
+
   double getStatusbarHeight(BuildContext context) {
     return MediaQuery.of(context).padding.top;
   }
@@ -929,10 +1061,14 @@ class _CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: Container(
                     width: 40,
                     height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-              border: GradientBoxBorder(gradient: LinearGradient(colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]), width: 2)
-            ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: GradientBoxBorder(
+                            gradient: LinearGradient(colors: [
+                              Theme.of(context).colorScheme.primary,
+                              Theme.of(context).colorScheme.secondary
+                            ]),
+                            width: 2)),
                     child: IconButton(
                         splashRadius: 34.0,
                         iconSize: 40.0,
@@ -965,12 +1101,12 @@ class _Gender extends StatefulWidget {
   _Gender(this.userProfileData, this.provider, {Key? key}) : super(key: key);
   UserProfileData userProfileData;
   GenderProvider provider;
+
   @override
   State<_Gender> createState() => _GenderState();
 }
 
 class _GenderState extends State<_Gender> {
-
   Color passiveColor = Colors.white;
 
   bool isMale = false;
@@ -985,7 +1121,7 @@ class _GenderState extends State<_Gender> {
           height: 60,
           padding: EdgeInsets.all(3),
           width: MediaQuery.of(context).size.width * 1,
-          decoration:  BoxDecoration(
+          decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.all(Radius.circular(15)),
           ),
@@ -1006,14 +1142,14 @@ class _GenderState extends State<_Gender> {
                         decoration: BoxDecoration(
                             color: (isMale == isFemale)
                                 ? passiveColor
-                                : (isMale == true ? Theme.of(context).colorScheme.secondary : passiveColor),
+                                : (isMale == true
+                                    ? Theme.of(context).colorScheme.secondary
+                                    : passiveColor),
                             borderRadius: const BorderRadius.only(
                                 bottomLeft: Radius.circular(12),
                                 topLeft: Radius.circular(12))),
                         child: Text(LocaleKeys.user_gender.tr(gender: "male"),
-                            style: const TextStyle(color:Colors.black)
-                                
-                            ),
+                            style: const TextStyle(color: Colors.black)),
                       ))),
               const VerticalDivider(
                 width: 1,
@@ -1029,20 +1165,21 @@ class _GenderState extends State<_Gender> {
                         setState(() {});
                       },
                       child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: (isMale == isFemale)
-                                ? passiveColor
-                                : (isFemale == true
-                                    ? Theme.of(context).colorScheme.secondary
-                                    : passiveColor),
-                            borderRadius: const BorderRadius.only(
-                                bottomRight: Radius.circular(12),
-                                topRight: Radius.circular(12))),
-                        child: Text(LocaleKeys.user_gender.tr(gender: "female"),
-                            style: const TextStyle(fontSize:16,color:Colors.black)
-                                  ,
-                      )))),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: (isMale == isFemale)
+                                  ? passiveColor
+                                  : (isFemale == true
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : passiveColor),
+                              borderRadius: const BorderRadius.only(
+                                  bottomRight: Radius.circular(12),
+                                  topRight: Radius.circular(12))),
+                          child: Text(
+                            LocaleKeys.user_gender.tr(gender: "female"),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black),
+                          )))),
             ],
           )),
     );

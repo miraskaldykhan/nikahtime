@@ -37,6 +37,7 @@ import 'package:untitled/components/widgets/nikah_app_updater.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/Screens/Registration/registration_create_profile.dart';
 import 'package:untitled/Screens/main_page.dart';
+import 'package:untitled/firebase_options.dart';
 import 'package:untitled/my_tracker_params.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -66,10 +67,18 @@ void main() async {
   if (token != "empty") {
     response = await NetworkService().GetUserInfo(token);
   }
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    name: 'nikah-time-332406',
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   FirebaseMessaging.onBackgroundMessage(_messageHandler);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("Получено сообщение: ${message.notification?.title}");
+    print("Тело сообщения: ${message.notification?.body}");
+  });
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //debugPrint("fcm token: ${await messaging.getToken()}");
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
     announcement: false,
@@ -149,13 +158,14 @@ void main() async {
   // runApp(MyApp(token, response));
   runApp(
     EasyLocalization(
-        supportedLocales: const [Locale('en'), Locale('ru')],
-        path: 'assets/translations',
-        fallbackLocale: const Locale('en'),
-        child: ChangeNotifierProvider(
-          create: (_) => ThemeProvider(),
-          child: MyApp(token, response),
-        )),
+      supportedLocales: const [Locale('en'), Locale('ru')],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: ChangeNotifierProvider(
+        create: (_) => ThemeProvider(),
+        child: MyApp(token, response),
+      ),
+    ),
   );
 }
 

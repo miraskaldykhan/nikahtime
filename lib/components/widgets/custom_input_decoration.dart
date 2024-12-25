@@ -336,7 +336,11 @@ class CustomSwitcherState extends State<CustomSwitcher> {
                     widget.valueChanged(value);
                   });
                 }),
-            Text(widget.label),
+            Text(widget.label, style: TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+              fontWeight: FontWeight.w300,
+            ),),
           ],
         ),
       ],

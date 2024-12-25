@@ -167,7 +167,7 @@ class _SingleUserState extends State<SingleUser> {
     bool needPay = state.userProfileData?.userTariff == null;
 
     /// TODO need to change to inFriends
-    if (item.isFriend!) {
+    if (item.isFriend != null && item.isFriend!) {
       BlocProvider.of<SendFriendsRequestCubit>(context).alreadyFriends();
     }
 

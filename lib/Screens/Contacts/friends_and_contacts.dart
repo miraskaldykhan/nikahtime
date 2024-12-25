@@ -726,7 +726,7 @@ class _ContactsPageState extends State<ContactsPage> {
           return Center(
             child: Text(
               state.message,
-              style: TextStyle(color: Colors.black, fontSize: 24),
+              style: TextStyle(color: Colors.black, fontSize: 20),
             ),
           );
         }

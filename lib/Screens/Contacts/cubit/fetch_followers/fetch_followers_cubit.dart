@@ -28,7 +28,7 @@ class FetchFollowersCubit extends Cubit<FetchFollowersState> {
           FetchFollowersSuccess(followersProfiles: response),
         );
       } else {
-        emit(FetchFollowersError(message: "No one"));
+        emit(FetchFollowersError(message: "Ни одного"));
       }
     } catch (e) {
       emit(FetchFollowersError(message: e.toString()));
