@@ -32,12 +32,17 @@ abstract class LocaleKeys {
   static const user_birthDate = 'user.birthDate';
   static const user_country = 'user.country';
   static const user_city = 'user.city';
+  static const islam = 'islam';
+  static const christianity = 'christianity';
+  static const judaism = 'judaism';
+  static const another = 'another';
   static const contacts = 'contacts';
   static const contactNotRegistered = 'contact.not_registered';
   static const contactAccessDenied = 'contact.access_denied';
   static const contactError = 'contact.error';
   static const user_contactPhoneNumber = 'user.contactPhoneNumber';
   static const user_placeOfWork = 'user.placeOfWork';
+  static const any = 'any';
   static const user_workPosition = 'user.workPosition';
   static const user_maritalStatus = 'user.maritalStatus';
   static const user_faith = 'user.faith';
@@ -192,6 +197,8 @@ abstract class LocaleKeys {
   static const tariffs_option7 = 'tariffs.option7';
   static const tariffs_button = 'tariffs.button';
   static const tariffs_canCancel = 'tariffs.canCancel';
+  static const tariffs_alertTitle = 'tariffs.alertTitle';
+  static const tariffs_alertContent = 'tariffs.alertContent';
   static const paymentScreen_promo = 'paymentScreen.promo';
   static const paymentScreen_paymentButton = 'paymentScreen.paymentButton';
   static const paymentScreen_paymentDone = 'paymentScreen.paymentDone';

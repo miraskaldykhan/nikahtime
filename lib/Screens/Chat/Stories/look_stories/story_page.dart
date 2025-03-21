@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:delightful_toast/delight_toast.dart';
+import 'package:delightful_toast/toast/components/toast_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +12,7 @@ import 'package:story_view/story_view.dart';
 import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/Screens/Chat/Stories/editor/cubit/createdAtCubit.dart';
 import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/like_story/like_story_cubit.dart';
+import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/send_message_to_story/send_message_to_story_cubit.dart';
 import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/show_story/show_story_cubit.dart';
 import 'package:untitled/Screens/Chat/Stories/models/friends_stories.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
@@ -35,6 +38,7 @@ class _StoryPageState extends State<StoryPage> with TickerProviderStateMixin {
   final TextEditingController textEditingController = TextEditingController();
   FocusNode formKeyNode = FocusNode();
   int? storyId;
+  int? userId;
   DateTime? storyCreatedAt;
 
   late PageController pageController;
@@ -46,8 +50,11 @@ class _StoryPageState extends State<StoryPage> with TickerProviderStateMixin {
     formKeyNode.addListener(() {
       if (formKeyNode.hasFocus) {
         storyController.pause();
+        log("has focus and pause story");
       } else {
+        log("don't have focus and play story");
         storyController.play();
+        setState(() {});
       }
     });
     super.initState();
@@ -70,7 +77,7 @@ class _StoryPageState extends State<StoryPage> with TickerProviderStateMixin {
         }
       },
       child: Scaffold(
-        extendBodyBehindAppBar: true,
+        resizeToAvoidBottomInset: false,
         backgroundColor: const Color(0xff000000),
         body: SafeArea(
           child: PageView.builder(
@@ -89,16 +96,12 @@ class _StoryPageState extends State<StoryPage> with TickerProviderStateMixin {
                           controller: storyController,
                         )
               };
-              return Stack(
-                children: [
-                  pageViewBloc(
-                    storyItems: items.values.toList(),
-                    index: index,
-                    controller: storyController,
-                    items: items,
-                    data: widget.model.data[index],
-                  ),
-                ],
+              return pageViewBloc(
+                storyItems: items.values.toList(),
+                index: index,
+                controller: storyController,
+                items: items,
+                data: widget.model.data[index],
               );
             },
           ),
@@ -115,7 +118,7 @@ class _StoryPageState extends State<StoryPage> with TickerProviderStateMixin {
     required Datum data,
   }) =>
       Stack(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.topCenter,
         children: [
           StoryView(
             storyItems: storyItems,
@@ -142,6 +145,7 @@ class _StoryPageState extends State<StoryPage> with TickerProviderStateMixin {
                         (story) => story.id == storyId,
                       )
                       .createdAt;
+
                   BlocProvider.of<TextCubit>(context)
                       .updateText(storyCreatedAt!);
                   BlocProvider.of<ShowStoryCubit>(context).showStory(
@@ -232,155 +236,255 @@ class _StoryPageState extends State<StoryPage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              alignment: Alignment.topCenter,
-              color: Color(0xff181818),
-              height: 112,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  top: 20,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      height: 44,
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      child: Stack(
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child:
+                BlocConsumer<SendMessageToStoryCubit, SendMessageToStoryState>(
+              bloc: BlocProvider.of<SendMessageToStoryCubit>(context),
+              listener: (context, state) {
+                if (state is SendMessageToStorySuccess) {
+                  log("message sended to story");
+                  textEditingController.clear();
+                  DelightToastBar(
+                    snackbarDuration: Duration(milliseconds: 1500),
+                    autoDismiss: true,
+                    builder: (context) => const ToastCard(
+                      color: Colors.white,
+                      leading: Icon(
+                        Icons.arrow_back_rounded,
+                        size: 25,
+                        color: Color(0xff212121),
+                      ),
+                      title: Text(
+                        "Сообщение отправлено",
+                        style: TextStyle(
+                          color: Color(0xff212121),
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ).show(context);
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     padding: EdgeInsets.all(10),
+                  //     backgroundColor: Colors.white.withOpacity(0.8),
+                  //     content: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       children: [
+                  //         Icon(
+                  //           Icons.arrow_back_rounded,
+                  //           size: 25,
+                  //           color: Color(0xff212121),
+                  //         ),
+                  //         SizedBox(
+                  //           width: 10,
+                  //         ),
+                  //         Text(
+                  //           "Сообщение отправлено",
+                  //           style: TextStyle(
+                  //             color: Color(0xff212121),
+                  //             fontSize: 16.0,
+                  //             fontWeight: FontWeight.w600,
+                  //           ),
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // );
+                }
+                if (state is SendMessageToStoryError) {
+                  log('message do not sended to story');
+                }
+              },
+              builder: (context, state) {
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    color: Color(0xff181818),
+                    height: 112,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                        top: 20,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TextFormField(
-                            onTap: () {
-                              log("ASDASDSA");
-                            },
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                            focusNode: formKeyNode,
-                            controller: textEditingController,
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
-                              hintText: 'Отправить сообщением...',
-                              hintStyle: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white.withOpacity(
-                                  0.5,
+                          SizedBox(
+                            height: 44,
+                            width: MediaQuery.of(context).size.width * 0.75,
+                            child: Stack(
+                              children: [
+                                TextFormField(
+                                  onTap: () {
+                                    log("ASDASDSA");
+                                  },
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                  readOnly: state is SendMessageToStoryLoading
+                                      ? true
+                                      : false,
+                                  focusNode: formKeyNode,
+                                  controller: textEditingController,
+                                  keyboardType: TextInputType.text,
+                                  decoration: InputDecoration(
+                                    hintText: 'Отправить сообщением...',
+                                    hintStyle: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white.withOpacity(
+                                        0.5,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        width: 1,
+                                        color: Colors.white,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                        10,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        width: 1,
+                                        color: Colors.white,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                        10,
+                                      ),
+                                    ),
+                                    filled: true,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical: 8,
+                                    ),
+                                    fillColor: Color(0xff181818),
+                                  ),
                                 ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Colors.white,
+                                GestureDetector(
+                                  onTap: state is SendMessageToStoryLoading
+                                      ? null
+                                      : () {
+                                          if (textEditingController
+                                              .text.isNotEmpty) {
+                                            var text = textEditingController
+                                                .text
+                                                .trim();
+
+                                            text = text.replaceAll(
+                                                RegExp(
+                                                    r'((?<=\n)\s+)|((?<=\s)\s+)'),
+                                                "");
+                                            BlocProvider.of<
+                                                        SendMessageToStoryCubit>(
+                                                    context)
+                                                .sendMessageToStory(
+                                              storyId: storyId!,
+                                              userId: widget
+                                                  .model.data[index].usersId,
+                                              message: text,
+                                            );
+                                          }
+                                          formKeyNode.unfocus();
+                                        },
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 15,
+                                      ),
+                                      child: state is SendMessageToStoryLoading
+                                          ? SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            )
+                                          : Image.asset(
+                                              'assets/icons/bxs_paper-plane.png',
+                                              width: 20,
+                                            ),
+                                    ),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(
-                                  10,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Colors.white,
-                                ),
-                                borderRadius: BorderRadius.circular(
-                                  10,
-                                ),
-                              ),
-                              filled: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 8,
-                              ),
-                              fillColor: Color(0xff181818),
+                              ],
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              formKeyNode.unfocus();
+                          BlocConsumer<LikeStoryCubit,
+                              Map<int, LikeStoryState>>(
+                            bloc: BlocProvider.of<LikeStoryCubit>(context),
+                            listener: (context, state) {
+                              final storyState = state[storyId];
+                              if (storyState is LikeStoryError) {
+                                log("Error when liking: ${storyState.message}");
+                              }
                             },
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  right: 15,
+                            builder: (context, state) {
+                              final storyState = state[storyId];
+
+                              if (storyState is LikeStoryLoading) {
+                                return SizedBox(
+                                  width: 25,
+                                  height: 25,
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              if (storyState is LikeStorySuccess) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                  ),
+                                );
+                              }
+                              return GestureDetector(
+                                onTap: widget.model.data[index].stories
+                                            .firstWhere(
+                                              (story) => story.id == storyId,
+                                            )
+                                            .isLiked ??
+                                        false
+                                    ? null
+                                    : () {
+                                        BlocProvider.of<LikeStoryCubit>(context)
+                                            .likeStory(
+                                          id: storyId!,
+                                        );
+                                      },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: widget.model.data[index].stories
+                                              .firstWhere(
+                                                (story) => story.id == storyId,
+                                              )
+                                              .isLiked ??
+                                          false
+                                      ? Icon(
+                                          Icons.favorite,
+                                          color: Colors.red,
+                                        )
+                                      : Icon(
+                                          Icons.favorite_border,
+                                          color: Colors.grey,
+                                        ),
                                 ),
-                                child: Image.asset(
-                                  'assets/icons/bxs_paper-plane.png',
-                                  width: 20,
-                                ),
-                              ),
-                            ),
+                              );
+                            },
                           ),
                         ],
                       ),
                     ),
-                    BlocConsumer<LikeStoryCubit, Map<int, LikeStoryState>>(
-                      bloc: BlocProvider.of<LikeStoryCubit>(context),
-                      listener: (context, state) {
-                        final storyState = state[storyId];
-                        if (storyState is LikeStoryError) {
-                          log("Error when liking: ${storyState.message}");
-                        }
-                      },
-                      builder: (context, state) {
-                        final storyState = state[storyId];
-
-                        if (storyState is LikeStoryLoading) {
-                          return SizedBox(
-                            width: 25,
-                            height: 25,
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        if (storyState is LikeStorySuccess) {
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            ),
-                          );
-                        }
-                        return GestureDetector(
-                          onTap: widget.model.data[index].stories
-                                      .firstWhere(
-                                        (story) => story.id == storyId,
-                                      )
-                                      .isLiked ??
-                                  false
-                              ? null
-                              : () {
-                                  BlocProvider.of<LikeStoryCubit>(context)
-                                      .likeStory(
-                                    id: storyId!,
-                                  );
-                                },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: widget.model.data[index].stories
-                                        .firstWhere(
-                                          (story) => story.id == storyId,
-                                        )
-                                        .isLiked ??
-                                    false
-                                ? Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                  )
-                                : Icon(
-                                    Icons.favorite_border,
-                                    color: Colors.grey,
-                                  ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ],

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Chat/chat_class.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
@@ -148,12 +150,12 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
         throw Exception("Error on send");
       }
 
-      //debugPrint("${response.body}");
       List<dynamic> receivedMessages = jsonDecode(response.body)["messages"];
 
       for (int i = 0; i < receivedMessages.length; i++) {
         ChatMessage message = ChatMessage();
         message.GetDataFromJson(receivedMessages[i]);
+        log("Messages: ${message.toString()}");
         if (message.isMessageSeen! == false &&
             message.isAuthUsermessage! == false) {
           NetworkService().ChatsSeenMessageID(accessToken!, message.messageId!);
@@ -161,7 +163,7 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
         messages.add(message);
       }
 
-      MyTracker.trackEvent("Return to chat", {});
+      //MyTracker.trackEvent("Return to chat", {});
     } catch (err) {
       emit((state as ChatWithUserInitial).copyThis(
         pageState: PageState.error,
@@ -294,7 +296,9 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
   }
 
   void _sendMessage(
-      SendTextMessage event, Emitter<ChatWithUserState> emit) async {
+    SendTextMessage event,
+    Emitter<ChatWithUserState> emit,
+  ) async {
     var text = event.text.trim();
 
     if (text.isEmpty) {
@@ -333,6 +337,42 @@ class ChatWithUserBloc extends Bloc<ChatWithUserEvent, ChatWithUserState> {
 
     emit((state as ChatWithUserInitial).copyThis(
         pageState: PageState.ready, messages: messages.reversed.toList()));
+
+    if (accessToken == null) {
+      await getAccessToken();
+    }
+
+    List<ChatMessage> messages1 = [];
+    int userId = 0;
+    try {
+      var response =
+          await NetworkService().ChatsGetChatID(accessToken!, event.chatId);
+
+      userId = jsonDecode(response.body)["chat"]["userId"];
+
+      if (response.statusCode != 200) {
+        throw Exception("Error on send");
+      }
+
+      List<dynamic> receivedMessages = jsonDecode(response.body)["messages"];
+
+      for (int i = 0; i < receivedMessages.length; i++) {
+        ChatMessage message = ChatMessage();
+        message.GetDataFromJson(receivedMessages[i]);
+        log("Messages: ${message.toString()}");
+        messages1.add(message);
+      }
+    } catch (err) {
+      emit((state as ChatWithUserInitial).copyThis(
+        pageState: PageState.error,
+      ));
+    }
+
+    emit((state as ChatWithUserInitial).copyThis(
+        chatData:
+            (state as ChatWithUserInitial).chatData!.copyThis(userID: userId),
+        pageState: PageState.ready,
+        messages: messages1.reversed.toList()));
   }
 
   void _sendFile(SendFile event, Emitter<ChatWithUserState> emit) async {

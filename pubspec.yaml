@@ -2,10 +2,10 @@ name: untitled
 description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.2.10+43
+version: 1.17.18+56
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -22,6 +22,7 @@ dependencies:
   google_fonts: any
   pin_code_fields: ^8.0.1
   dropdown_plus: ^0.0.9
+  delightful_toast: ^1.1.0
   image_picker: ^1.0.0
   file_picker: ^8.1.2
   flutter_tags: "^1.0.0-nullsafety.1"
@@ -37,13 +38,12 @@ dependencies:
   flutter_sound: ^9.1.8 # for audio playback
   socket_io_client: ^1.0.1
   laravel_echo2: ^0.0.1
-  url_launcher: ^6.0.12
+  url_launcher: ^6.3.1
   video_player: ^2.2.6
   photo_view: ^0.15.0
   sign_in_with_apple: ^6.1.2
   shared_preferences: ^2.0.8
   google_sign_in: ^6.1.4
-  path_provider: ^2.0.7
   firebase_core: ^2.14.0
   firebase_messaging: ^14.6.4
   firebase_core_platform_interface: ^4.8.0
@@ -56,6 +56,10 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   camerawesome: ^2.0.0
   story_view: ^0.16.5
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.0
+  connectivity_plus: ^6.1.3
 
 
 
@@ -82,11 +86,6 @@ dependencies:
 
   flutter_app_badger: ^1.5.0
 
-  mytracker_sdk:
-    git:
-      url: https://github.com/myTrackerSDK/mytracker-flutter
-      path: sdk/
-      ref: v3.0.0
   flutter_contacts: ^1.1.9+2
   permission_handler: ^11.3.1
   menu_bar: ^0.5.3

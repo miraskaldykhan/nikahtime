@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Chat/chat_class.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
@@ -35,7 +35,7 @@ class CreateChat {
       _showAlertDialog(context);
       return;
     }
-    MyTracker.trackEvent("Create new chat", {});
+    //MyTracker.trackEvent("Create new chat", {});
     int chatID = jsonDecode(response.body)["chatId"];
     response = await NetworkService().ChatsUser(accessToken);
 

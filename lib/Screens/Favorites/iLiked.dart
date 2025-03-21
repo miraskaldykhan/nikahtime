@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart' as locale;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
@@ -28,7 +28,7 @@ class ILikedScreenState extends State<ILikedScreen> {
   {
     sendAnketesRequest();
     super.initState();
-    MyTracker.trackEvent("Watch I Liked page", {});
+    //MyTracker.trackEvent("Watch I Liked page", {});
   }
 
   sendAnketesRequest() async{

@@ -257,7 +257,7 @@ class UserProfileData {
         // workPosition != null &&
         // nationality != null &&
         maritalStatus != null &&
-        observeIslamCanons != null &&
+        religionId != null &&
         haveChildren != null;
   }
 

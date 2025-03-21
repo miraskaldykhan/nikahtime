@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Chat/chat_settings.dart';
 import 'package:untitled/components/widgets/custom_input_decoration.dart';
@@ -65,7 +66,8 @@ class _RegistrationInfoAboutUserScreenState
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      hintStyle: const TextStyle(height: 1.4, color: Colors.grey),
+                      hintStyle:
+                          const TextStyle(height: 1.4, color: Colors.grey),
                       hintText: LocaleKeys.registration_about_example.tr(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -113,7 +115,8 @@ class _RegisterButton extends StatefulWidget {
   UserProfileData userProfileData;
 
   Future<void> _putNewUserInfo() async {
-    debugPrint("UPDATE USER PROFILE START");
+    debugPrint(
+        "UPDATE USER PROFILE START : ${userProfileData.returnUserData()}");
     var response = await http.put(
       Uri.parse("https://www.nikahtime.ru/api/account/user/update"),
       headers: {
@@ -136,22 +139,22 @@ class _RegisterButton extends StatefulWidget {
       prefs.setInt("userId", userProfileData.id!);
     }
 
-    MyTrackerParams trackerParams = MyTracker.trackerParams;
+    //MyTrackerParams trackerParams = MyTracker.trackerParams;
 
-    trackerParams.setCustomUserIds([(userProfileData.id ?? 0).toString()]);
-    trackerParams.setAge(DateTime.now()
-            .difference(localize.DateFormat("dd-MM-yyyy")
-                .parse(userProfileData.birthDate!))
-            .abs()
-            .inDays ~/
-        365);
-    trackerParams.setGender(userProfileData.gender == null
-        ? MyTrackerGender.UNKNOWN
-        : ((userProfileData.gender == "male")
-            ? MyTrackerGender.MALE
-            : MyTrackerGender.FEMALE));
-
-    MyTracker.trackRegistrationEvent((userProfileData.id ?? -1).toString(), {});
+    // trackerParams.setCustomUserIds([(userProfileData.id ?? 0).toString()]);
+    // trackerParams.setAge(DateTime.now()
+    //         .difference(localize.DateFormat("dd-MM-yyyy")
+    //             .parse(userProfileData.birthDate!))
+    //         .abs()
+    //         .inDays ~/
+    //     365);
+    // trackerParams.setGender(userProfileData.gender == null
+    //     ? MyTrackerGender.UNKNOWN
+    //     : ((userProfileData.gender == "male")
+    //         ? MyTrackerGender.MALE
+    //         : MyTrackerGender.FEMALE));
+    //
+    // MyTracker.trackRegistrationEvent((userProfileData.id ?? -1).toString(), {});
 
     debugPrint("UPDATE USER PROFILE END");
   }

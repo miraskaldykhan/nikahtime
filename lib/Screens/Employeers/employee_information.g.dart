@@ -20,14 +20,14 @@ Map<String, dynamic> _$PeopleListToJson(PeopleList instance) =>
     };
 
 PeopleCard _$PeopleCardFromJson(Map<String, dynamic> json) => PeopleCard(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       workPosition: json['workPosition'] as String,
       education: json['education'] as String?,
       description: json['description'] as String?,
       image: json['image'] as String,
       phone: json['phone'] as String?,
-      price: json['price'] as int?,
+      price: (json['price'] as num?)?.toInt(),
       url: json['url'] as String?,
     );
 

@@ -27,7 +27,8 @@ UserFilter _$UserFilterFromJson(Map<String, dynamic> json) => UserFilter()
       (json['interests'] as List<dynamic>?)?.map((e) => e as String).toList()
   ..nationality = json['nationality'] as String?
   ..observeIslamCanons = json['observeIslamCanons'] as String?
-  ..religionId = json['religionId'] as int?;
+  ..religiousAffiliation = json['religiousAffiliation'] as String?
+  ..religionId = (json['religionId'] as num?)?.toInt();
 
 Map<String, dynamic> _$UserFilterToJson(UserFilter instance) =>
     <String, dynamic>{
@@ -49,6 +50,7 @@ Map<String, dynamic> _$UserFilterToJson(UserFilter instance) =>
       'interests': instance.interests,
       'nationality': instance.nationality,
       'observeIslamCanons': instance.observeIslamCanons,
+      'religiousAffiliation': instance.religiousAffiliation,
       'religionId': instance.religionId,
     };
 
@@ -68,9 +70,10 @@ UserProfileData _$UserProfileDataFromJson(Map<String, dynamic> json) =>
     UserProfileData(
       isProfileParametersMatched: json['isProfileParametersMatched'] as bool?,
       isOnline: json['isOnline'] as bool?,
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       firstName: json['firstName'] as String?,
       lastName: json['lastName'] as String?,
+      isFriend: json['isFriend'] as bool?,
       photos:
           (json['photos'] as List<dynamic>?)?.map((e) => e as String).toList(),
       images: (json['images'] as List<dynamic>?)
@@ -109,9 +112,9 @@ UserProfileData _$UserProfileDataFromJson(Map<String, dynamic> json) =>
           ? const EmailNotification()
           : EmailNotification.fromJson(
               json['emailNotification'] as Map<String, dynamic>),
-      religionId: json['religionId'] as int?,
+      religionId: (json['religionId'] as num?)?.toInt(),
     )
-      ..age = json['age'] as int?
+      ..age = (json['age'] as num?)?.toInt()
       ..filter = UserFilter.fromJson(json['filter'] as Map<String, dynamic>)
       ..isVisible = json['isVisible'] as bool
       ..inFavourite = json['inFavourite'] as bool;
@@ -120,6 +123,7 @@ Map<String, dynamic> _$UserProfileDataToJson(UserProfileData instance) =>
     <String, dynamic>{
       'isProfileParametersMatched': instance.isProfileParametersMatched,
       'isOnline': instance.isOnline,
+      'isFriend': instance.isFriend,
       'id': instance.id,
       'firstName': instance.firstName,
       'lastName': instance.lastName,

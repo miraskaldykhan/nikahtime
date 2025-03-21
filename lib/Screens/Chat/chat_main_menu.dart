@@ -5,7 +5,8 @@ import 'package:intl/intl.dart' as intl;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:laravel_echo2/laravel_echo2.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -322,10 +323,11 @@ class ChatMainPageState extends State<ChatMainPage>
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ChatWithUserScreen(
-                  chatInfo,
-                  widget.userProfileData.gender ?? "",
-                  widget.userProfileData.id ?? 0)),
+            builder: (context) => ChatWithUserScreen(
+                chatInfo,
+                widget.userProfileData.gender ?? "",
+                widget.userProfileData.id ?? 0),
+          ),
         ).then((_) {
           context.read<ChatBloc>().add(const LoadChatList());
           final provider =
@@ -445,7 +447,10 @@ class ChatMainPageState extends State<ChatMainPage>
           Column(
             children: [
               Container(
-                padding: const EdgeInsets.only(right: 16, top: 16,),
+                padding: const EdgeInsets.only(
+                  right: 16,
+                  top: 16,
+                ),
                 child: Text(
                   getTimeValue(chatInfo.lastMessageTime.toString()),
                   style: TextStyle(
@@ -552,7 +557,7 @@ class ChatMainPageState extends State<ChatMainPage>
       child: Text(LocaleKeys.chat_del_confirm.tr()),
       onPressed: () async {
         context.read<ChatBloc>().add(DeleteChat(chatId: chatID));
-        MyTracker.trackEvent("Delete chat from main chat page", {});
+        //MyTracker.trackEvent("Delete chat from main chat page", {});
         Navigator.of(context).pop();
       },
     );

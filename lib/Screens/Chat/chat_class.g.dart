@@ -7,7 +7,7 @@ part of 'chat_class.dart';
 // **************************************************************************
 
 Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(
-      chatId: json['chatId'] as int?,
+      chatId: (json['chatId'] as num?)?.toInt(),
       userAvatar: json['userAvatar'] as String?,
       userName: json['userName'] as String?,
       isChatBlocked: json['isChatBlocked'] as bool? ?? false,
@@ -28,8 +28,8 @@ Map<String, dynamic> _$ChatToJson(Chat instance) => <String, dynamic>{
 
 ChatWithLastMessage _$ChatWithLastMessageFromJson(Map<String, dynamic> json) =>
     ChatWithLastMessage(
-      chatId: json['chatId'] as int?,
-      userID: json['userID'] as int?,
+      chatId: (json['chatId'] as num?)?.toInt(),
+      userID: (json['userID'] as num?)?.toInt(),
       userAvatar: json['userAvatar'] as String?,
       userName: json['userName'] as String?,
       isChatBlocked: json['isChatBlocked'] as bool? ?? false,
@@ -43,7 +43,7 @@ ChatWithLastMessage _$ChatWithLastMessageFromJson(Map<String, dynamic> json) =>
       lastMessageType: json['lastMessageType'] as String?,
       lastMessageTime: json['lastMessageTime'] as String?,
       isAuthUserMessage: json['isAuthUserMessage'] as bool? ?? true,
-      numberNotSeenMessages: json['numberNotSeenMessages'] as int?,
+      numberNotSeenMessages: (json['numberNotSeenMessages'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$ChatWithLastMessageToJson(
@@ -71,9 +71,13 @@ ChatMessage _$ChatMessageFromJson(Map<String, dynamic> json) => ChatMessage(
       message: json['message'] as String?,
       messageTime: json['messageTime'] as String?,
       isAuthUsermessage: json['isAuthUsermessage'] as bool?,
-      messageId: json['messageId'] as int?,
+      messageId: (json['messageId'] as num?)?.toInt(),
       isMessageSeen: json['isMessageSeen'] as bool?,
       messageType: json['messageType'] as String?,
+      edited: json['edited'] as String?,
+      repliedStory: json['repliedStory'] == null
+          ? null
+          : Story.fromJson(json['repliedStory'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ChatMessageToJson(ChatMessage instance) =>
@@ -86,4 +90,22 @@ Map<String, dynamic> _$ChatMessageToJson(ChatMessage instance) =>
       'messageId': instance.messageId,
       'isMessageSeen': instance.isMessageSeen,
       'messageType': instance.messageType,
+      'edited': instance.edited,
+      'repliedStory': instance.repliedStory,
+    };
+
+Story _$StoryFromJson(Map<String, dynamic> json) => Story(
+      id: (json['id'] as num?)?.toInt(),
+      type: json['type'] as String?,
+      content: json['content'] as String?,
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+    );
+
+Map<String, dynamic> _$StoryToJson(Story instance) => <String, dynamic>{
+      'id': instance.id,
+      'type': instance.type,
+      'content': instance.content,
+      'createdAt': instance.createdAt?.toIso8601String(),
     };

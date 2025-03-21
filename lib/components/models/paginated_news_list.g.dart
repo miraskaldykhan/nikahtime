@@ -22,16 +22,16 @@ Map<String, dynamic> _$PaginatedNewsListToJson(PaginatedNewsList instance) =>
     };
 
 NewsItem _$NewsItemFromJson(Map<String, dynamic> json) => NewsItem(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       image: json['image'] as String?,
       shortDescription: json['shortDescription'] as String?,
       description: json['description'] as String?,
       inFavourite: json['inFavourite'] as bool?,
       title: json['title'] as String?,
       publishDate: json['publishDate'] as String?,
-      commentsCount: json['commentsCount'] as int?,
-      likesCount: json['likesCount'] as int?,
-      viewsCount: json['viewsCount'] as int?,
+      commentsCount: (json['commentsCount'] as num?)?.toInt(),
+      likesCount: (json['likesCount'] as num?)?.toInt(),
+      viewsCount: (json['viewsCount'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$NewsItemToJson(NewsItem instance) => <String, dynamic>{
@@ -67,7 +67,7 @@ Map<String, dynamic> _$PaginatedCommentariesListToJson(
 UserShortDescription _$UserShortDescriptionFromJson(
         Map<String, dynamic> json) =>
     UserShortDescription(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String?,
       avatar: json['avatar'] == null
           ? null
@@ -84,7 +84,7 @@ Map<String, dynamic> _$UserShortDescriptionToJson(
 
 UserWasAnswered _$UserWasAnsweredFromJson(Map<String, dynamic> json) =>
     UserWasAnswered(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String?,
     );
 
@@ -96,7 +96,7 @@ Map<String, dynamic> _$UserWasAnsweredToJson(UserWasAnswered instance) =>
 
 CommentaryItem _$CommentaryItemFromJson(Map<String, dynamic> json) =>
     CommentaryItem(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       text: json['text'] as String?,
       leftDate: json['leftDate'] as String?,
       user: json['user'] == null
@@ -125,7 +125,7 @@ CommentaryFullItem _$CommentaryFullItemFromJson(Map<String, dynamic> json) =>
       answers: (json['answers'] as List<dynamic>?)
           ?.map((e) => CommentaryItem.fromJson(e as Map<String, dynamic>))
           .toList(),
-      answersCount: json['answersCount'] as int?,
+      answersCount: (json['answersCount'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$CommentaryFullItemToJson(CommentaryFullItem instance) =>

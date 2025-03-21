@@ -130,6 +130,7 @@ class ChatMessage {
   bool? isMessageSeen;
   String? messageType;
   String? edited;
+  Story? repliedStory;
 
   ChatMessage({
     this.isMessageSend = false,
@@ -141,6 +142,7 @@ class ChatMessage {
     this.isMessageSeen,
     this.messageType,
     this.edited,
+    this.repliedStory,
   });
 
   ChatMessage copyWith({
@@ -153,6 +155,7 @@ class ChatMessage {
     int? messageId,
     bool? isMessageSeen,
     String? edited,
+    Story? repliedStory,
   }) {
     return ChatMessage(
       isMessageSend: isMessageSend,
@@ -164,6 +167,7 @@ class ChatMessage {
       messageId: messageId ?? this.messageId,
       isMessageSeen: isMessageSeen ?? this.isMessageSeen,
       edited: edited ?? this.edited,
+      repliedStory: repliedStory ?? this.repliedStory,
     );
   }
 
@@ -180,5 +184,32 @@ class ChatMessage {
     isMessageSeen = json["isMessageSeen"];
     messageType = json["messageType"];
     edited = json['edited'];
+    repliedStory = json['repliedStory'] != null
+        ? Story.fromJson(json['repliedStory'])
+        : null;
   }
+
+  @override
+  String toString() {
+    return 'ChatMessage{isMessageSend: $isMessageSend, sendedError: $sendedError, message: $message, messageTime: $messageTime, isAuthUsermessage: $isAuthUsermessage, messageId: $messageId, isMessageSeen: $isMessageSeen, messageType: $messageType, edited: $edited, repliedStory: $repliedStory}';
+  }
+}
+
+@JsonSerializable()
+class Story {
+  Story({
+    required this.id,
+    required this.type,
+    required this.content,
+    required this.createdAt,
+  });
+
+  final int? id;
+  final String? type;
+  final String? content;
+  final DateTime? createdAt;
+
+  factory Story.fromJson(Map<String, dynamic> json) => _$StoryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StoryToJson(this);
 }

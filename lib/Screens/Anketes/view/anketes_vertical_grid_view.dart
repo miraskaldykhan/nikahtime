@@ -462,10 +462,10 @@ class _UserCardExpandedState extends State<UserCardExpanded> {
         
         GestureDetector(
           onTap: () async {
-                 MyTracker.trackEvent(
-                    "Press \"More\"button on anketes vertical feed",
-                      {});
-                        await Navigator.push(
+                 // MyTracker.trackEvent(
+          //    "Press \"More\"button on anketes vertical feed",
+          //      {});
+          await Navigator.push(
                          context,
                       MaterialPageRoute(
                        builder: (context) =>

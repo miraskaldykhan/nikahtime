@@ -54,7 +54,8 @@ class AnketesBloc extends Bloc<AnketesEvent, AnketesState> {
     try {
       PaginatedUserList response;
       if ((state as AnketesInitial).isSearchName == false) {
-        response = await NetworkService().searchUsers(
+        response = await NetworkService().
+        searchUsers(
             accessToken: accessToken ?? "",
             filter: (state as AnketesInitial).filterItem ?? UserFilter(),
             isExpandedFilter: (state as AnketesInitial).needApplyFilter,
@@ -98,7 +99,7 @@ class AnketesBloc extends Bloc<AnketesEvent, AnketesState> {
   }
 
   void _onSwitchShowMode(SwitchShowMode event, Emitter emit) async {
-    MyTracker.trackEvent("Switch anketes show type", {});
+    //MyTracker.trackEvent("Switch anketes show type", {});
     emit((state as AnketesInitial)
         .copyThis(isVertical: !(state as AnketesInitial).isVertical));
   }

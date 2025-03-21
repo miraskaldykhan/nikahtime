@@ -255,7 +255,11 @@ class CodegenLoader extends AssetLoader {
       "option6": "Возможность размещения сторис",
       "option7": "Настраиваемая функция невидимки для посещения пользователей",
       "button": "Подписаться за 169 руб./мес.",
-      "canCancel": "Отключить можно в любое время"
+      "canCancel": "Отключить можно в любое время",
+      "alertTitle":
+          "Отличная новость! У вас уже есть доступ к премиум-функциям.",
+      "alertContent":
+          "Эта акция действует только в течение месяца. Вы уже пользуетесь премиум-возможностями нашего приложения. Спасибо, что остаетесь с нами!"
     },
     "googleOrApple": {
       "signUp": "или зарегистрироваться с помощью",
@@ -319,9 +323,11 @@ class CodegenLoader extends AssetLoader {
       "observingIslamCanons": "Cоблюдающий каноны ислама \nмусульманин",
       "nonObservingIslamCanons": "Cоблюдаю религиозные обряды \nпо праздникам"
     },
-    "Islam": "Ислам",
-    "Christianity": "Христианство",
-    "Judaism": "Иудаизм",
+    "islam": "Ислам",
+    "christianity": "Христианство",
+    "judaism": "Иудаизм",
+    "another": "Другая",
+    "any":"Любое",
     "religionSubtitle": "Конфессиональная принадлежность",
     "contacts": "Контакты",
     "contact": {
@@ -542,7 +548,7 @@ class CodegenLoader extends AssetLoader {
           "get": "Получить код",
           "header": "Восстановление пароля",
           "msg":
-              "Введите свой номер телефона и вам придет СМС с кодом для восстановления пароля"
+              "Введите свой номер телефона, и на него поступит звонок, последние четыре цифры которого и будут являться Вашим проверочным кодом"
         },
         "error": "Что-то пошло не так. Пожалуйста, повторите попытку позднее"
       },
@@ -855,7 +861,10 @@ class CodegenLoader extends AssetLoader {
       "option6": "Ability to post stories",
       "option7": "Customizable incognito mode for visiting profiles",
       "button": "Subscribe for 169 RUB/month",
-      "canCancel": "You can cancel at any time"
+      "canCancel": "You can cancel at any time",
+      "alertTitle": "Great news! You already have access to premium features.",
+      "alertContent":
+          "This promotion is valid for one month only. You are already using the premium features of our app. Thank you for staying with us!"
     },
     "common": {
       "online": "Online",
@@ -915,9 +924,11 @@ class CodegenLoader extends AssetLoader {
       "observingIslamCanons": "Islamic Muslim man",
       "nonObservingIslamCanons": "I observe religious rites \non holidays"
     },
-    "Islam": "Islam",
-    "Christianity": "Christianity",
-    "Judaism": "Judaism",
+    "islam": "Islam",
+    "christianity": "Christianity",
+    "judaism": "Judaism",
+    "another": "Another",
+    "any":"Any",
     "religionSubtitle": "Religious  affiliation",
     "contacts": "Contacts",
     "contact": {
@@ -1137,7 +1148,7 @@ class CodegenLoader extends AssetLoader {
           "get": "Get code",
           "header": "Password recovery",
           "msg":
-              "Enter your phone number and you will receive an SMS with a code to reset your password"
+              "Enter your phone number, and it will receive a call, the last four digits of which will be your verification code."
         },
         "error": "Something went wrong, please try again later"
       },

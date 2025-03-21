@@ -2,23 +2,17 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:ui';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:custom_pop_up_menu_fork/custom_pop_up_menu.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:menu_bar/menu_bar.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,8 +31,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart' as localized;
 import 'package:untitled/generated/locale_keys.g.dart';
-
-import '../../components/network_service/dio_override/dio_service_additions.dart';
 
 class ChatWithUserScreen extends StatefulWidget {
   ChatWithUserScreen(this.chatData, this.userProfileGender, this.userProfileId,
@@ -119,6 +111,9 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
 
   @override
   void dispose() {
+    messageController.dispose();
+    _myController.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -415,7 +410,10 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                             );
                           } else {
                             widget.bloc.add(
-                              SendTextMessage(text: messageController.text),
+                              SendTextMessage(
+                                text: messageController.text,
+                                chatId: widget.chatData.chatId!,
+                              ),
                             );
                           }
                           messageController.text = "";
@@ -719,8 +717,6 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                     borderRadius: BorderRadius.circular(
                       10,
                     )),
-                width: 190,
-                height: 170,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -795,78 +791,80 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 15,
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          if (message.message != null &&
-                              message.messageId != null) {
-                            widget.bloc.add(
-                              EditChatActive(
-                                editText: message.message!.toString(),
-                                messageId: message.messageId!,
+                    if (message.isAuthUsermessage!)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 15,
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            if (message.message != null &&
+                                message.messageId != null) {
+                              widget.bloc.add(
+                                EditChatActive(
+                                  editText: message.message!.toString(),
+                                  messageId: message.messageId!,
+                                ),
+                              );
+                              controller.hideMenu();
+                            } else {
+                              log("this message yet not sended to server");
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Изменить',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xff212121),
+                                ),
                               ),
-                            );
-                            controller.hideMenu();
-                          } else {
-                            log("this message yet not sended to server");
-                          }
+                              Image.asset(
+                                'assets/icons/bxs_pencil.png',
+                                width: 22,
+                                height: 22,
+                                color: const Color(
+                                  0xff212121,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    if (message.isAuthUsermessage!)
+                      GestureDetector(
+                        onTap: () {
+                          deleteMessage(state.messages[index].messageId!);
+                          setState(() {
+                            state.messages.removeAt(index);
+                          });
+                          controller.hideMenu();
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              'Изменить',
+                              'Удалить',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xff212121),
+                                color: Color(0xffFC3B3B),
                               ),
                             ),
                             Image.asset(
-                              'assets/icons/bxs_pencil.png',
+                              'assets/icons/bxs_trash.png',
                               width: 22,
                               height: 22,
                               color: const Color(
-                                0xff212121,
+                                0xffFC3B3B,
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        deleteMessage(state.messages[index].messageId!);
-                        setState(() {
-                          state.messages.removeAt(index);
-                        });
-                        controller.hideMenu();
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Удалить',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xffFC3B3B),
-                            ),
-                          ),
-                          Image.asset(
-                            'assets/icons/bxs_trash.png',
-                            width: 22,
-                            height: 22,
-                            color: const Color(
-                              0xffFC3B3B,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               );
@@ -903,9 +901,31 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                     : CrossAxisAlignment.start,
                 //spacing: 8,
                 children: [
-                  state.answerBoxVisible || state.editBoxVisible
+                  state.answerBoxVisible
                       ? const Icon(Icons.arrow_back_sharp)
-                      : Container(),
+                      : message.repliedStory != null
+                          ? Row(
+                              children: [
+                                Icon(
+                                  Icons.arrow_back_sharp,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 15,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "История",
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container(),
                   messageBody(message),
                   Container(
                     margin: const EdgeInsets.only(top: 8),
@@ -945,41 +965,6 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
         ),
       ],
     );
-  }
-
-  Future<void> editMessage(
-    int messageId,
-    String message,
-  ) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String accessToken = prefs.getString("token") ?? "";
-    String csrfToken = "LHXZTMpSzw8TCVkXqAO6LFG41B4cN1Oth80CvX7J";
-
-    if (accessToken.isEmpty) {
-      debugPrint("Token not found.");
-      return;
-    }
-
-    Dio dio = Dio();
-    try {
-      Response response = await dio.put(
-        'https://www.nikahtime.ru/api/chats/messages/$messageId',
-        options: Options(
-          headers: {
-            'accept': 'application/json',
-            'Authorization': 'Bearer $accessToken',
-            'X-CSRF-TOKEN': csrfToken,
-          },
-        ),
-      );
-      if (response.statusCode == 200) {
-        debugPrint('Message edited successfully');
-      } else {
-        debugPrint('Failed to delete message: ${response.statusMessage}');
-      }
-    } catch (e) {
-      debugPrint('Error deleting message: $e');
-    }
   }
 
   Future<void> deleteMessage(int messageId) async {
@@ -1099,12 +1084,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
 
   Widget messageBody(ChatMessage message) {
     if (message.messageType == "text") {
-      return Text(
-        message.message!,
-        style: const TextStyle(
-            fontSize: 15,
-            color: Color(0xFF212121),
-            fontWeight: FontWeight.w500),
+      return RichText(
+        text: _buildTextWithLinks(message.message!),
       );
     }
     if (message.messageType == "image") {
@@ -1238,6 +1219,60 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
 
     return const Text("Ошибка загрузки сообщения");
   }
+
+  TextSpan _buildTextWithLinks(String text) {
+    final RegExp linkRegExp = RegExp(
+      r'((https?:\/\/|www\.)[^"]+)',
+      caseSensitive: false,
+    );
+
+    final List<TextSpan> spans = [];
+    int start = 0;
+
+    text.splitMapJoin(
+      linkRegExp,
+      onMatch: (match) {
+        final String url = match.group(0)!;
+        if (start != match.start) {
+          spans.add(TextSpan(text: text.substring(start, match.start)));
+        }
+        spans.add(
+          TextSpan(
+            text: url,
+            style: const TextStyle(
+                color: Colors.blue, decoration: TextDecoration.underline),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () async {
+                final Uri uri =
+                    Uri.parse(url.startsWith('http') ? url : 'https://$url');
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              },
+          ),
+        );
+        start = match.end;
+        return '';
+      },
+      onNonMatch: (nonMatch) {
+        spans.add(TextSpan(text: nonMatch));
+        return '';
+      },
+    );
+
+    return TextSpan(
+      style: const TextStyle(
+          color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500),
+      children: spans,
+    );
+  }
+
+  // void _launchInBrowser(String url) async {
+  //   final Uri uri = Uri.parse(url);
+  //   if (await canLaunchUrl(uri)) {
+  //     await launchUrl(uri, mode: LaunchMode.externalApplication);
+  //   }
+  // }
 
   Future<void> _launchInBrowser(String url) async {
     await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);

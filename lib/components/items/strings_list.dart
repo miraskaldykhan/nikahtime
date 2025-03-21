@@ -528,6 +528,12 @@ Map<String, String> familyState = {
   "divorced": LocaleKeys.familyState_divorced
 };
 
+Map<String, String> religionState = {
+  "Islam": LocaleKeys.islam,
+  "Christianity": LocaleKeys.christianity,
+  "Judaism": LocaleKeys.judaism
+};
+
 Map<String, String> faithState = {
   "observantMuslim": LocaleKeys.faithState_observantMuslim,
   "nonObservantMuslim": LocaleKeys.faithState_nonObservantMuslim,
@@ -635,6 +641,7 @@ class GlobalStrings {
 
 class interestTag {
   interestTag(this.str, this.clr);
+
   String str = "";
   Color clr = Colors.green;
 }

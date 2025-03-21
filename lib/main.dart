@@ -6,21 +6,26 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+import 'package:path_provider/path_provider.dart';
+
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled/Screens/Chat/Stories/editor/cubit/createdAtCubit.dart';
 import 'package:untitled/Screens/Chat/Stories/create/cubit/send_stories/send_stories_cubit.dart';
+import 'package:untitled/Screens/Chat/Stories/editor/cubit/createdAtCubit.dart';
 import 'package:untitled/Screens/Chat/Stories/editor/cubit/delete/delete_stories_cubit.dart';
 import 'package:untitled/Screens/Chat/Stories/editor/cubit/get_my_stories/get_my_stories_cubit.dart';
 import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/get_friends_stories/get_friend_stories_cubit.dart';
 import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/get_stories_viewers/stories_viewers_cubit.dart';
 import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/like_story/like_story_cubit.dart';
+import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/send_message_to_story/send_message_to_story_cubit.dart';
 import 'package:untitled/Screens/Chat/Stories/look_stories/cubit/show_story/show_story_cubit.dart';
 import 'package:untitled/Screens/Contacts/cubit/fetch_followers/fetch_followers_cubit.dart';
 import 'package:untitled/Screens/Contacts/cubit/fetch_friends/fetch_friends_cubit.dart';
@@ -31,17 +36,14 @@ import 'package:untitled/Screens/Contacts/cubit/move_friend_to_follower/friend_t
 import 'package:untitled/Screens/Contacts/cubit/send_friends_request/send_friends_request_cubit.dart';
 import 'package:untitled/Screens/Profile/bloc/profile_bloc.dart';
 import 'package:untitled/Screens/Profile/profile_page.dart';
-import 'package:untitled/Screens/welcome.dart';
-import 'package:untitled/ServiceItems/network_service.dart';
-import 'package:untitled/components/widgets/nikah_app_updater.dart';
-import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/Screens/Registration/registration_create_profile.dart';
 import 'package:untitled/Screens/main_page.dart';
+import 'package:untitled/Screens/welcome.dart';
+import 'package:untitled/ServiceItems/network_service.dart';
+import 'package:untitled/components/models/user_profile_data.dart';
+import 'package:untitled/components/widgets/nikah_app_updater.dart';
 import 'package:untitled/firebase_options.dart';
-import 'package:untitled/my_tracker_params.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'Screens/Chat/Stories/look_stories/story_page.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -146,14 +148,14 @@ void main() async {
     });
   }
 
-  MyTrackerConfig trackerConfig = MyTracker.trackerConfig;
-  trackerConfig.setLaunchTimeout(300);
-  trackerConfig.setBufferingPeriod(60);
-  trackerConfig.setRegion(MyTrackerRegion.RU);
-  trackerConfig.setTrackingLocationEnabled(false);
-
-  //MyTracker.setDebugMode(true);
-  await MyTracker.init(MyTrackerSDK.getKeySDK());
+  //MyTrackerConfig trackerConfig = MyTracker.trackerConfig;
+  // trackerConfig.setLaunchTimeout(300);
+  // trackerConfig.setBufferingPeriod(60);
+  // trackerConfig.setRegion(MyTrackerRegion.RU);
+  // trackerConfig.setTrackingLocationEnabled(false);
+  //
+  // //MyTracker.setDebugMode(true);
+  // await MyTracker.init(MyTrackerSDK.getKeySDK());
 
   // runApp(MyApp(token, response));
   runApp(
@@ -162,7 +164,7 @@ void main() async {
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
       child: ChangeNotifierProvider(
-        create: (_) => ThemeProvider(),
+        create: (_) => ThemeProvider(prefs),
         child: MyApp(token, response),
       ),
     ),
@@ -226,7 +228,9 @@ class _MyAppState extends State<MyApp> {
 
     // Проверка необходимости показа всплывающего окна
     if (daysSinceInstallation >= daysToPopup) {
-      setState(() => showRatingPopup = true);
+      WidgetsBinding.instance.addPostFrameCallback((_) => setState(
+            () => showRatingPopup = true,
+          ));
     }
   }
 
@@ -261,8 +265,8 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void showRatingDialog() {
-    showDialog(
+  Future<void> showRatingDialog() async {
+    await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -329,7 +333,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     if (showRatingPopup) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => showRatingDialog());
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) async => await showRatingDialog(),
+      );
     }
     return MultiBlocProvider(
       providers: [
@@ -380,6 +386,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
           create: (BuildContext context) => FriendToFollowerCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => SendMessageToStoryCubit(),
         ),
       ],
       child: ScreenUtilInit(
@@ -468,22 +477,22 @@ class AppBody extends StatelessWidget {
       case AppBodyScreen.welcome:
         return const WelcomeScreen();
       case AppBodyScreen.main:
-        MyTrackerParams trackerParams = MyTracker.trackerParams;
+        //MyTrackerParams trackerParams = MyTracker.trackerParams;
 
-        trackerParams.setCustomUserIds([userProfileData!.id!.toString()]);
-        trackerParams.setAge(DateTime.now()
-                .difference(
-                    DateFormat("dd.MM.yyyy").parse(userProfileData!.birthDate!))
-                .abs()
-                .inDays ~/
-            365);
-        trackerParams.setGender(userProfileData!.gender == null
-            ? MyTrackerGender.UNKNOWN
-            : ((userProfileData!.gender == "male")
-                ? MyTrackerGender.MALE
-                : MyTrackerGender.FEMALE));
-
-        MyTracker.trackLoginEvent(userProfileData!.id!.toString(), {});
+        // trackerParams.setCustomUserIds([userProfileData!.id!.toString()]);
+        // trackerParams.setAge(DateTime.now()
+        //         .difference(
+        //             DateFormat("dd.MM.yyyy").parse(userProfileData!.birthDate!))
+        //         .abs()
+        //         .inDays ~/
+        //     365);
+        // trackerParams.setGender(userProfileData!.gender == null
+        //     ? MyTrackerGender.UNKNOWN
+        //     : ((userProfileData!.gender == "male")
+        //         ? MyTrackerGender.MALE
+        //         : MyTrackerGender.FEMALE));
+        //
+        // MyTracker.trackLoginEvent(userProfileData!.id!.toString(), {});
         //MyTracker.trackRegistrationEvent(widget.userProfileData.id!.toString(),{});
         return MainPage(userProfileData!);
       case AppBodyScreen.registrationCreateProfile:

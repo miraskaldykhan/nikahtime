@@ -14,6 +14,10 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
   bool isOpened = false;
   bool haveBadHabitsSwitch = false;
 
+  Map<String, String> educationListMain = {
+    "Any": LocaleKeys.any,
+  };
+
   @override
   void initState() {
     var badHabits = widget._userFilter.badHabits;
@@ -33,6 +37,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
   @override
   Widget build(BuildContext context) {
     userFilter = widget._userFilter;
+    educationListMain.addAll(educationList);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: const CustomAppBar(),
@@ -56,63 +61,65 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                       .subtitleText(LocaleKeys.user_age.tr()),
                   _FilterAgeSlide(18, 99, widget._userFilter),
                   // religion
-                CustomInputDecoration().subtitleText('religionSubtitle'.tr()),
-         InputDecorator(
-  decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
-  child: DropdownButtonHideUnderline(
-    child: DropdownButton<String>( 
-      dropdownColor: Colors.white,
-  style: TextStyle( color: Colors.black),
-
-  value: userFilter.religionId != null
-      ? userFilter.religionId == 1
-          ? 'Islam'
-          : userFilter.religionId == 2
-              ? 'Christianity'
-              : userFilter.religionId == 3
-                  ? 'Judaism'
-                  : 'Islam'
-      : 'Islam',
-  isDense: true,
-  onChanged: (val) {
-    setState(() {
-      switch (val) {
-        case 'Islam':
-          userFilter.religionId = 1;
-          break;
-        case 'Christianity':
-          userFilter.religionId = 2;
-          break;
-        case 'Judaism':
-          userFilter.religionId = 3;
-          break;
-      }
-    });
-  },
-  items: [
-    DropdownMenuItem<String>(
-      value: 'Islam',
-      child: Text('Islam'.tr(), style: TextStyle(color: Colors.black)),
-    ),
-    DropdownMenuItem<String>(
-      value: 'Christianity',
-      child: Text('Christianity'.tr(), style: TextStyle(color: Colors.black)),
-    ),
-    DropdownMenuItem<String>(
-      value: 'Judaism',
-      child: Text('Judaism'.tr(), style: TextStyle(color: Colors.black)),
-    ),
-  ],
-),
-
-  ),
-),
-
+                  CustomInputDecoration().subtitleText('religionSubtitle'.tr()),
+                  InputDecorator(
+                    decoration: CustomInputDecoration()
+                        .GetDecoration(Theme.of(context).colorScheme.primary),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        dropdownColor: Colors.white,
+                        style: TextStyle(color: Colors.black),
+                        value: userFilter.religionId != null
+                            ? userFilter.religionId == 1
+                                ? 'Islam'
+                                : userFilter.religionId == 2
+                                    ? 'Christianity'
+                                    : userFilter.religionId == 3
+                                        ? 'Judaism'
+                                        : 'Islam'
+                            : 'Islam',
+                        isDense: true,
+                        onChanged: (val) {
+                          setState(() {
+                            switch (val) {
+                              case 'Islam':
+                                userFilter.religionId = 1;
+                                break;
+                              case 'Christianity':
+                                userFilter.religionId = 2;
+                                break;
+                              case 'Judaism':
+                                userFilter.religionId = 3;
+                                break;
+                            }
+                          });
+                        },
+                        items: [
+                          DropdownMenuItem<String>(
+                            value: 'Islam',
+                            child: Text('Islam'.tr(),
+                                style: TextStyle(color: Colors.black)),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'Christianity',
+                            child: Text('Christianity'.tr(),
+                                style: TextStyle(color: Colors.black)),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: 'Judaism',
+                            child: Text('Judaism'.tr(),
+                                style: TextStyle(color: Colors.black)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   CustomInputDecoration()
                       .subtitleText(LocaleKeys.user_country.tr()),
                   DropdownFormField<String>(
                     dropdownColor: Colors.white,
-                    decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                    decoration: CustomInputDecoration()
+                        .GetDecoration(Theme.of(context).colorScheme.primary),
                     onSaved: (dynamic str) {
                       userFilter.country = "$str";
                       setState(() {});
@@ -129,7 +136,8 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                     dropdownItemFn: (dynamic item, int position, bool focused,
                             bool selected, Function() onTap) =>
                         ListTile(
-                      title: Text(translateCountryName(item), style: TextStyle(color: Colors.black)),
+                      title: Text(translateCountryName(item),
+                          style: TextStyle(color: Colors.black)),
                       tileColor: focused
                           ? const Color.fromARGB(20, 0, 0, 0)
                           : Colors.transparent,
@@ -143,7 +151,8 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                     visible: userFilter.country == "Россия",
                     child: DropdownFormField<Map<String, dynamic>>(
                       dropdownColor: Colors.white,
-                      decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                      decoration: CustomInputDecoration()
+                          .GetDecoration(Theme.of(context).colorScheme.primary),
                       onSaved: (dynamic str) {},
                       onChanged: (dynamic item) {
                         userFilter.city =
@@ -187,7 +196,8 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                       .subtitleText(LocaleKeys.user_nationality.tr()),
                   DropdownFormField<String>(
                     dropdownColor: Colors.white,
-                    decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                    decoration: CustomInputDecoration()
+                        .GetDecoration(Theme.of(context).colorScheme.primary),
                     onSaved: (dynamic str) {},
                     onChanged: (dynamic item) {
                       userFilter.nationality = item;
@@ -195,13 +205,14 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                     displayItemFn: (dynamic item) => Text(
                       translateNationName(userFilter.nationality ??
                           LocaleKeys.nationalityState_notSelected.tr()),
-                      style: const TextStyle(fontSize: 16,color: Colors.black),
+                      style: const TextStyle(fontSize: 16, color: Colors.black),
                     ),
                     findFn: (dynamic str) async => getNationalityList(str),
                     dropdownItemFn: (dynamic item, int position, bool focused,
                             bool selected, Function() onTap) =>
                         ListTile(
-                      title: Text(translateNationName(item), style: TextStyle(color: Colors.black)),
+                      title: Text(translateNationName(item),
+                          style: TextStyle(color: Colors.black)),
                       tileColor: focused
                           ? const Color.fromARGB(20, 0, 0, 0)
                           : Colors.transparent,
@@ -211,26 +222,33 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                   CustomInputDecoration()
                       .subtitleText(LocaleKeys.user_education.tr()),
                   InputDecorator(
-                    decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                    decoration: CustomInputDecoration()
+                        .GetDecoration(Theme.of(context).colorScheme.primary),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         dropdownColor: Colors.white,
-                        hint: Text((userFilter.education == null ||
-                                userFilter.education == "")
-                            ? LocaleKeys.filters_educationTitle.tr() //
-                            : educationList[userFilter.education!]!.tr(), style: TextStyle(color: Colors.black)),
+                        hint: Text(
+                          (userFilter.education == null ||
+                                  userFilter.education == "")
+                              ? LocaleKeys.filters_educationTitle.tr() //
+                              : educationListMain[userFilter.education!]!.tr(),
+                          style: TextStyle(color: Colors.black),
+                        ),
                         isDense: true,
                         onChanged: (val) {
                           userFilter.education = val;
                           setState(() {});
                         },
-                        items: educationList
+                        items: educationListMain
                             .map((description, value) {
                               return MapEntry(
                                   description,
                                   DropdownMenuItem<String>(
                                     value: description,
-                                    child: Text(value, style: TextStyle(color: Colors.black)).tr(),
+                                    child: Text(value,
+                                            style:
+                                                TextStyle(color: Colors.black))
+                                        .tr(),
                                   ));
                             })
                             .values
@@ -241,14 +259,17 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                   CustomInputDecoration()
                       .subtitleText(LocaleKeys.user_maritalStatus.tr()),
                   InputDecorator(
-                    decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                    decoration: CustomInputDecoration()
+                        .GetDecoration(Theme.of(context).colorScheme.primary),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         dropdownColor: Colors.white,
-                        hint: Text((userFilter.maritalStatus == null ||
-                                userFilter.maritalStatus == "")
-                            ? LocaleKeys.filters_maritalStatusTitle.tr()
-                            : familyState[userFilter.maritalStatus!]!.tr(), style: TextStyle(color: Colors.black)),
+                        hint: Text(
+                            (userFilter.maritalStatus == null ||
+                                    userFilter.maritalStatus == "")
+                                ? LocaleKeys.filters_maritalStatusTitle.tr()
+                                : familyState[userFilter.maritalStatus!]!.tr(),
+                            style: TextStyle(color: Colors.black)),
                         isDense: true,
                         onChanged: (val) {
                           setState(() {
@@ -261,7 +282,10 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                                   description,
                                   DropdownMenuItem<String>(
                                     value: description,
-                                    child: Text(value, style: TextStyle(color: Colors.black)).tr(),
+                                    child: Text(value,
+                                            style:
+                                                TextStyle(color: Colors.black))
+                                        .tr(),
                                   ));
                             })
                             .values
@@ -272,14 +296,17 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                   CustomInputDecoration()
                       .subtitleText(LocaleKeys.user_faith.tr()),
                   InputDecorator(
-                    decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                    decoration: CustomInputDecoration()
+                        .GetDecoration(Theme.of(context).colorScheme.primary),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         dropdownColor: Colors.white,
-                        hint: Text((userFilter.typeReligion == null ||
-                                userFilter.typeReligion == "")
-                            ? LocaleKeys.user_faith.tr()
-                            : faithState[userFilter.typeReligion!]!.tr(), style: TextStyle(color: Colors.black)),
+                        hint: Text(
+                            (userFilter.typeReligion == null ||
+                                    userFilter.typeReligion == "")
+                                ? LocaleKeys.user_faith.tr()
+                                : faithState[userFilter.typeReligion!]!.tr(),
+                            style: TextStyle(color: Colors.black)),
                         isDense: true,
                         onChanged: (val) {
                           setState(() {
@@ -292,7 +319,10 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                                   description,
                                   DropdownMenuItem<String>(
                                     value: description,
-                                    child: Text(value, style: TextStyle(color: Colors.black),).tr(),
+                                    child: Text(
+                                      value,
+                                      style: TextStyle(color: Colors.black),
+                                    ).tr(),
                                   ));
                             })
                             .values
@@ -303,20 +333,23 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                   CustomInputDecoration()
                       .subtitleText(LocaleKeys.user_canons.tr()),
                   InputDecorator(
-                    decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                    decoration: CustomInputDecoration()
+                        .GetDecoration(Theme.of(context).colorScheme.primary),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         dropdownColor: Colors.white,
-                        hint: Text((userFilter.observeIslamCanons == null ||
-                                userFilter.observeIslamCanons == "")
-                            ? LocaleKeys.user_canons.tr()
-                            : widget.gender == 'male'
-                                ? observantOfTheCanonsMaleState[
-                                        userFilter.observeIslamCanons!]!
-                                    .tr()
-                                : observantOfTheCanonsFemaleState[
-                                        userFilter.observeIslamCanons!]!
-                                    .tr(), style: TextStyle(color: Colors.black)),
+                        hint: Text(
+                            (userFilter.observeIslamCanons == null ||
+                                    userFilter.observeIslamCanons == "")
+                                ? LocaleKeys.user_canons.tr()
+                                : widget.gender == 'male'
+                                    ? observantOfTheCanonsMaleState[
+                                            userFilter.observeIslamCanons!]!
+                                        .tr()
+                                    : observantOfTheCanonsFemaleState[
+                                            userFilter.observeIslamCanons!]!
+                                        .tr(),
+                            style: TextStyle(color: Colors.black)),
                         isDense: true,
                         onChanged: (val) {
                           setState(() {
@@ -330,7 +363,10 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                                       description,
                                       DropdownMenuItem<String>(
                                         value: description,
-                                        child: Text(value, style: TextStyle(color: Colors.black),).tr(),
+                                        child: Text(
+                                          value,
+                                          style: TextStyle(color: Colors.black),
+                                        ).tr(),
                                       ));
                                 })
                                 .values
@@ -341,7 +377,10 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                                       description,
                                       DropdownMenuItem<String>(
                                         value: description,
-                                        child: Text(value, style: TextStyle(color: Colors.black)).tr(),
+                                        child: Text(value,
+                                                style: TextStyle(
+                                                    color: Colors.black))
+                                            .tr(),
                                       ));
                                 })
                                 .values
@@ -358,9 +397,11 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<bool>(
                         dropdownColor: Colors.white,
-                        hint: Text((userFilter.haveChildren == null)
-                            ? LocaleKeys.user_haveChildren_hint.tr()
-                            : "", style: TextStyle(color: Colors.grey)),
+                        hint: Text(
+                            (userFilter.haveChildren == null)
+                                ? LocaleKeys.user_haveChildren_hint.tr()
+                                : "",
+                            style: TextStyle(color: Colors.grey)),
                         value: userFilter.haveChildren,
                         isDense: true,
                         onChanged: (newValue) {
@@ -374,7 +415,10 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                                   description,
                                   DropdownMenuItem<bool>(
                                     value: description,
-                                    child: Text(value, style: TextStyle(color: Colors.black)).tr(),
+                                    child: Text(value,
+                                            style:
+                                                TextStyle(color: Colors.black))
+                                        .tr(),
                                   ));
                             })
                             .values
@@ -387,15 +431,16 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                   Visibility(
                     visible: haveBadHabitsSwitch,
                     child: CustomizableMultiselectField(
-                      decoration: CustomInputDecoration().GetDecoration(Theme.of(context).colorScheme.primary),
+                      decoration: CustomInputDecoration()
+                          .GetDecoration(Theme.of(context).colorScheme.primary),
                       customizableMultiselectWidgetOptions:
                           CustomizableMultiselectWidgetOptions(
-                        
                         chipShape: RoundedRectangleBorder(
                           side: const BorderSide(color: Colors.red, width: 1),
                           borderRadius: BorderRadius.circular(16.0),
                         ),
-                        hintText: Text(LocaleKeys.common_selectOptions.tr(), style: TextStyle(color: Colors.black)),
+                        hintText: Text(LocaleKeys.common_selectOptions.tr(),
+                            style: TextStyle(color: Colors.black)),
                       ),
                       customizableMultiselectDialogOptions:
                           CustomizableMultiselectDialogOptions(
@@ -446,8 +491,7 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
                 width: double.infinity,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       elevation: 0,
                       fixedSize: const Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(
@@ -496,16 +540,26 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
 
   List<String> getNationalityList(String str) {
     List<String> founded = <String>[];
+    List<String> nationalityListEnglish = [
+      "Any",
+    ];
+    List<String> nationalityListRu = [
+      "Любая",
+    ];
+    nationalityListEnglish.addAll(nationalityListEn);
+    nationalityListRu.addAll(nationalityList);
     if (context.locale.languageCode == "en") {
       for (int i = 0; i < nationalityListEn.length; i++) {
-        if (nationalityListEn[i].toLowerCase().contains(str.toLowerCase())) {
-          founded.add(nationalityList[i]);
+        if (nationalityListEnglish[i]
+            .toLowerCase()
+            .contains(str.toLowerCase())) {
+          founded.add(nationalityListEnglish[i]);
         }
       }
     } else {
       for (int i = 0; i < nationalityList.length; i++) {
-        if (nationalityList[i].toLowerCase().contains(str.toLowerCase())) {
-          founded.add(nationalityList[i]);
+        if (nationalityListRu[i].toLowerCase().contains(str.toLowerCase())) {
+          founded.add(nationalityListRu[i]);
         }
       }
     }
@@ -525,16 +579,24 @@ class _ExpandedFilterState extends State<ExpandedFilter> {
 
   List<String> getCountry(String str) {
     List<String> finded = <String>[];
+    List<String> countryListEnglish = [
+      "Any",
+    ];
+    List<String> countryListRu = [
+      "Любая",
+    ];
+    countryListEnglish.addAll(countryListEn);
+    countryListRu.addAll(countryList);
     if (context.locale.languageCode == "en") {
       for (int i = 0; i < countryListEn.length; i++) {
-        if (countryListEn[i].toLowerCase().contains(str.toLowerCase())) {
-          finded.add(countryList[i]);
+        if (countryListEnglish[i].toLowerCase().contains(str.toLowerCase())) {
+          finded.add(countryListEnglish[i]);
         }
       }
     } else {
       for (int i = 0; i < countryList.length; i++) {
-        if (countryList[i].toLowerCase().contains(str.toLowerCase())) {
-          finded.add(countryList[i]);
+        if (countryListRu[i].toLowerCase().contains(str.toLowerCase())) {
+          finded.add(countryListRu[i]);
         }
       }
     }
@@ -550,7 +612,9 @@ class _FilterAgeSlide extends StatefulWidget {
   final double maxValue;
 
   const _FilterAgeSlide(this.minValue, this.maxValue, this._userFilter);
+
   final UserFilter _userFilter;
+
   @override
   State<_FilterAgeSlide> createState() =>
       _FilterAgeSlideState(minValue, maxValue);
@@ -684,7 +748,7 @@ class _FilterAgeSlideState extends State<_FilterAgeSlide> {
                   child: TextField(
                     keyboardType: const TextInputType.numberWithOptions(
                         signed: false, decimal: false),
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(8.0),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(

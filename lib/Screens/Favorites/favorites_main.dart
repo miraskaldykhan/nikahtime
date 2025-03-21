@@ -4,7 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart' as localized;
 import 'package:flutter_svg/svg.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/Screens/Favorites/iLiked.dart';
@@ -40,7 +40,7 @@ class _FavoriteMainPageScreenState extends State<FavoriteMainPageScreen> {
     sendAnketesRequest();
     super.initState();
     _scrollController.addListener(_onScroll);
-    MyTracker.trackEvent("Watch Favourites page", {});
+    //MyTracker.trackEvent("Watch Favourites page", {});
   }
 
   final _scrollController = ScrollController();

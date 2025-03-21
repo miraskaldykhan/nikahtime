@@ -55,11 +55,12 @@
 	<string>Allow access to download and save photos and videos</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
     <false/>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>external-accessory</string>
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>

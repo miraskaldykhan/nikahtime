@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Payment/payment.dart';
 import 'package:untitled/Screens/Profile/bloc/profile_bloc.dart';
@@ -217,7 +217,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                   InkWell(
                     splashColor: Colors.transparent,
                     onTap: () async {
-                      MyTracker.trackEvent("Open \"About Us\" page", {});
+                      //MyTracker.trackEvent("Open \"About Us\" page", {});
                       Navigator.push(
                         context,
                         MaterialPageRoute(

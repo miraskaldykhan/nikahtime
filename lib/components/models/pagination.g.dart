@@ -7,12 +7,12 @@ part of 'pagination.dart';
 // **************************************************************************
 
 Pagination _$PaginationFromJson(Map<String, dynamic> json) => Pagination(
-      count: json['count'] as int,
-      perPage: json['perPage'] as int,
-      currentPage: json['currentPage'] as int,
-      lastPage: json['lastPage'] as int,
-      from: json['from'] as int?,
-      to: json['to'] as int?,
+      count: (json['count'] as num).toInt(),
+      perPage: (json['perPage'] as num).toInt(),
+      currentPage: (json['currentPage'] as num).toInt(),
+      lastPage: (json['lastPage'] as num).toInt(),
+      from: (json['from'] as num?)?.toInt(),
+      to: (json['to'] as num?)?.toInt(),
       nextPageUrl: json['nextPageUrl'] as String?,
       prevPageUrl: json['prevPageUrl'] as String?,
     );

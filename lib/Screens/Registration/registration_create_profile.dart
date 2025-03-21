@@ -507,7 +507,7 @@ class _RegistrationCreateProfileScreenState
                             // CustomInputDecoration().errorBox(faithStateEmpty),
 
                             CustomInputDecoration()
-                                .subtitleText(LocaleKeys.user_canons.tr()),
+                                .subtitleText('religionSubtitle'.tr()),
                             InputDecorator(
                               decoration: CustomInputDecoration().GetDecoration(
                                   Theme.of(context).colorScheme.secondary),
@@ -515,60 +515,64 @@ class _RegistrationCreateProfileScreenState
                                 child: DropdownButton<String>(
                                   dropdownColor: Colors.white,
                                   hint: Text(
-                                    (widget.userProfileData
-                                                .observeIslamCanons ==
-                                            null)
-                                        ? LocaleKeys.user_canons.tr()
-                                        : provider.isMale
-                                            ? observantOfTheCanonsMaleState[
-                                                    widget.userProfileData
-                                                        .observeIslamCanons]!
-                                                .tr()
-                                            : observantOfTheCanonsFemaleState[
-                                                widget.userProfileData
-                                                    .observeIslamCanons]!,
+                                    (widget.userProfileData.religionId == null)
+                                        ? 'religionSubtitle'.tr()
+                                        : widget.userProfileData.religionId == 1
+                                            ? LocaleKeys.islam.tr()
+                                            : widget.userProfileData
+                                                        .religionId ==
+                                                    2
+                                                ? LocaleKeys.christianity.tr()
+                                                : widget.userProfileData
+                                                            .religionId ==
+                                                        3
+                                                    ? LocaleKeys.judaism.tr()
+                                                    : LocaleKeys.another.tr(),
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 14,
                                       fontWeight: FontWeight.w300,
                                     ),
                                   ).tr(),
-                                  //const Text('Выберите Ваше семейное положение'),
                                   isDense: true,
                                   onChanged: (val) {
                                     setState(() {
-                                      widget.userProfileData
-                                          .observeIslamCanons = val.toString();
-                                      canonsStateEmpty = false;
+                                      if (val.toString() == "Islam") {
+                                        widget.userProfileData.religionId = 1;
+                                        religionStateEmpty = false;
+                                      } else if (val.toString() ==
+                                          "Christianity") {
+                                        widget.userProfileData.religionId = 2;
+                                        religionStateEmpty = false;
+                                      } else if (val.toString() == "Judaism") {
+                                        widget.userProfileData.religionId = 3;
+                                        religionStateEmpty = false;
+                                      } else {
+                                        widget.userProfileData.religionId =
+                                            null;
+                                        religionStateEmpty = true;
+                                      }
                                     });
                                   },
-                                  items: provider.isMale
-                                      ? observantOfTheCanonsMaleState
-                                          .map((description, value) {
-                                            return MapEntry(
-                                                description,
-                                                DropdownMenuItem<String>(
-                                                  value: description,
-                                                  child: Text(value).tr(),
-                                                ));
-                                          })
-                                          .values
-                                          .toList()
-                                      : observantOfTheCanonsFemaleState
-                                          .map((description, value) {
-                                            return MapEntry(
-                                                description,
-                                                DropdownMenuItem<String>(
-                                                  value: description,
-                                                  child: Text(value).tr(),
-                                                ));
-                                          })
-                                          .values
-                                          .toList(),
+                                  items: religionState
+                                      .map(
+                                        (description, value) {
+                                          return MapEntry(
+                                            description,
+                                            DropdownMenuItem<String>(
+                                              value: description,
+                                              child: Text(value).tr(),
+                                            ),
+                                          );
+                                        },
+                                      )
+                                      .values
+                                      .toList(),
                                 ),
                               ),
                             ),
-                            CustomInputDecoration().errorBox(canonsStateEmpty),
+                            CustomInputDecoration()
+                                .errorBox(religionStateEmpty),
 
                             CustomInputDecoration().subtitleText(
                                 LocaleKeys.user_haveChildren_title.tr()),
@@ -886,7 +890,7 @@ class _RegistrationCreateProfileScreenState
     // workPosition = (widget.userProfileData.workPosition == null);
 
     // faithStateEmpty = (widget.userProfileData.typeReligion == null);
-    canonsStateEmpty = (widget.userProfileData.observeIslamCanons == null);
+    religionStateEmpty = (widget.userProfileData.religionId == null);
 
     if (widget.userProfileData.badHabits != null) {
       // badHabbitsEmpty = widget.userProfileData.badHabits!.isEmpty;
@@ -911,7 +915,7 @@ class _RegistrationCreateProfileScreenState
         birthDateEmpty ||
         countryEmpty ||
         cityEmpty ||
-        canonsStateEmpty ||
+        religionStateEmpty ||
         // faithStateEmpty ||
         placeOfStudyEmpty ||
         placeOfWorkEmpty ||
@@ -948,7 +952,7 @@ class _RegistrationCreateProfileScreenState
   bool educationEmpty = false;
   bool familyStateEmpty = false;
   bool faithStateEmpty = false;
-  bool canonsStateEmpty = false;
+  bool religionStateEmpty = false;
   bool childrenStateEmpty = false;
   bool badHabbitsEmpty = false;
   bool genderEmpty = false;

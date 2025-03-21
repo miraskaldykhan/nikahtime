@@ -38,12 +38,14 @@ class BlockChat extends ChatWithUserEvent {
 
 class SendTextMessage extends ChatWithUserEvent {
   final String text;
+  final int chatId;
 
-  const SendTextMessage({required this.text});
+  const SendTextMessage({required this.text, required this.chatId});
 
   @override
   List<Object?> get props => [
         text,
+        chatId,
       ];
 }
 

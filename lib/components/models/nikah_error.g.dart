@@ -7,7 +7,7 @@ part of 'nikah_error.dart';
 // **************************************************************************
 
 NikahError _$NikahErrorFromJson(Map<String, dynamic> json) => NikahError(
-      code: json['code'] as int,
+      code: (json['code'] as num).toInt(),
       title: json['title'] as String,
       detail: json['detail'] as String,
     );

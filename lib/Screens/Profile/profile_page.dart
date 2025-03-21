@@ -10,7 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Employeers/employee_information.dart';
@@ -21,12 +22,8 @@ import 'package:untitled/Screens/Profile/web_view_page.dart';
 import 'package:untitled/Screens/welcome.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
-import 'package:untitled/components/widgets/custom_input_decoration.dart';
-import 'package:untitled/components/widgets/image_grid_widget.dart';
 import 'package:untitled/components/widgets/image_viewer.dart';
-import 'dart:math';
-
-import 'package:untitled/generated/locale_keys.g.dart'; // Для генерации случайных чисел
+import 'package:untitled/generated/locale_keys.g.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen(this.userProfileData, {Key? key}) : super(key: key) {
@@ -64,6 +61,9 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
+int _currentColorIndex =
+    0; // Переменная для отслеживания текущего индекса цвета
+
 class _ProfileScreenState extends State<ProfileScreen> {
   final List<Color> iconBackgroundColors = [
     const Color(0xFF337FFF),
@@ -78,9 +78,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     const Color(0xFFFF8B49),
   ];
 
-  Color getRandomColor() {
-    final random = Random();
-    return iconBackgroundColors[random.nextInt(iconBackgroundColors.length)];
+  Color getNextColor() {
+    // Получаем цвет из списка и обновляем индекс
+    Color color = iconBackgroundColors[_currentColorIndex];
+    _currentColorIndex = (_currentColorIndex + 1) % iconBackgroundColors.length;
+    return color;
   }
 
   @override
@@ -112,8 +114,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (ctx) =>
-                            ProfileMainPageScreen(widget.userProfileData)),
+                      builder: (ctx) =>
+                          ProfileMainPageScreen(widget.userProfileData),
+                    ),
                   );
                 },
                 child: Icon(
@@ -253,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           .tr(),
                       Icons.family_restroom,
                       () async {
-                        MyTracker.trackEvent("Open \"About Us\" page", {});
+                        //MyTracker.trackEvent("Open \"About Us\" page", {});
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -332,19 +335,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Icons.brightness_6, () {
                       _showThemeDialog(context);
                     }),
-                    const Divider(
-                      height: 1,
-                      color: Color(0xFFDCDCDC),
-                      indent: 20,
-                      endIndent: 20,
-                    ),
-                    _buildMenuItem(
-                        context,
-                        LocaleKeys.profileScreen_settings_donate_msg_header
-                            .tr(),
-                        Icons.favorite, () {
-                      _showSupportDialog(context);
-                    }),
+
+                    /// TODO when we have donate method we will active this button
+                    // const Divider(
+                    //   height: 1,
+                    //   color: Color(0xFFDCDCDC),
+                    //   indent: 20,
+                    //   endIndent: 20,
+                    // ),
+                    // _buildMenuItem(
+                    //     context,
+                    //     LocaleKeys.profileScreen_settings_donate_msg_header
+                    //         .tr(),
+                    //     Icons.favorite, () {
+                    //   _showSupportDialog(context);
+                    // }),
                   ],
                 ),
               ),
@@ -510,7 +515,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: getRandomColor(),
+                    color: getNextColor(), // Используем последовательный цвет
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Icon(
@@ -564,8 +569,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: Colors.black,
                   ),
                 ),
-                //убран виджет с отступом
-
                 TextSpan(
                   text: LocaleKeys.profileScreen_settings_donate_msg_text2.tr(),
                   style: const TextStyle(
@@ -591,13 +594,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Navigator.of(context).pop();
                           },
                           child: Text(
-                              LocaleKeys
-                                  .profileScreen_settings_donate_msg_later_btn
-                                  .tr(),
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  height: 1)),
+                            LocaleKeys
+                                .profileScreen_settings_donate_msg_later_btn
+                                .tr(),
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 16, height: 1),
+                          ),
                         ),
                       ),
                     ),
@@ -911,13 +913,11 @@ class ThemeProvider with ChangeNotifier {
 
   String get themeName => _themeName;
 
-  ThemeProvider() {
-    _initializeTheme();
+  ThemeProvider(SharedPreferences prefs) {
+    _initializeTheme(prefs);
   }
 
-  Future<void> _initializeTheme() async {
-    _currentTheme = AppThemes.tiffanyTheme;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> _initializeTheme(SharedPreferences prefs) async {
     _themeName = prefs.getString('theme') ?? "Тиффани" ?? 'Tiffany';
     _applyTheme();
     notifyListeners();

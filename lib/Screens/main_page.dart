@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:laravel_echo2/laravel_echo2.dart';
-import 'package:mytracker_sdk/mytracker_sdk.dart';
+//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -126,13 +126,13 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    initTracker();
+    //initTracker();
   }
 
 
-  initTracker() async {
-    await MyTracker.flush();
-  }
+  // initTracker() async {
+  //   await MyTracker.flush();
+  // }
 
   void _onItemTapped(int index) {
     setState(() {
