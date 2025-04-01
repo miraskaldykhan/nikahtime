@@ -127,6 +127,15 @@ class ChatMainPageState extends State<ChatMainPage>
                 _chatBloc = context.read<ChatBloc>();
                 return mainPage(context, state);
               case PageState.error:
+                return Center(
+                  child: Text(
+                    "Ошибка сервера",
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                );
               case PageState.hold:
               case PageState.noMoreItem:
               case PageState.loading:

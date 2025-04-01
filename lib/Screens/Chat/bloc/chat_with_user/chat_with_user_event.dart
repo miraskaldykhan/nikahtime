@@ -102,3 +102,29 @@ class RemoveAnswerChat extends ChatWithUserEvent {
   @override
   List<Object?> get props => [];
 }
+
+class RetrySendSingleMessage extends ChatWithUserEvent {
+  final int messageId; // идентификатор сообщения
+
+  const RetrySendSingleMessage({required this.messageId});
+
+  @override
+  List<Object?> get props => [messageId];
+}
+
+class RetrySendAllUnsentMessages extends ChatWithUserEvent {
+  const RetrySendAllUnsentMessages();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class DeleteChatMessageWithId extends ChatWithUserEvent {
+  final int messageId; // идентификатор сообщения
+
+  const DeleteChatMessageWithId({required this.messageId});
+
+  @override
+  List<Object?> get props => [messageId];
+}
+

@@ -10,21 +10,26 @@ class NotSeenMessagesProvider extends ChangeNotifier {
   get numberNotSeenMessages => _numberNotSeenMessages;
 
   void GetNumberNotSeenMessagesFromServer(String accessToken) async {
-    var response = await NetworkService().ChatsUser(accessToken);
-    var responseJson = jsonDecode(response.body);
-    var count = 0;
-    for (var field in responseJson) {
-      count += field["numberNotSeenMessages"] as int;
-    }
+    try {
+      var response = await NetworkService().ChatsUser(accessToken);
+      var responseJson = jsonDecode(response.body);
+      var count = 0;
+      for (var field in responseJson) {
+        count += field["numberNotSeenMessages"] as int;
+      }
 
-    if (response.statusCode != 200) {
-      debugPrint("${response.body}");
+      if (response.statusCode != 200) {
+        debugPrint("${response.body}");
+        return;
+      }
+
+      count.toString() != _numberNotSeenMessages.toString()
+          ? notifyListeners()
+          : null;
+      _numberNotSeenMessages = count.toString();
+    } catch (e) {
+      debugPrint("eeror: ${e.toString()}");
       return;
     }
-
-    count.toString() != _numberNotSeenMessages.toString()
-        ? notifyListeners()
-        : null;
-    _numberNotSeenMessages = count.toString();
   }
 }

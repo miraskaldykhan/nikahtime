@@ -837,10 +837,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                     if (message.isAuthUsermessage!)
                       GestureDetector(
                         onTap: () {
-                          deleteMessage(state.messages[index].messageId!);
-                          setState(() {
-                            state.messages.removeAt(index);
-                          });
+                          widget.bloc.add(DeleteChatMessageWithId(
+                              messageId: state.messages[index].messageId!));
                           controller.hideMenu();
                         },
                         child: Row(
@@ -873,92 +871,110 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
             barrierColor: Colors.transparent,
             showArrow: false,
             pressType: PressType.longPress,
-            child: Container(
-              margin: EdgeInsets.only(
-                left: message.isAuthUsermessage! == false
-                    ? 0
-                    : MediaQuery.of(context).size.width / 5 + 16,
-                right: message.isAuthUsermessage! == true
-                    ? 0
-                    : MediaQuery.of(context).size.width / 5 + 16,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: (message.isAuthUsermessage!)
-                    ? const Color(0xFFEBEBEB)
-                    : const Color(0xFFE2F1EC),
-                borderRadius: BorderRadius.only(
+            child: GestureDetector(
+              onTap: () {
+                if (message.sendedError) {
+                  _showRetryOptions(context, message);
+                }
+              },
+              child: Container(
+                margin: EdgeInsets.only(
+                  left: message.isAuthUsermessage! == false
+                      ? 0
+                      : MediaQuery.of(context).size.width / 5 + 16,
+                  right: message.isAuthUsermessage! == true
+                      ? 0
+                      : MediaQuery.of(context).size.width / 5 + 16,
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: (message.isAuthUsermessage!)
+                      ? const Color(0xFFEBEBEB)
+                      : const Color(0xFFE2F1EC),
+                  borderRadius: BorderRadius.only(
                     topRight: const Radius.circular(10),
                     topLeft: const Radius.circular(10),
                     bottomLeft:
                         Radius.circular((message.isAuthUsermessage!) ? 10 : 0),
                     bottomRight:
-                        Radius.circular((message.isAuthUsermessage!) ? 0 : 10)),
-              ),
-              child: Column(
-                crossAxisAlignment: (message.isAuthUsermessage!)
-                    ? CrossAxisAlignment.start
-                    : CrossAxisAlignment.start,
-                //spacing: 8,
-                children: [
-                  state.answerBoxVisible
-                      ? const Icon(Icons.arrow_back_sharp)
-                      : message.repliedStory != null
-                          ? Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_back_sharp,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  size: 15,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "История",
-                                  style: TextStyle(
+                        Radius.circular((message.isAuthUsermessage!) ? 0 : 10),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: (message.isAuthUsermessage!)
+                      ? CrossAxisAlignment.start
+                      : CrossAxisAlignment.start,
+                  //spacing: 8,
+                  children: [
+                    state.answerBoxVisible
+                        ? const Icon(Icons.arrow_back_sharp)
+                        : message.repliedStory != null
+                            ? Row(
+                                children: [
+                                  Icon(
+                                    Icons.arrow_back_sharp,
                                     color:
                                         Theme.of(context).colorScheme.primary,
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.w500,
+                                    size: 15,
                                   ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "История",
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
+                    messageBody(message),
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${intl.DateFormat('HH:mm').format(intl.DateFormat('DD.MM.yyyy HH:mm:ss').parse(message.messageTime!).add(DateTime.now().timeZoneOffset - const Duration(hours: 3)))}  ${message.edited ?? ""}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Visibility(
+                            visible: message.isAuthUsermessage == true,
+                            child: Row(
+                              children: [
+                                const SizedBox(
+                                  width: 2,
                                 ),
+                                message.isAuthUsermessage! &&
+                                        message.sendedError
+                                    ? Icon(
+                                        Icons.question_mark,
+                                        color: Colors.red,
+                                      )
+                                    : Container(
+                                        child: messageStatusMark(
+                                          message,
+                                          Theme.of(context).colorScheme.primary,
+                                        ),
+                                      ),
                               ],
-                            )
-                          : Container(),
-                  messageBody(message),
-                  Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${intl.DateFormat('HH:mm').format(intl.DateFormat('DD.MM.yyyy HH:mm:ss').parse(message.messageTime!).add(DateTime.now().timeZoneOffset - const Duration(hours: 3)))}  ${message.edited ?? ""}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Visibility(
-                          visible: message.isAuthUsermessage == true,
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 2,
-                              ),
-                              Container(
-                                child: messageStatusMark(message,
-                                    Theme.of(context).colorScheme.primary),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -967,60 +983,61 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     );
   }
 
-  Future<void> deleteMessage(int messageId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String accessToken = prefs.getString("token") ?? "";
-    String csrfToken = "LHXZTMpSzw8TCVkXqAO6LFG41B4cN1Oth80CvX7J";
-
-    if (accessToken.isEmpty) {
-      debugPrint("Token not found.");
-      return;
-    }
-
-    Dio dio = Dio();
-    try {
-      Response response = await dio.delete(
-        'https://www.nikahtime.ru/api/chats/messages/$messageId',
-        options: Options(
-          headers: {
-            'accept': 'application/json',
-            'Authorization': 'Bearer $accessToken',
-            'X-CSRF-TOKEN': csrfToken,
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        debugPrint('Message deleted successfully');
-      } else {
-        debugPrint('Failed to delete message: ${response.statusMessage}');
-      }
-    } catch (e) {
-      debugPrint('Error deleting message: $e');
-    }
+  void _showRetryOptions(BuildContext context, ChatMessage message) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Wrap(
+          children: [
+            ListTile(
+              leading: Icon(Icons.refresh),
+              title: Text("Отправить сообщение заново"),
+              onTap: () {
+                // Закрываем диалог
+                Navigator.pop(context);
+                // Вызываем событие повторной отправки конкретного сообщения
+                widget.bloc.add(
+                  RetrySendSingleMessage(
+                    messageId: message.messageId!,
+                  ),
+                );
+              },
+            ),
+            // Если нужно, можно добавить опцию отправки всех неотправленных:
+            ListTile(
+              leading: Icon(Icons.refresh_outlined),
+              title: Text("Отправить все неотправленные сообщения"),
+              onTap: () {
+                Navigator.pop(context);
+                widget.bloc.add(
+                  const RetrySendAllUnsentMessages(),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget messageStatusMark(ChatMessage message, Color color) {
-    List<Widget> children = [
-      SvgPicture.asset(
-        'assets/icons/check_mess.svg',
-        color: (message.isMessageSeen == true) ? color : Colors.grey,
-      )
-    ];
-    // if (message.isMessageSeen == true) {
-    //   children.add( Positioned(
-    //       top: 0,
-    //       left: 4,
-    //       child: SvgPicture.asset(
-    //     'assets/icons/check_mess.svg',
-    //     color: const Color.fromRGBO(0, 0xcf, 0x91, 1)
-
-    //   )));
-    // }
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: children,
+    if (message.isMessageSend == false) {
+      return Icon(
+        Icons.hourglass_bottom_sharp,
+        color: Colors.grey,
+        size: 16,
+      );
+    }
+    if (message.sendedError == true) {
+      return Icon(
+        Icons.error,
+        color: Colors.red,
+        size: 16,
+      );
+    }
+    return SvgPicture.asset(
+      'assets/icons/check_mess.svg',
+      color: (message.isMessageSeen == true) ? color : Colors.grey,
     );
   }
 

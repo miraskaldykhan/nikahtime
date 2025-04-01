@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -67,7 +68,11 @@ void main() async {
   debugPrint(token);
   var response;
   if (token != "empty") {
-    response = await NetworkService().GetUserInfo(token);
+    try {
+      response = await NetworkService().GetUserInfo(token);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
   await Firebase.initializeApp(
     name: 'nikah-time-332406',
@@ -418,13 +423,15 @@ class _MyAppState extends State<MyApp> {
       );
     }
 
-    if (widget.response.statusCode != 200) {
+    if (widget.response == null || widget.response.statusCode != 200) {
       return const AppBody(initialScreen: AppBodyScreen.welcome);
     }
     print(widget.response.body);
     UserProfileData userProfileData = UserProfileData();
     userProfileData.accessToken = widget.token;
     userProfileData.jsonToData(jsonDecode(widget.response.body)[0]);
+
+    log("accessTOKEN: ${widget.token}");
 
     return Builder(builder: (context) {
       context

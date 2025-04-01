@@ -1,3 +1,4 @@
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
 
@@ -74,7 +75,7 @@ class ChatWithLastMessage extends Chat {
       int? numberNotSeenMessages,
       UserProfileImage? avatar}) {
     return ChatWithLastMessage(
-        chatId: chatID ?? this.chatId,
+        chatId: chatID ?? chatId,
         userID: userID ?? this.userID,
         userAvatar: userAvatar ?? this.userAvatar,
         userName: userName ?? this.userName,
@@ -162,7 +163,7 @@ class ChatMessage {
       sendedError: sendedError,
       message: message ?? this.message,
       messageTime: messageTime ?? this.messageTime,
-      isAuthUsermessage: isAuthUserMessage ?? this.isAuthUsermessage,
+      isAuthUsermessage: isAuthUserMessage ?? isAuthUsermessage,
       messageType: messageType ?? this.messageType,
       messageId: messageId ?? this.messageId,
       isMessageSeen: isMessageSeen ?? this.isMessageSeen,
@@ -184,6 +185,7 @@ class ChatMessage {
     isMessageSeen = json["isMessageSeen"];
     messageType = json["messageType"];
     edited = json['edited'];
+    isMessageSend = true;
     repliedStory = json['repliedStory'] != null
         ? Story.fromJson(json['repliedStory'])
         : null;

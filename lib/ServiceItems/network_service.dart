@@ -68,11 +68,12 @@ class NetworkService {
   final String account_user_logout = "/account/logout/";
 
   //-------V1-------
-  Future<PaginatedUserList> searchUsers({required String accessToken,
-    required UserFilter filter,
-    required int page,
-    List<int> exceptIds = const [],
-    bool isExpandedFilter = false}) async {
+  Future<PaginatedUserList> searchUsers(
+      {required String accessToken,
+      required UserFilter filter,
+      required int page,
+      List<int> exceptIds = const [],
+      bool isExpandedFilter = false}) async {
     log("search users: ${filter.toJson()}");
     Map<String, dynamic> request;
     if (isExpandedFilter) {
@@ -82,26 +83,26 @@ class NetworkService {
         "maxAge": filter.maxAge,
         "nationality": (filter.nationality != "")
             ? (filter.nationality == "Любая" || filter.nationality == "Any")
-            ? null
-            : filter.nationality
+                ? null
+                : filter.nationality
             : null,
         "country": (filter.country != "")
             ? (filter.country == "Любая" || filter.country == "Any")
-            ? null
-            : filter.country
+                ? null
+                : filter.country
             : null,
         "city": (filter.city != "")
             ? (filter.city == "Любая")
-            ? null
-            : filter.city
+                ? null
+                : filter.city
             : null,
         "education": (filter.education != "")
             ? (filter.education == "Любая" || filter.education == "Any")
-            ? null
-            : filter.education
+                ? null
+                : filter.education
             : null,
         "maritalStatus":
-        (filter.maritalStatus != "") ? filter.maritalStatus : null,
+            (filter.maritalStatus != "") ? filter.maritalStatus : null,
         "haveChildren": filter.haveChildren,
         "haveBadHabits": filter.haveBadHabbits ?? false,
         "badHabits": filter.badHabits,
@@ -225,9 +226,10 @@ class NetworkService {
     return PaginatedChatList.fromJson(response.data);
   }
 
-  Future<GetChatResponse> getChat({required String accessToken,
-    required int chatId,
-    required int page}) async {
+  Future<GetChatResponse> getChat(
+      {required String accessToken,
+      required int chatId,
+      required int page}) async {
     var response = await _dio.get("$baseUrl/chats/v1/get/$chatId",
         queryParameters: {
           "page": page,
@@ -255,8 +257,8 @@ class NetworkService {
         ));
   }
 
-  SendLoginByEmailRequest(String email, String password,
-      String firebaseToken) async {
+  SendLoginByEmailRequest(
+      String email, String password, String firebaseToken) async {
     //debugPrint("Notif ID firebaseToken");
     var response = await http.post(Uri.parse(baseUrl + login), body: {
       "grantType": "email",
@@ -269,8 +271,8 @@ class NetworkService {
     return response;
   }
 
-  SendLoginByNumberRequest(String number, String password,
-      String firebaseToken) async {
+  SendLoginByNumberRequest(
+      String number, String password, String firebaseToken) async {
     debugPrint(firebaseToken);
     var response = await http.post(Uri.parse(baseUrl + login), body: {
       "grantType": "phoneNumber",
@@ -312,8 +314,8 @@ class NetworkService {
     return response;
   }
 
-  sendRegistrationRequestByAppleId(String idToken,
-      String? notificationId) async {
+  sendRegistrationRequestByAppleId(
+      String idToken, String? notificationId) async {
     var response = await http.post(Uri.parse(baseUrl + registration), body: {
       "grantType": "appleIdToken",
       "idToken": idToken,
@@ -324,8 +326,8 @@ class NetworkService {
     return response;
   }
 
-  sendRegistrationRequestByGoogle(String idToken,
-      String? notificationId) async {
+  sendRegistrationRequestByGoogle(
+      String idToken, String? notificationId) async {
     var response = await http.post(Uri.parse(baseUrl + registration), body: {
       "grantType": "googleIdToken",
       "idToken": idToken,
@@ -338,7 +340,7 @@ class NetworkService {
 
   SendRegistrationRequestAgain(String email, String type) async {
     var response =
-    await http.post(Uri.parse(baseUrl + registration_second), body: {
+        await http.post(Uri.parse(baseUrl + registration_second), body: {
       "grantType": type,
       "email": email,
     }, headers: {
@@ -404,8 +406,8 @@ class NetworkService {
     return response;
   }
 
-  UploadFileRequest(String accessToken, String imagePath,
-      String fileType) async {
+  UploadFileRequest(
+      String accessToken, String imagePath, String fileType) async {
     Map<String, String> headers = {
       "Accept": "application/json",
       "Authorization": "Bearer $accessToken",
@@ -611,6 +613,7 @@ class NetworkService {
     if (response.statusCode != 200) {
       //debugPrint("ChatsUser ${response.body}");
     }
+    debugPrint("chatsUser: ${response.body}");
     return response;
   }
 
@@ -631,6 +634,7 @@ class NetworkService {
 
   ChatsGetChatID(String accessToken, int chatID) async {
     ///TODO: swap to DIO
+    ///
     var response = await http.get(
       Uri.parse("$baseUrl/chats/get/$chatID"),
       headers: {
@@ -657,12 +661,13 @@ class NetworkService {
     return response;
   }
 
-  ChatsSendMessage(String accessToken,
-      String message,
-      int chatID,
-      String messageType, {
-        int? repliedStoryId,
-      }) async {
+  ChatsSendMessage(
+    String accessToken,
+    String message,
+    int chatID,
+    String messageType, {
+    int? repliedStoryId,
+  }) async {
     ///TODO: swap to DIO
     var response = await http.post(Uri.parse('$baseUrl/chats/send/message'),
         body: json.encode(
@@ -751,7 +756,7 @@ class NetworkService {
 
   RestoreAccountPasswordCode(String grantType, String value) async {
     var response =
-    await http.post(Uri.parse(baseUrl + account_pin_code_request), body: {
+        await http.post(Uri.parse(baseUrl + account_pin_code_request), body: {
       "grantType": grantType,
       grantType: value,
     }, headers: {
@@ -761,16 +766,16 @@ class NetworkService {
     return response;
   }
 
-  RestoreAccountPasswordCodeVerify(String grantType, String value,
-      String code) async {
+  RestoreAccountPasswordCodeVerify(
+      String grantType, String value, String code) async {
     var response = await http.post(Uri.parse(baseUrl + account_pin_code_verify),
         body: {"grantType": grantType, grantType: value, "code": code},
         headers: {'Accept': 'application/json'});
     return response;
   }
 
-  RestoreAccountPasswordCodeReset(String grantType, String value, String code,
-      String password) async {
+  RestoreAccountPasswordCodeReset(
+      String grantType, String value, String code, String password) async {
     var response = await http.post(Uri.parse(baseUrl + account_password_reset),
         body: {
           "grantType": grantType,
@@ -836,7 +841,7 @@ class NetworkService {
       String message) async {
     var response = await http.post(Uri.parse('$baseUrl/complain'),
         body:
-        json.encode({"title": title, "userId": userId, "message": message}),
+            json.encode({"title": title, "userId": userId, "message": message}),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $accessToken',
@@ -996,9 +1001,10 @@ class NetworkService {
     return response;
   }
 
-  Future<PaginatedNewsList> getNews({required String accessToken,
-    required String searchString,
-    required int page}) async {
+  Future<PaginatedNewsList> getNews(
+      {required String accessToken,
+      required String searchString,
+      required int page}) async {
     var response = await _dio.get("$baseUrl/news",
         queryParameters: {"page": page, "searchString": searchString},
         options: Options(
@@ -1100,16 +1106,17 @@ class NetworkService {
         .toList();
   }
 
-  Future<CommentaryItem> addCommentaryToNews({required String accessToken,
-    required int newsId,
-    int? commentId,
-    required String text}) async {
+  Future<CommentaryItem> addCommentaryToNews(
+      {required String accessToken,
+      required int newsId,
+      int? commentId,
+      required String text}) async {
     var response = await _dio.post("$baseUrl/news/comments/add",
         data: (commentId == null)
             ? {
-          "newsId": newsId,
-          "text": text,
-        }
+                "newsId": newsId,
+                "text": text,
+              }
             : {"newsId": newsId, "text": text, "commentId": commentId},
         options: Options(
           headers: {
@@ -1167,8 +1174,7 @@ class NetworkService {
       }
     }
     if (response.statusCode != 200) {
-      throw "Error: ${response
-          .statusCode}: Ошибка при отправке файла на сервер";
+      throw "Error: ${response.statusCode}: Ошибка при отправке файла на сервер";
     }
     return response;
   }
@@ -1302,16 +1308,15 @@ class NetworkService {
 
     if (permissionStatus) {
       List<Contact> contacts =
-      await FlutterContacts.getContacts(withProperties: true);
+          await FlutterContacts.getContacts(withProperties: true);
       List<Map<String, String>> formattedContacts = contacts
           .where((contact) => contact.phones.isNotEmpty)
-          .map((contact) =>
-      {
-        "name": contact.displayName.isNotEmpty
-            ? contact.displayName
-            : "undefined",
-        "phone_number": contact.phones.first.number,
-      })
+          .map((contact) => {
+                "name": contact.displayName.isNotEmpty
+                    ? contact.displayName
+                    : "undefined",
+                "phone_number": contact.phones.first.number,
+              })
           .toList();
       Map<String, dynamic> data = {
         "contacts": formattedContacts,
@@ -1332,12 +1337,12 @@ class NetworkService {
         );
         log("ASDAS: ${List<RegisteredContacts>.from(
           response.data!.map(
-                (x) => RegisteredContacts.fromJson(x),
+            (x) => RegisteredContacts.fromJson(x),
           ),
         )}");
         return List<RegisteredContacts>.from(
           response.data!.map(
-                (x) => RegisteredContacts.fromJson(x),
+            (x) => RegisteredContacts.fromJson(x),
           ),
         );
       } else {
@@ -1356,17 +1361,16 @@ class NetworkService {
 
     if (permissionStatus) {
       List<Contact> contacts =
-      await FlutterContacts.getContacts(withProperties: true);
+          await FlutterContacts.getContacts(withProperties: true);
 
       List<Map<String, String>> formattedContacts = contacts
           .where((contact) => contact.phones.isNotEmpty)
-          .map((contact) =>
-      {
-        "name": contact.displayName.isNotEmpty
-            ? contact.displayName
-            : "undefined",
-        "phone_number": contact.phones.first.number,
-      })
+          .map((contact) => {
+                "name": contact.displayName.isNotEmpty
+                    ? contact.displayName
+                    : "undefined",
+                "phone_number": contact.phones.first.number,
+              })
           .toList();
       if (formattedContacts.isNotEmpty) {
         Map<String, dynamic> data = {
@@ -1390,7 +1394,7 @@ class NetworkService {
         log("data length: ${response.data!.length}");
         return List<UnRegisteredContacts>.from(
           response.data!.map(
-                (x) => UnRegisteredContacts.fromJson(x),
+            (x) => UnRegisteredContacts.fromJson(x),
           ),
         );
       } else {
