@@ -17,6 +17,7 @@ import 'package:untitled/Screens/Chat/Stories/create/captured_file_editing.dart'
 import 'package:image/image.dart' as img;
 import 'package:untitled/Screens/Chat/Stories/create/cubit/send_stories/send_stories_cubit.dart';
 import 'package:untitled/Screens/Chat/Stories/editor/cubit/get_my_stories/get_my_stories_cubit.dart';
+import 'package:untitled/ServiceItems/notification_service.dart';
 
 class CustomStoryEditor extends StatefulWidget {
   const CustomStoryEditor({super.key});
@@ -39,9 +40,7 @@ class _CustomStoryEditorState extends State<CustomStoryEditor>
   void initState() {
     super.initState();
     navigator = Navigator.of(context);
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,172 +51,183 @@ class _CustomStoryEditorState extends State<CustomStoryEditor>
           bloc: BlocProvider.of<SendStoriesCubit>(context),
           listener: (context, state) {
             if (state is SendStoriesError) {
-              log("Error:  ${state.message}");
+              AppNotifications.showError(message: state.message);
             }
             if (state is SendStoriesSuccess) {
-              log("SUCCESS:");
+              AppNotifications.showSuccess(message: "Успешно опубликовано");
               BlocProvider.of<GetMyStoriesCubit>(context).getMyStories();
               Navigator.of(context).pop();
             }
           },
           builder: (context, state) {
             if (state is SendStoriesLoading) {
+              final p = state
+                  .progress; // теперь в диапазоне 0.0–1.0, но покажет до 0.8 на этапе 1
               return Center(
-                child: CircularProgressIndicator(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: CircularProgressIndicator(
+                        value: p,
+                        strokeWidth: 6,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Text("${(p * 100).toInt()}%",
+                        style: TextStyle(color: Colors.white)),
+                  ],
+                ),
               );
             }
             return SizedBox(
               height: 1.sh,
               width: 1.sw,
               child: cam.CameraAwesomeBuilder.awesome(
-                      progressIndicator: const Center(
-                        child: SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                      saveConfig: cam.SaveConfig.photoAndVideo(),
-                      theme: cam.AwesomeTheme(
-                          bottomActionsBackgroundColor: Colors.black),
-                      sensorConfig: cam.SensorConfig.single(
-                        aspectRatio: cam.CameraAspectRatios.ratio_16_9,
-                        flashMode: cam.FlashMode.auto,
-                        sensor: cam.Sensor.position(cam.SensorPosition.back),
-                        zoom: 0.0,
-                      ),
-                      topActionsBuilder: (state) => state.captureState !=
-                                  null &&
-                              state.captureState!.isRecordingVideo
-                          ? SizedBox.shrink()
-                          : cam.AwesomeTopActions(
-                              padding: EdgeInsets.only(left: 16.w, right: 16.w),
-                              state: state,
-                              children: [
-                                cam.AwesomeFlashButton(
-                                  state: state,
-                                ),
-                                const Spacer(),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: SvgPicture.asset(
-                                    "assets/icons/close2.svg",
-                                    width: 15.w,
-                                    height: 15.h,
-                                  ),
-                                ),
-                              ],
-                            ),
-                      middleContentBuilder: (state) {
-                        return Column(
-                          children: [
-                            const Spacer(),
-                            // Use a Builder to get a BuildContext below AwesomeThemeProvider widget
-                            cam.AwesomeCameraModeSelector(
-                              state: state,
-                            ),
-                            StreamBuilder<MediaCapture?>(
-                              stream: state.captureState$,
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return SizedBox.shrink();
-                                } else {
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    final MediaCapture mediaCapture =
-                                        snapshot.requireData!;
-
-                                    if (mediaCapture.status ==
-                                            MediaCaptureStatus.success &&
-                                        mediaCapture.isVideo &&
-                                        path !=
-                                            mediaCapture.captureRequest.path!) {
-                                      path = mediaCapture.captureRequest.path!;
-                                      final route = MaterialPageRoute(
-                                        fullscreenDialog: true,
-                                        builder: (_) =>
-                                            CapturedPhotoOrVideoPage(
-                                          file: File(mediaCapture
-                                              .captureRequest.path!),
-                                        ),
-                                      );
-                                      navigator.push(route);
-                                    }
-                                    if (mediaCapture.status ==
-                                            MediaCaptureStatus.success &&
-                                        mediaCapture.isPicture &&
-                                        path !=
-                                            mediaCapture.captureRequest.path!) {
-                                      path = mediaCapture.captureRequest.path!;
-                                      final route = MaterialPageRoute(
-                                        fullscreenDialog: true,
-                                        builder: (_) =>
-                                            CapturedPhotoOrVideoPage(
-                                          file: File(mediaCapture
-                                              .captureRequest.path!),
-                                          isVideo: false,
-                                        ),
-                                      );
-                                      navigator.push(route);
-                                    }
-                                  });
-                                  return SizedBox.shrink();
-                                }
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                      bottomActionsBuilder: (state) => cam.AwesomeBottomActions(
+                progressIndicator: const Center(
+                  child: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                saveConfig: cam.SaveConfig.photoAndVideo(),
+                theme: cam.AwesomeTheme(
+                    bottomActionsBackgroundColor: Colors.black),
+                sensorConfig: cam.SensorConfig.single(
+                  aspectRatio: cam.CameraAspectRatios.ratio_16_9,
+                  flashMode: cam.FlashMode.auto,
+                  sensor: cam.Sensor.position(cam.SensorPosition.back),
+                  zoom: 0.0,
+                ),
+                topActionsBuilder: (state) => state.captureState != null &&
+                        state.captureState!.isRecordingVideo
+                    ? SizedBox.shrink()
+                    : cam.AwesomeTopActions(
+                        padding: EdgeInsets.only(left: 16.w, right: 16.w),
                         state: state,
-                        left: state.captureState != null &&
-                                state.captureState!.isRecordingVideo
-                            ? SizedBox.shrink()
-                            : InkWell(
-                                onTap: () {
-                                  _showBottomSheet();
-                                },
-                                child: Icon(
-                                  Icons.perm_media_outlined,
-                                  color: Colors.white,
-                                ),
-                              ),
-                        right: state.captureState != null &&
-                                state.captureState!.isRecordingVideo
-                            ? SizedBox.shrink()
-                            : cam.AwesomeCameraSwitchButton(
-                                state: state,
-                                scale: 1.0,
-                                onSwitchTap: (state) {
-                                  state.switchCameraSensor(
-                                    aspectRatio: state.sensorConfig.aspectRatio,
-                                  );
-                                },
-                              ),
-                      ),
-                      onMediaTap: (mediaCapture) {
-                        if (mediaCapture.isVideo) {
-                          final route = MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (_) => CapturedPhotoOrVideoPage(
-                                file: File(mediaCapture.captureRequest.path!)),
-                          );
-                          navigator.push(route);
-                        }
-                        if (mediaCapture.isPicture) {
-                          final route = MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (_) => CapturedPhotoOrVideoPage(
-                              file: File(mediaCapture.captureRequest.path!),
-                              isVideo: false,
+                        children: [
+                          cam.AwesomeFlashButton(
+                            state: state,
+                          ),
+                          const Spacer(),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: SvgPicture.asset(
+                              "assets/icons/close2.svg",
+                              width: 15.w,
+                              height: 15.h,
                             ),
-                          );
-                          navigator.push(route);
-                        }
-                      },
-                    ),
+                          ),
+                        ],
+                      ),
+                middleContentBuilder: (state) {
+                  return Column(
+                    children: [
+                      const Spacer(),
+                      // Use a Builder to get a BuildContext below AwesomeThemeProvider widget
+                      cam.AwesomeCameraModeSelector(
+                        state: state,
+                      ),
+                      StreamBuilder<MediaCapture?>(
+                        stream: state.captureState$,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return SizedBox.shrink();
+                          } else {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              final MediaCapture mediaCapture =
+                                  snapshot.requireData!;
+
+                              if (mediaCapture.status ==
+                                      MediaCaptureStatus.success &&
+                                  mediaCapture.isVideo &&
+                                  path != mediaCapture.captureRequest.path!) {
+                                path = mediaCapture.captureRequest.path!;
+                                final route = MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (_) => CapturedPhotoOrVideoPage(
+                                    file:
+                                        File(mediaCapture.captureRequest.path!),
+                                  ),
+                                );
+                                navigator.push(route);
+                              }
+                              if (mediaCapture.status ==
+                                      MediaCaptureStatus.success &&
+                                  mediaCapture.isPicture &&
+                                  path != mediaCapture.captureRequest.path!) {
+                                path = mediaCapture.captureRequest.path!;
+                                final route = MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (_) => CapturedPhotoOrVideoPage(
+                                    file:
+                                        File(mediaCapture.captureRequest.path!),
+                                    isVideo: false,
+                                  ),
+                                );
+                                navigator.push(route);
+                              }
+                            });
+                            return SizedBox.shrink();
+                          }
+                        },
+                      ),
+                    ],
+                  );
+                },
+                bottomActionsBuilder: (state) => cam.AwesomeBottomActions(
+                  state: state,
+                  left: state.captureState != null &&
+                          state.captureState!.isRecordingVideo
+                      ? SizedBox.shrink()
+                      : InkWell(
+                          onTap: () {
+                            _showBottomSheet();
+                          },
+                          child: Icon(
+                            Icons.perm_media_outlined,
+                            color: Colors.white,
+                          ),
+                        ),
+                  right: state.captureState != null &&
+                          state.captureState!.isRecordingVideo
+                      ? SizedBox.shrink()
+                      : cam.AwesomeCameraSwitchButton(
+                          state: state,
+                          scale: 1.0,
+                          onSwitchTap: (state) {
+                            state.switchCameraSensor(
+                              aspectRatio: state.sensorConfig.aspectRatio,
+                            );
+                          },
+                        ),
+                ),
+                onMediaTap: (mediaCapture) {
+                  if (mediaCapture.isVideo) {
+                    final route = MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (_) => CapturedPhotoOrVideoPage(
+                          file: File(mediaCapture.captureRequest.path!)),
+                    );
+                    navigator.push(route);
+                  }
+                  if (mediaCapture.isPicture) {
+                    final route = MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (_) => CapturedPhotoOrVideoPage(
+                        file: File(mediaCapture.captureRequest.path!),
+                        isVideo: false,
+                      ),
+                    );
+                    navigator.push(route);
+                  }
+                },
+              ),
             );
           },
         ),

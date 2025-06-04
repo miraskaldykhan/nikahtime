@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
 
@@ -130,8 +129,12 @@ class ChatMessage {
   int? messageId;
   bool? isMessageSeen;
   String? messageType;
+  ChatMessage? parent;
   String? edited;
   Story? repliedStory;
+  double? uploadProgress;
+
+  bool get isUploading => uploadProgress != null && uploadProgress! < 1.0;
 
   ChatMessage({
     this.isMessageSend = false,
@@ -144,6 +147,8 @@ class ChatMessage {
     this.messageType,
     this.edited,
     this.repliedStory,
+    this.parent,
+    this.uploadProgress,
   });
 
   ChatMessage copyWith({
@@ -157,6 +162,8 @@ class ChatMessage {
     bool? isMessageSeen,
     String? edited,
     Story? repliedStory,
+    ChatMessage? parent,
+    double? uploadProgress,
   }) {
     return ChatMessage(
       isMessageSend: isMessageSend,
@@ -169,6 +176,8 @@ class ChatMessage {
       isMessageSeen: isMessageSeen ?? this.isMessageSeen,
       edited: edited ?? this.edited,
       repliedStory: repliedStory ?? this.repliedStory,
+      uploadProgress: uploadProgress ?? this.uploadProgress,
+      parent: parent ?? this.parent,
     );
   }
 
@@ -185,6 +194,8 @@ class ChatMessage {
     isMessageSeen = json["isMessageSeen"];
     messageType = json["messageType"];
     edited = json['edited'];
+    parent =
+        json["parent"] == null ? null : ChatMessage.fromJson(json["parent"]);
     isMessageSend = true;
     repliedStory = json['repliedStory'] != null
         ? Story.fromJson(json['repliedStory'])
@@ -193,7 +204,7 @@ class ChatMessage {
 
   @override
   String toString() {
-    return 'ChatMessage{isMessageSend: $isMessageSend, sendedError: $sendedError, message: $message, messageTime: $messageTime, isAuthUsermessage: $isAuthUsermessage, messageId: $messageId, isMessageSeen: $isMessageSeen, messageType: $messageType, edited: $edited, repliedStory: $repliedStory}';
+    return 'ChatMessage{isMessageSend: $isMessageSend, sendedError: $sendedError, message: $message, messageTime: $messageTime, isAuthUsermessage: $isAuthUsermessage, messageId: $messageId, isMessageSeen: $isMessageSeen, messageType: $messageType, edited: $edited, repliedStory: $repliedStory, parent: $parent}';
   }
 }
 

@@ -4,7 +4,10 @@ abstract class SendStoriesState {}
 
 class SendStoriesInitial extends SendStoriesState {}
 
-class SendStoriesLoading extends SendStoriesState {}
+class SendStoriesLoading extends SendStoriesState {
+  final double progress;
+  SendStoriesLoading(this.progress);
+}
 
 class SendStoriesSuccess extends SendStoriesState {}
 

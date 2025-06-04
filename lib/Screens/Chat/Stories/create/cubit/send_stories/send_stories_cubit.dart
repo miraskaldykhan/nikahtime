@@ -18,16 +18,25 @@ class SendStoriesCubit extends Cubit<SendStoriesState> {
     required String filePath,
     required bool isVideo,
   }) async {
-    emit(SendStoriesLoading());
+    emit(SendStoriesLoading(0));
     if (accessToken == null) {
       await getAccessToken();
     }
     try {
       var response = await NetworkService().sendStories(
-          filePath: filePath, accessToken: accessToken!, isVideo: isVideo);
+        filePath: filePath,
+        accessToken: accessToken!,
+        isVideo: isVideo,
+        onSendProgress: (sent, total) {
+          final double raw = total > 0 ? sent / total : 0.0;
+          final double scaled = raw * 0.8; // <-- масштабируем до 80%
+          emit(SendStoriesLoading(scaled));
+        },
+      );
+      emit(SendStoriesLoading(0.95));
       emit(SendStoriesSuccess());
     } catch (e) {
-      emit(SendStoriesError(message: e.toString()));
+      emit(SendStoriesError(message: "Ошибка при загрузке сториса"));
     }
   }
 }

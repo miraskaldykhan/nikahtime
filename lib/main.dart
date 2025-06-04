@@ -19,6 +19,7 @@ import 'package:path_provider/path_provider.dart';
 //import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toastification/toastification.dart';
 import 'package:untitled/Screens/Chat/Stories/create/cubit/send_stories/send_stories_cubit.dart';
 import 'package:untitled/Screens/Chat/Stories/editor/cubit/createdAtCubit.dart';
 import 'package:untitled/Screens/Chat/Stories/editor/cubit/delete/delete_stories_cubit.dart';
@@ -41,10 +42,12 @@ import 'package:untitled/Screens/Registration/registration_create_profile.dart';
 import 'package:untitled/Screens/main_page.dart';
 import 'package:untitled/Screens/welcome.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
+import 'package:untitled/ServiceItems/notification_service.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/components/widgets/nikah_app_updater.dart';
 import 'package:untitled/firebase_options.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -65,15 +68,7 @@ void main() async {
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString("token") ?? "";
-  debugPrint(token);
-  var response;
-  if (token != "empty") {
-    try {
-      response = await NetworkService().GetUserInfo(token);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
+
   await Firebase.initializeApp(
     name: 'nikah-time-332406',
     options: DefaultFirebaseOptions.currentPlatform,
@@ -170,7 +165,7 @@ void main() async {
       fallbackLocale: const Locale('en'),
       child: ChangeNotifierProvider(
         create: (_) => ThemeProvider(prefs),
-        child: MyApp(token, response),
+        child: MyApp(token),
       ),
     ),
   );
@@ -181,10 +176,9 @@ Future<void> _messageHandler(RemoteMessage message) async {
 }
 
 class MyApp extends StatefulWidget {
-  MyApp(this.token, this.response, {super.key});
+  const MyApp(this.token, {super.key});
 
-  String token;
-  var response;
+  final String token;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -205,13 +199,17 @@ class _MyAppState extends State<MyApp> {
   };
 
   late DateTime installationDate;
-
   bool showRatingPopup = false;
+
+  Future<http.Response>? _userInfoFuture;
 
   @override
   void initState() {
     super.initState();
     checkRatingPopup();
+    if (widget.token.isNotEmpty && widget.token != 'empty') {
+      _userInfoFuture = NetworkService().GetUserInfo(widget.token);
+    }
   }
 
   Future<void> checkRatingPopup() async {
@@ -337,11 +335,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    if (showRatingPopup) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) async => await showRatingDialog(),
-      );
-    }
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -399,51 +392,102 @@ class _MyAppState extends State<MyApp> {
       child: ScreenUtilInit(
         minTextAdapt: true,
         splitScreenMode: true,
-        child: MaterialApp(
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          title: 'Nikah Time',
-          debugShowCheckedModeBanner: false,
-          theme: themeProvider.currentTheme,
-          home: buildAppBody(context),
-          navigatorKey: navigatorKey,
-          routes: {
-            '/entering': (context) => const WelcomeScreen(),
-          },
+        child: ToastificationWrapper(
+          child: MaterialApp(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            title: 'Nikah Time',
+            debugShowCheckedModeBanner: false,
+            theme: themeProvider.currentTheme,
+            home: buildAppBody(context),
+            navigatorKey: navigatorKey,
+            routes: {
+              '/entering': (context) => const WelcomeScreen(),
+            },
+          ),
         ),
       ),
     );
   }
 
   Widget buildAppBody(BuildContext context) {
-    if (widget.token == "empty") {
+    if (widget.token == "empty" || widget.token.isEmpty) {
       return const AppBody(
         initialScreen: AppBodyScreen.welcome,
       );
     }
+// а если авторизован — ждём Future
+    return FutureBuilder<http.Response>(
+      future: _userInfoFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        if (snapshot.hasError || snapshot.data?.statusCode != 200) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Не удалось соединиться с сервером',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _userInfoFuture =
+                            NetworkService().GetUserInfo(widget.token);
+                      });
+                    },
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.green),
+                        textStyle: MaterialStateProperty.all<TextStyle>(
+                          const TextStyle(color: Colors.white),
+                        )),
+                    child: const Text(
+                      'Попробовать снова',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        print(snapshot.data);
+        UserProfileData userProfileData = UserProfileData();
+        userProfileData.accessToken = widget.token;
+        userProfileData.jsonToData(jsonDecode(snapshot.data!.body)[0]);
 
-    if (widget.response == null || widget.response.statusCode != 200) {
-      return const AppBody(initialScreen: AppBodyScreen.welcome);
-    }
-    print(widget.response.body);
-    UserProfileData userProfileData = UserProfileData();
-    userProfileData.accessToken = widget.token;
-    userProfileData.jsonToData(jsonDecode(widget.response.body)[0]);
+        log("accessTOKEN: ${widget.token}");
 
-    log("accessTOKEN: ${widget.token}");
+        if (showRatingPopup) {
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) async => await showRatingDialog(),
+          );
+        }
 
-    return Builder(builder: (context) {
-      context
-          .read<ProfileBloc>()
-          .add(UpdateProfileDataEvent(userProfileData: userProfileData));
-      return AppBody(
-        initialScreen: (userProfileData.isValid())
-            ? AppBodyScreen.main
-            : AppBodyScreen.registrationCreateProfile,
-        userProfileData: userProfileData,
-      );
-    });
+        return Builder(builder: (ctx) {
+          ctx
+              .read<ProfileBloc>()
+              .add(UpdateProfileDataEvent(userProfileData: userProfileData));
+          return AppBody(
+            initialScreen: userProfileData.isValid()
+                ? AppBodyScreen.main
+                : AppBodyScreen.registrationCreateProfile,
+            userProfileData: userProfileData,
+          );
+        });
+      },
+    );
   }
 }
 

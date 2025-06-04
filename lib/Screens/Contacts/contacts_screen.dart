@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gradient_borders/gradient_borders.dart';
 import 'package:untitled/Screens/Contacts/cubit/fetch_unregistered_contacts/unregistered_contacts_cubit.dart';
 import 'package:untitled/Screens/Contacts/models/contacts.dart';
+import 'package:untitled/ServiceItems/notification_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InvitePage extends StatefulWidget {
@@ -136,17 +137,14 @@ class _InvitePageState extends State<InvitePage> {
       ),
       body: Stack(
         children: [
-          BlocBuilder<UnregisteredContactsCubit, UnregisteredContactsState>(
+          BlocConsumer<UnregisteredContactsCubit, UnregisteredContactsState>(
             bloc: BlocProvider.of<UnregisteredContactsCubit>(context),
-            builder: (context, state) {
+            listener: (context, state){
               if (state is UnregisteredContactsError) {
-                return Center(
-                  child: Text(
-                    state.errorMessage,
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                );
+                AppNotifications.showError(message: state.errorMessage);
               }
+            },
+            builder: (context, state) {
               if (state is UnregisteredContactsLoading) {
                 return Center(
                   child: SizedBox(
@@ -187,7 +185,7 @@ class _InvitePageState extends State<InvitePage> {
                       .getUnRegisteredContacts();
                 },
                 child: Text(
-                  "Repeat again",
+                  "Попробовать занова",
                   style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
               );
@@ -202,16 +200,15 @@ class _InvitePageState extends State<InvitePage> {
                 onTap: () async {
                   var contact = contacts
                       .firstWhere((element) => element.isSelected == true);
+                  final phone = _normalizePhone(contact.phoneNumber!);
                   final url = Uri.parse(
-                      "https://wa.me/${contact.phoneNumber}?text=${Uri.encodeComponent("")}");
+                      "https://wa.me/$phone?text=${Uri.encodeComponent("")}");
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(
-                              "WhatsApp недоступен для номера ${contact.phoneNumber}")),
-                    );
+                    AppNotifications.showError(
+                        message:
+                            "WhatsApp недоступен для номера ${contact.phoneNumber}");
                   }
                 },
                 child: Container(
@@ -240,6 +237,20 @@ class _InvitePageState extends State<InvitePage> {
         ],
       ),
     );
+  }
+
+  String _normalizePhone(String raw) {
+    // 1) оставляем только цифры
+    String digits = raw.replaceAll(RegExp(r'\D'), '');
+    // 2) если 11 цифр и начинается с 8 → делаем 7…
+    if (digits.length == 11 && digits.startsWith('8')) {
+      digits = '7' + digits.substring(1);
+    }
+    // 3) если 10 цифр → дописываем 7 спереди
+    else if (digits.length == 10) {
+      digits = '7' + digits;
+    }
+    return digits;
   }
 
   Widget _buildContactItem(UnRegisteredContacts contact) {

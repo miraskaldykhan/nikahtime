@@ -36,6 +36,31 @@ class LocalMessageStorage {
     }
   }
 
+  /// Обновляет существующее неотправленное сообщение для конкретного чата.
+  static Future<void> updateUnsentMessage(
+    String chatId,
+    ChatMessage updatedMessage,
+  ) async {
+    // Загрузка всех сообщений из файла
+    final allMessages = await loadAllUnsentMessages();
+
+    // Если для этого чата нет сохранённых сообщений — ничего не делаем
+    if (!allMessages.containsKey(chatId)) return;
+
+    final messages = allMessages[chatId]!;
+
+    // Находим индекс сообщения с таким же messageId
+    final index =
+        messages.indexWhere((msg) => msg.messageId == updatedMessage.messageId);
+
+    if (index != -1) {
+      // Заменяем старое сообщение на обновлённое
+      messages[index] = updatedMessage;
+      // Перезаписываем файл со всеми сообщениями
+      await _writeAllUnsentMessages(allMessages);
+    }
+  }
+
   // Перезаписывает файл с неотправленными сообщениями для всех чатов
   static Future<void> _writeAllUnsentMessages(
       Map<String, List<ChatMessage>> messagesMap) async {
@@ -51,11 +76,21 @@ class LocalMessageStorage {
   static Future<void> saveUnsentMessage(
       String chatId, ChatMessage message) async {
     Map<String, List<ChatMessage>> allMessages = await loadAllUnsentMessages();
-    if (allMessages.containsKey(chatId)) {
-      allMessages[chatId]!.add(message);
+    final messages = allMessages[chatId] ?? <ChatMessage>[];
+    // 3. Находим индекс по messageId
+    final index =
+        messages.indexWhere((msg) => msg.messageId == message.messageId);
+
+    if (index != -1) {
+      // 4а. Если есть — обновляем
+      messages[index] = message;
     } else {
-      allMessages[chatId] = [message];
+      // 4б. Если нет — добавляем
+      messages.add(message);
     }
+
+    // 5. Сохраняем обратно в общий словарь и записываем в файл
+    allMessages[chatId] = messages;
     await _writeAllUnsentMessages(allMessages);
   }
 

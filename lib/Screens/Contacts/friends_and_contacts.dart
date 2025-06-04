@@ -15,6 +15,7 @@ import 'package:untitled/Screens/Contacts/cubit/move_follower_to_friends/followe
 import 'package:untitled/Screens/Contacts/cubit/move_friend_to_follower/friend_to_follower_cubit.dart';
 import 'package:untitled/Screens/Contacts/models/contacts.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
+import 'package:untitled/ServiceItems/notification_service.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/components/widgets/create_chat.dart';
 
@@ -718,18 +719,15 @@ class _ContactsPageState extends State<ContactsPage> {
   }
 
   Widget _buildUserList() {
-    return BlocBuilder<FetchRegisteredContactsCubit,
+    return BlocConsumer<FetchRegisteredContactsCubit,
         FetchRegisteredContactsState>(
       bloc: BlocProvider.of<FetchRegisteredContactsCubit>(context),
-      builder: (context, state) {
+      listener: (context, state) {
         if (state is FetchRegisteredContactsError) {
-          return Center(
-            child: Text(
-              state.message,
-              style: TextStyle(color: Colors.black, fontSize: 20),
-            ),
-          );
+          AppNotifications.showError(message: state.message);
         }
+      },
+      builder: (context, state) {
         if (state is FetchRegisteredContactsLoading) {
           return Center(
             child: SizedBox(
@@ -826,7 +824,7 @@ class _ContactsPageState extends State<ContactsPage> {
                   .getRegisteredContacts();
             },
             child: Text(
-              "Repeat again",
+              "Попробовать занова",
               style: TextStyle(color: Colors.black, fontSize: 24),
             ),
           ),
@@ -840,7 +838,6 @@ class _ContactsPageState extends State<ContactsPage> {
   }) {
     return InkWell(
       onTap: () {
-        log("ASDASDasdasdasdS");
         debugPrint("Начать чат с пользователем № $id");
         CreateChat(context, "", id, afterPopCallback: (chatWithLastMessage) {
           setState(() {});

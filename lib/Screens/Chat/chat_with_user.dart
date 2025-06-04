@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:custom_pop_up_menu_fork/custom_pop_up_menu.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +14,7 @@ import 'package:path/path.dart' as p;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/Screens/Chat/bloc/chat_with_user/chat_with_user_bloc.dart';
@@ -32,6 +32,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart' as localized;
 import 'package:untitled/generated/locale_keys.g.dart';
 
+enum MenuAction { reply, copy, edit, delete }
+
 class ChatWithUserScreen extends StatefulWidget {
   ChatWithUserScreen(this.chatData, this.userProfileGender, this.userProfileId,
       {super.key}) {
@@ -48,8 +50,15 @@ class ChatWithUserScreen extends StatefulWidget {
 }
 
 class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
+
+  // чтобы сохранить, откуда прыгнули
+  int? _lastChildIndex;
+  bool _showBackButton = false;
+
   TextEditingController messageController = TextEditingController();
-  final ScrollController _myController = ScrollController();
   late Echo echo_message;
 
   final Record _recorder = Record();
@@ -112,7 +121,6 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
   @override
   void dispose() {
     messageController.dispose();
-    _myController.dispose();
     _timer?.cancel();
     super.dispose();
   }
@@ -137,13 +145,42 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
           ),
         ),
         body: SafeArea(
-          child: SizedBox(
-              child: BlocBuilder<ChatWithUserBloc, ChatWithUserState>(
-            bloc: widget.bloc,
-            builder: (context, state) {
-              return body(context, state);
-            },
-          )),
+          child: Stack(
+            children: [
+              SizedBox(
+                  child: BlocBuilder<ChatWithUserBloc, ChatWithUserState>(
+                bloc: widget.bloc,
+                builder: (context, state) {
+                  return body(context, state);
+                },
+              )),
+              if (_showBackButton)
+                Positioned(
+                  bottom: 100,
+                  right: 16,
+                  child: FloatingActionButton(
+                    mini: true,
+                    child: Icon(
+                      Icons.expand_circle_down_outlined,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (_lastChildIndex != null) {
+                        _itemScrollController.scrollTo(
+                          index: _lastChildIndex!,
+                          duration: const Duration(milliseconds: 300),
+                          alignment: 0.5,
+                        );
+                      }
+                      setState(() {
+                        _showBackButton = false;
+                        _lastChildIndex = null;
+                      });
+                    },
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -371,7 +408,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                         color: Color.fromARGB(255, 150, 150, 150),
                       ),
                       onPressed: () {
-                        filePicker();
+                        filePicker(state);
                       },
                     )),
           const SizedBox(
@@ -402,6 +439,9 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                       suffixIcon: GestureDetector(
                         onTap: () {
                           if (state.editBoxVisible) {
+                            if (state.editText == messageController.text) {
+                              return;
+                            }
                             widget.bloc.add(
                               EditChat(
                                 editText: messageController.text,
@@ -413,6 +453,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                               SendTextMessage(
                                 text: messageController.text,
                                 chatId: widget.chatData.chatId!,
+                                parentMessageId: state.answerMessageId,
                               ),
                             );
                           }
@@ -476,7 +517,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                       ),
                 onPressed: () {
                   if (isRecording) {
-                    _sendRecordingToAPI(widget.bloc);
+                    _sendRecordingToAPI(widget.bloc, state);
                   } else {
                     _startRecording();
                   }
@@ -528,7 +569,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     }
   }
 
-  Future<void> _sendRecordingToAPI(ChatWithUserBloc bloc) async {
+  Future<void> _sendRecordingToAPI(
+      ChatWithUserBloc bloc, ChatWithUserInitial state) async {
     if (isRecording) {
       var s = await _recorder.stop();
       setState(() {
@@ -542,9 +584,15 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
       // Add a slight delay to ensure state updates
       await Future.delayed(Duration(milliseconds: 300));
 
-      setState(() {
-        bloc.add(SendFile(file: file, fileType: "audio"));
-      });
+      setState(
+        () {
+          bloc.add(SendFile(
+            file: file,
+            fileType: "audio",
+            parentMessageId: state.answerMessageId,
+          ));
+        },
+      );
 
       // Optionally, refresh the UI after the file is sent
       setState(() {});
@@ -654,9 +702,8 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
 
   Widget chatListVisualBuilder(
       BuildContext context, ChatWithUserInitial state) {
-    Widget list = ListView.separated(
+    Widget list = ScrollablePositionedList.separated(
       reverse: true,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemBuilder: (BuildContext context, int index) {
         return chatListItem(state, index);
       },
@@ -666,18 +713,16 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
         );
       },
       itemCount: state.messages.length,
-      controller: _myController,
+      itemScrollController: _itemScrollController,
+      itemPositionsListener: _itemPositionsListener,
     );
-
-    Timer(const Duration(),
-        () => _myController.jumpTo(_myController.position.minScrollExtent));
 
     return list;
   }
 
   Widget chatListItem(ChatWithUserInitial state, int index) {
-    CustomPopupMenuController controller = CustomPopupMenuController();
-    ChatMessage message = state.messages[index];
+    final message = state.messages[index];
+
     return Column(
       children: [
         dateDivider(message, index, state.messages.length - 1),
@@ -685,302 +730,255 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
           alignment: message.isAuthUsermessage!
               ? Alignment.topLeft
               : Alignment.topRight,
-          child: CustomPopupMenu(
-            horizontalMargin: 16,
-            verticalMargin: 10,
-            menuBuilder: () {
-              widget.bloc.add(
-                const RemoveAnswerChat(),
-              );
-              return Container(
-                margin: EdgeInsets.only(
-                  left: message.isAuthUsermessage! == false
-                      ? 0
-                      : MediaQuery.of(context).size.width / 5 + 116,
-                  right: message.isAuthUsermessage! == true
-                      ? 0
-                      : MediaQuery.of(context).size.width / 5 + 116,
-                ),
-                padding: const EdgeInsets.all(
-                  15,
-                ),
-                decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.14),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                      10,
-                    )),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 15,
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          if (message.message != null) {
-                            widget.bloc.add(
-                              AsnwerChat(
-                                answerText: message.message!,
-                              ),
-                            );
-                            controller.hideMenu();
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Ответить',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xff212121),
-                              ),
-                            ),
-                            Image.asset(
-                              'assets/icons/bxs_share.png',
-                              width: 22,
-                              height: 22,
-                              color: const Color(
-                                0xff212121,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 15,
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          String messageText = (message.message!).toString();
-                          Clipboard.setData(ClipboardData(text: messageText));
-                          controller.hideMenu();
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Копировать',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xff212121),
-                              ),
-                            ),
-                            Image.asset(
-                              'assets/icons/bxs_copy.png',
-                              width: 22,
-                              height: 22,
-                              color: const Color(
-                                0xff212121,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (message.isAuthUsermessage!)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 15,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (message.message != null &&
-                                message.messageId != null) {
-                              widget.bloc.add(
-                                EditChatActive(
-                                  editText: message.message!.toString(),
-                                  messageId: message.messageId!,
-                                ),
-                              );
-                              controller.hideMenu();
-                            } else {
-                              log("this message yet not sended to server");
-                            }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Изменить',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xff212121),
-                                ),
-                              ),
-                              Image.asset(
-                                'assets/icons/bxs_pencil.png',
-                                width: 22,
-                                height: 22,
-                                color: const Color(
-                                  0xff212121,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    if (message.isAuthUsermessage!)
-                      GestureDetector(
-                        onTap: () {
-                          widget.bloc.add(DeleteChatMessageWithId(
-                              messageId: state.messages[index].messageId!));
-                          controller.hideMenu();
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Удалить',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xffFC3B3B),
-                              ),
-                            ),
-                            Image.asset(
-                              'assets/icons/bxs_trash.png',
-                              width: 22,
-                              height: 22,
-                              color: const Color(
-                                0xffFC3B3B,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-              );
+          child: GestureDetector(
+            onLongPressStart: (details) {
+              _showMessageMenu(details.globalPosition, message);
             },
-            controller: controller,
-            barrierColor: Colors.transparent,
-            showArrow: false,
-            pressType: PressType.longPress,
-            child: GestureDetector(
-              onTap: () {
-                if (message.sendedError) {
-                  _showRetryOptions(context, message);
+            onTap: () {
+              if (message.parent != null && message.parent!.messageId != null) {
+                final parentId = message.parent!.messageId!;
+                // найдём индекс родителя
+                final parentIndex =
+                    state.messages.indexWhere((m) => m.messageId == parentId);
+                if (parentIndex != -1) {
+                  // запомнить, откуда прыгнули
+                  _lastChildIndex = index;
+                  _itemScrollController.scrollTo(
+                    index: parentIndex,
+                    duration: const Duration(milliseconds: 300),
+                    alignment: 0.5, // отцентрирует
+                  );
+                  setState(() => _showBackButton = true);
+                  return;
                 }
-              },
-              child: Container(
-                margin: EdgeInsets.only(
-                  left: message.isAuthUsermessage! == false
-                      ? 0
-                      : MediaQuery.of(context).size.width / 5 + 16,
-                  right: message.isAuthUsermessage! == true
-                      ? 0
-                      : MediaQuery.of(context).size.width / 5 + 16,
+              }
+              if (message.sendedError) {
+                _showRetryOptions(context, message);
+              }
+            },
+            child: Container(
+              margin: EdgeInsets.only(
+                left: message.isAuthUsermessage!
+                    ? MediaQuery.of(context).size.width * .2
+                    : 0,
+                right: message.isAuthUsermessage!
+                    ? 0
+                    : MediaQuery.of(context).size.width * .2,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: message.isAuthUsermessage!
+                    ? const Color(0xFFEBEBEB)
+                    : const Color(0xFFE2F1EC),
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                  bottomLeft:
+                      Radius.circular(message.isAuthUsermessage! ? 10 : 0),
+                  bottomRight:
+                      Radius.circular(message.isAuthUsermessage! ? 0 : 10),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: (message.isAuthUsermessage!)
-                      ? const Color(0xFFEBEBEB)
-                      : const Color(0xFFE2F1EC),
-                  borderRadius: BorderRadius.only(
-                    topRight: const Radius.circular(10),
-                    topLeft: const Radius.circular(10),
-                    bottomLeft:
-                        Radius.circular((message.isAuthUsermessage!) ? 10 : 0),
-                    bottomRight:
-                        Radius.circular((message.isAuthUsermessage!) ? 0 : 10),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: (message.isAuthUsermessage!)
-                      ? CrossAxisAlignment.start
-                      : CrossAxisAlignment.start,
-                  //spacing: 8,
-                  children: [
-                    state.answerBoxVisible
-                        ? const Icon(Icons.arrow_back_sharp)
-                        : message.repliedStory != null
-                            ? Row(
-                                children: [
-                                  Icon(
-                                    Icons.arrow_back_sharp,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    size: 15,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "История",
-                                    style: TextStyle(
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  state.answerBoxVisible
+                      ? state.answerMessageId == state.messages[index].messageId
+                          ? const Icon(Icons.arrow_back_sharp)
+                          : message.repliedStory != null
+                              ? Row(
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_back_sharp,
                                       color:
                                           Theme.of(context).colorScheme.primary,
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.w500,
+                                      size: 15,
                                     ),
-                                  ),
-                                ],
-                              )
-                            : Container(),
-                    messageBody(message),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "История",
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Container()
+                      : SizedBox.shrink(),
+                  // ваш кусок "ответ на сообщение"
+                  if (message.parent != null) ...[
                     Container(
-                      margin: const EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.only(bottom: 4),
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.6,
+                      ),
                       child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "${intl.DateFormat('HH:mm').format(intl.DateFormat('DD.MM.yyyy HH:mm:ss').parse(message.messageTime!).add(DateTime.now().timeZoneOffset - const Duration(hours: 3)))}  ${message.edited ?? ""}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                              color: Colors.grey,
+                          Icon(Icons.arrow_back_sharp,
+                              size: 15,
+                              color: Theme.of(context).colorScheme.primary),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: Text(
+                              message.parent!.messageType == "text"
+                                  ? message.parent!.message!.length > 50
+                                      ? '${message.parent!.message!.substring(0, 50)}…'
+                                      : message.parent!.message!
+                                  : message.parent!.messageType == "audio"
+                                      ? "Аудио"
+                                      : message.parent!.messageType == "video"
+                                          ? "Видео"
+                                          : message.parent!.messageType ==
+                                                  "file"
+                                              ? "Файл"
+                                              : message.parent!.messageType ==
+                                                      "image"
+                                                  ? "Изображение"
+                                                  : "",
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontStyle: FontStyle.italic,
+                              ),
                             ),
                           ),
-                          Visibility(
-                            visible: message.isAuthUsermessage == true,
-                            child: Row(
-                              children: [
-                                const SizedBox(
-                                  width: 2,
-                                ),
-                                message.isAuthUsermessage! &&
-                                        message.sendedError
-                                    ? Icon(
-                                        Icons.question_mark,
-                                        color: Colors.red,
-                                      )
-                                    : Container(
-                                        child: messageStatusMark(
-                                          message,
-                                          Theme.of(context).colorScheme.primary,
-                                        ),
-                                      ),
-                              ],
-                            ),
-                          )
                         ],
                       ),
-                    )
+                    ),
                   ],
-                ),
+                  if (message.isUploading)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6.0),
+                      child: LinearProgressIndicator(
+                        value: message.uploadProgress,
+                        minHeight: 3,
+                        backgroundColor: Colors.grey.shade300,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
+                  else
+                    messageBody(message),
+                  // таймштамп и статус
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${intl.DateFormat('HH:mm').format(intl.DateFormat('DD.MM.yyyy HH:mm:ss').parse(message.messageTime!).add(DateTime.now().timeZoneOffset - const Duration(hours: 3)))}  ${message.edited ?? ""}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Visibility(
+                          visible: message.isAuthUsermessage == true,
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 2,
+                              ),
+                              message.isAuthUsermessage! && message.sendedError
+                                  ? SvgPicture.asset(
+                                      'assets/icons/error_sent_msg.svg',
+                                      height: 16,
+                                      width: 16,
+                                    )
+                                  : Container(
+                                      child: messageStatusMark(
+                                        message,
+                                        Theme.of(context).colorScheme.primary,
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _showMessageMenu(Offset tapPosition, ChatMessage message) async {
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final choice = await showMenu<MenuAction>(
+      context: context,
+      position: RelativeRect.fromRect(
+        tapPosition & const Size(40, 40),
+        Offset.zero & overlay.size,
+      ),
+      items: <PopupMenuEntry<MenuAction>>[
+        const PopupMenuItem(value: MenuAction.reply, child: Text('Ответить')),
+        const PopupMenuItem(value: MenuAction.copy, child: Text('Копировать')),
+        if (message.isAuthUsermessage! && message.messageType == "text")
+          const PopupMenuItem(value: MenuAction.edit, child: Text('Изменить')),
+        if (message.isAuthUsermessage!)
+          const PopupMenuItem(value: MenuAction.delete, child: Text('Удалить')),
+      ],
+    );
+
+    switch (choice) {
+      case MenuAction.reply:
+        if (message.message != null) {
+          widget.bloc.add(
+            AnswerChat(
+              answerText: message.messageType == "text"
+                  ? message.message!
+                  : message.messageType == "audio"
+                      ? "Аудио"
+                      : message.messageType == "video"
+                          ? "Видео"
+                          : message.messageType == "file"
+                              ? "Файл"
+                              : message.messageType == "image"
+                                  ? "Изображение"
+                                  : "",
+              answerMessageId: message.messageId!,
+            ),
+          );
+        }
+        break;
+      case MenuAction.copy:
+        Clipboard.setData(ClipboardData(text: message.message ?? ""));
+        break;
+      case MenuAction.edit:
+        if (message.message != null && message.messageId != null) {
+          widget.bloc.add(
+            EditChatActive(
+              editText: message.message!.toString(),
+              messageId: message.messageId!,
+            ),
+          );
+        } else {
+          log("this message yet not sended to server");
+        }
+        break;
+      case MenuAction.delete:
+        widget.bloc.add(DeleteChatMessageWithId(
+          messageId: message.messageId!,
+        ));
+        break;
+      case null:
+        break;
+    }
   }
 
   void _showRetryOptions(BuildContext context, ChatMessage message) {
@@ -1022,10 +1020,10 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
 
   Widget messageStatusMark(ChatMessage message, Color color) {
     if (message.isMessageSend == false) {
-      return Icon(
-        Icons.hourglass_bottom_sharp,
-        color: Colors.grey,
-        size: 16,
+      return SizedBox(
+        height: 16,
+        width: 16,
+        child: CircularProgressIndicator(color: Colors.grey, strokeWidth: 1.0),
       );
     }
     if (message.sendedError == true) {
@@ -1109,14 +1107,14 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
       return SizedBox(
         height: 300,
         child: ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: displayPhotoOrVideo(context, message.message!.toString(),
-                initPage: 0,
-                items: <String>[message.message!.toString()],
-                photoOwnerId: (widget.bloc.state as ChatWithUserInitial)
-                        .chatData
-                        ?.userID ??
-                    0)),
+          borderRadius: BorderRadius.circular(8.0),
+          child: displayPhotoOrVideo(context, message.message!.toString(),
+              initPage: 0,
+              items: <String>[message.message!.toString()],
+              photoOwnerId:
+                  (widget.bloc.state as ChatWithUserInitial).chatData?.userID ??
+                      0),
+        ),
       );
     }
     if (message.messageType == "file") {
@@ -1306,7 +1304,7 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
     }*/
   }
 
-  filePicker() {
+  filePicker(ChatWithUserInitial state) {
     ImagePicker picker = ImagePicker();
     return showModalBottomSheet(
       context: context,
@@ -1319,8 +1317,11 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
                 source: ImageSource.camera,
                 preferredCameraDevice: CameraDevice.front);
             Navigator.pop(context);
-            widget.bloc
-                .add(SendFile(file: File(image!.path), fileType: "image"));
+            widget.bloc.add(SendFile(
+              file: File(image!.path),
+              fileType: "image",
+              parentMessageId: state.answerMessageId,
+            ));
           },
         ),
         ListTile(
@@ -1331,8 +1332,11 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
               source: ImageSource.gallery,
             );
             Navigator.pop(context);
-            widget.bloc
-                .add(SendFile(file: File(image!.path), fileType: "image"));
+            widget.bloc.add(SendFile(
+              file: File(image!.path),
+              fileType: "image",
+              parentMessageId: state.answerMessageId,
+            ));
           },
         ),
         ListTile(
@@ -1342,8 +1346,13 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
             XFile? video = await picker.pickVideo(source: ImageSource.camera);
             Navigator.pop(context);
             if (video != null) {
-              widget.bloc
-                  .add(SendFile(file: File(video.path), fileType: "file"));
+              widget.bloc.add(
+                SendFile(
+                  file: File(video.path),
+                  fileType: "file",
+                  parentMessageId: state.answerMessageId,
+                ),
+              );
             } else {
               print('Video picking canceled');
             }
@@ -1358,7 +1367,11 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
             );
             debugPrint(video!.path);
             Navigator.pop(context);
-            widget.bloc.add(SendFile(file: File(video.path), fileType: "file"));
+            widget.bloc.add(SendFile(
+              file: File(video.path),
+              fileType: "file",
+              parentMessageId: state.answerMessageId,
+            ));
           },
         ),
         ListTile(
@@ -1370,7 +1383,11 @@ class _ChatWithUserScreenState extends State<ChatWithUserScreen> {
             if (result != null) {
               File file = File(result.files.single.path!);
               debugPrint(result.files.single.path!);
-              widget.bloc.add(SendFile(file: file, fileType: "file"));
+              widget.bloc.add(SendFile(
+                file: file,
+                fileType: "file",
+                parentMessageId: state.answerMessageId,
+              ));
             } else {
               // User canceled the picker
             }

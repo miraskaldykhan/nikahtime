@@ -380,7 +380,7 @@ class NetworkService {
     return response;
   }
 
-  GetUserInfo(String accessToken) async {
+  Future<http.Response> GetUserInfo(String accessToken) async {
     ///TODO: swap to DIO
     var response = await http.get(
       Uri.parse(baseUrl + accout_user_get_info),
@@ -401,6 +401,33 @@ class NetworkService {
         'authorization': 'Bearer $accessToken'
       },
       body: body,
+    );
+
+    return response;
+  }
+
+  Future<Response> uploadFileWithProgress({
+    required String accessToken,
+    required String filePath,
+    required String fileType,
+    required void Function(int sent, int total) onSendProgress,
+  }) async {
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(filePath),
+      "fileType": fileType,
+    });
+
+    final response = await _dio.post(
+      "$baseUrl/store/file",
+      data: formData,
+      options: Options(
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $accessToken",
+          "Content-Type": "multipart/form-data",
+        },
+      ),
+      onSendProgress: onSendProgress,
     );
 
     return response;
@@ -661,12 +688,13 @@ class NetworkService {
     return response;
   }
 
-  ChatsSendMessage(
+  Future<http.Response> ChatsSendMessage(
     String accessToken,
     String message,
     int chatID,
     String messageType, {
     int? repliedStoryId,
+        int? parentMessageId,
   }) async {
     ///TODO: swap to DIO
     var response = await http.post(Uri.parse('$baseUrl/chats/send/message'),
@@ -675,7 +703,8 @@ class NetworkService {
             "message": message,
             "chatId": chatID,
             "messageType": messageType,
-            if (repliedStoryId != null) "replied_story_id": repliedStoryId
+            if (repliedStoryId != null) "replied_story_id": repliedStoryId,
+            if(parentMessageId != null) "parentMessageId":parentMessageId
           },
         ),
         headers: {
@@ -686,6 +715,7 @@ class NetworkService {
     if (response.statusCode != 200) {
       //debugPrint("ChatsSendMessage ${response.body}");
     }
+    debugPrint("response: ${jsonDecode(response.body)["messageId"]}");
     return response;
   }
 
@@ -1135,38 +1165,43 @@ class NetworkService {
     required String filePath,
     required String accessToken,
     bool isVideo = false,
+    required void Function(int sent, int total) onSendProgress,
   }) async {
-    ///TODO: swap to DIO
     FormData formData = FormData.fromMap({
       "fileType": isVideo ? "video" : "image",
       "file": await MultipartFile.fromFile(filePath),
     });
-    var response = await _dio.post("$baseUrl/storeStory/file",
-        data: formData,
-        options: Options(
-          headers: {
-            'accept': 'application/json',
-            'Authorization': 'Bearer $accessToken',
-            'Content-Type': 'multipart/form-data',
-          },
-        ));
+    var response = await _dio.post(
+      "$baseUrl/storeStory/file",
+      data: formData,
+      options: Options(
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+      onSendProgress: onSendProgress,
+    );
     if (response.statusCode == 200) {
       // Достаем значение fileURL как строку
       log("fileURL: ${response.data['fileURL']}");
       String fileUrl = response.data['fileURL'];
 
-      var resForAddStory = await _dio.post("$baseUrl/stories/store",
-          data: {
-            "type": isVideo ? "video" : "image",
-            "content": fileUrl,
+      var resForAddStory = await _dio.post(
+        "$baseUrl/stories/store",
+        data: {
+          "type": isVideo ? "video" : "image",
+          "content": fileUrl,
+        },
+        options: Options(
+          headers: {
+            'accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'Content-Type': 'application/json',
           },
-          options: Options(
-            headers: {
-              'accept': 'application/json',
-              'Authorization': 'Bearer $accessToken',
-              'Content-Type': 'application/json',
-            },
-          ));
+        ),
+      );
       if (resForAddStory.statusCode == 201) {
         log("Story added");
       } else {

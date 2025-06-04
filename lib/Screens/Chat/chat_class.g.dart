@@ -78,6 +78,10 @@ ChatMessage _$ChatMessageFromJson(Map<String, dynamic> json) => ChatMessage(
       repliedStory: json['repliedStory'] == null
           ? null
           : Story.fromJson(json['repliedStory'] as Map<String, dynamic>),
+      parent: json['parent'] == null
+          ? null
+          : ChatMessage.fromJson(json['parent'] as Map<String, dynamic>),
+      uploadProgress: (json['uploadProgress'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$ChatMessageToJson(ChatMessage instance) =>
@@ -90,8 +94,10 @@ Map<String, dynamic> _$ChatMessageToJson(ChatMessage instance) =>
       'messageId': instance.messageId,
       'isMessageSeen': instance.isMessageSeen,
       'messageType': instance.messageType,
+      'parent': instance.parent,
       'edited': instance.edited,
       'repliedStory': instance.repliedStory,
+      'uploadProgress': instance.uploadProgress,
     };
 
 Story _$StoryFromJson(Map<String, dynamic> json) => Story(

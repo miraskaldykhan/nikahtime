@@ -39,8 +39,10 @@ class BlockChat extends ChatWithUserEvent {
 class SendTextMessage extends ChatWithUserEvent {
   final String text;
   final int chatId;
+  final int? parentMessageId;
 
-  const SendTextMessage({required this.text, required this.chatId});
+  const SendTextMessage(
+      {required this.text, required this.chatId, this.parentMessageId});
 
   @override
   List<Object?> get props => [
@@ -52,18 +54,22 @@ class SendTextMessage extends ChatWithUserEvent {
 class SendFile extends ChatWithUserEvent {
   final File file;
   final String fileType;
+  final int? parentMessageId;
 
-  const SendFile({required this.file, required this.fileType});
+  const SendFile(
+      {required this.file, required this.fileType, this.parentMessageId});
 
   @override
   List<Object?> get props => [file, fileType];
 }
 
-class AsnwerChat extends ChatWithUserEvent {
+class AnswerChat extends ChatWithUserEvent {
   final String answerText;
+  final int answerMessageId;
 
-  const AsnwerChat({
+  const AnswerChat({
     required this.answerText,
+    required this.answerMessageId,
   });
 
   @override
@@ -128,3 +134,12 @@ class DeleteChatMessageWithId extends ChatWithUserEvent {
   List<Object?> get props => [messageId];
 }
 
+class UpdateUploadProgress extends ChatWithUserEvent {
+  final int messageId;
+  final double progress;
+
+  const UpdateUploadProgress({required this.messageId, required this.progress});
+
+  @override
+  List<Object?> get props => [messageId, progress];
+}

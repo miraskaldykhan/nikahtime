@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart' as locale;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 //import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/ServiceItems/network_service.dart';
@@ -25,6 +26,7 @@ class PeopleWhoVizitedMeScreenState extends State<PeopleWhoVizitedMeScreen> {
   bool isLoadingEnd = false;
   List<UserProfileData> vizitedMeAnketas = [];
   Timer? timer;
+
   sendAnketesRequest() async {
     try {
       var response = await NetworkService().getGuests(
@@ -47,31 +49,13 @@ class PeopleWhoVizitedMeScreenState extends State<PeopleWhoVizitedMeScreen> {
     }
   }
 
-  sendAnketesRequestWithoutPage() async {
-    var response = await NetworkService()
-        .getGuests(accessToken: widget.userProfileData.accessToken!, page: 2);
-    vizitedMeAnketas = [];
-    vizitedMeAnketas.addAll(response.users as Iterable<UserProfileData>);
-
-    if (response.users.length < 20) {
-      setState(() {
-        isLoadingEnd = true;
-      });
-    }
-
-    setState(() {
-      isLoadingComplete = true;
-    });
-  }
-
   Widget waitBox(Color color) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-         CircularProgressIndicator(
-          valueColor:
-              AlwaysStoppedAnimation<Color>(color),
+        CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(color),
         ),
         const SizedBox(
           height: 16,
@@ -96,10 +80,9 @@ class PeopleWhoVizitedMeScreenState extends State<PeopleWhoVizitedMeScreen> {
       sendAnketesRequest();
     }
     super.initState();
-    //MyTracker.trackEvent("Watch Vizited Me page", {});
     timer = Timer.periodic(
         const Duration(
-          seconds: 2,
+          seconds: 60,
         ), (timer) {
       sendAnketesRequest();
     });
@@ -116,33 +99,36 @@ class PeopleWhoVizitedMeScreenState extends State<PeopleWhoVizitedMeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: isLoadingComplete
             ? SizedBox(
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                      Expanded(
-                       child:  
-                       vizitedMeAnketas.isEmpty
-                       ? Center(
-                         child: SizedBox(
-                           width: 240,
-                           child: Text(
-                                  LocaleKeys.usersScreen_notFound.tr(),
-                                  textAlign: TextAlign.center,
-                                  style:  TextStyle( color: Theme.of(context).colorScheme.secondary, fontSize: 22, fontWeight: FontWeight.w500)
-                                  ),
-                         ),
-                       )
-                     : FeedVerticalGridView(
-                        userProfileData: widget.userProfileData,
-                        anketas: vizitedMeAnketas,
-                        uploadMore: () async {
-                          sendAnketesRequest();
-                        },
-                      ),
+                    Expanded(
+                      child: vizitedMeAnketas.isEmpty
+                          ? Center(
+                              child: SizedBox(
+                                width: 240,
+                                child: Text(
+                                    LocaleKeys.usersScreen_notFound.tr(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w500)),
+                              ),
+                            )
+                          : FeedVerticalGridView(
+                              userProfileData: widget.userProfileData,
+                              anketas: vizitedMeAnketas,
+                              uploadMore: () async {
+                                sendAnketesRequest();
+                              },
+                            ),
                     ),
                   ],
                 ),

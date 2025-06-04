@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:laravel_echo2/laravel_echo2.dart';
-//import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -13,7 +12,6 @@ import 'package:untitled/Screens/Chat/chat_main_menu.dart';
 import 'package:untitled/Screens/Contacts/friends_and_contacts.dart';
 import 'package:untitled/Screens/News/Feed/news.dart';
 import 'package:untitled/Screens/Profile/bloc/profile_bloc.dart';
-import 'package:untitled/Screens/Profile/profile_main_page.dart';
 import 'package:untitled/Screens/Favorites/favorites_main.dart';
 import 'package:untitled/Screens/Anketes/anketes.dart';
 import 'package:untitled/Screens/Profile/profile_page.dart';
@@ -21,12 +19,8 @@ import 'package:untitled/components/widgets/likeAnimation.dart';
 import 'package:untitled/generated/locale_keys.g.dart';
 import 'package:untitled/Providers/NotSeenMessagesProvider.dart';
 import 'package:untitled/group_icons.dart';
-import 'package:untitled/main_page_custom_icon_icons.dart';
 import 'package:untitled/components/models/user_profile_data.dart';
 import 'package:untitled/menu_icons_icons.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import 'Friends/friends_page.dart';
 
 /// This is the stateful widget that the main application instantiates.
 class MainPage extends StatefulWidget {
